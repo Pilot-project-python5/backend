@@ -6,8 +6,8 @@ domain: "auth"
 status: "implemented"
 completed_on: "2026-08-10"
 feature_packet: "docs/features/auth/f-1-1-signup"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/2"
+commit: "41fa1ff8026cfdd6c6f22daf6affe6209fb0e9df"
 ---
 
 # F-1.1 회원가입 구현 이력
