@@ -1,4 +1,4 @@
-"""회원가입 HTTP 요청과 응답 스키마."""
+"""회원가입과 로그인 아이디 조회 HTTP 스키마."""
 
 from __future__ import annotations
 
@@ -21,6 +21,10 @@ from pydantic import (
 from allyakkkuk.auth.models import Gender, UserStatus
 
 PasswordField = Annotated[SecretStr, Field(min_length=8, max_length=20)]
+LoginIdField = Annotated[
+    str,
+    Field(min_length=5, max_length=20, pattern=r"^[A-Za-z0-9]+$"),
+]
 _ALLOWED_PASSWORD_CHARACTERS = frozenset(
     string.ascii_letters + string.digits + string.punctuation
 )
@@ -46,11 +50,7 @@ class SignupRequest(BaseModel):
     )
 
     name: str = Field(min_length=1, max_length=50)
-    login_id: str = Field(
-        min_length=5,
-        max_length=20,
-        pattern=r"^[A-Za-z0-9]+$",
-    )
+    login_id: LoginIdField
     password: PasswordField
     password_confirmation: PasswordField
     email: EmailStr = Field(max_length=320)
@@ -118,3 +118,23 @@ class SignupResponse(BaseModel):
     status: UserStatus
     email_verification_required: bool = True
     created_at: datetime
+
+
+class LoginIdAvailabilityQuery(BaseModel):
+    login_id: LoginIdField
+
+
+class LoginIdAvailabilityResponse(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={
+            "examples": [
+                {
+                    "login_id": "User123",
+                    "available": True,
+                }
+            ]
+        }
+    )
+
+    login_id: str
+    available: bool

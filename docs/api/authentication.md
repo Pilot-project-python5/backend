@@ -24,6 +24,16 @@
 - 가입 직후 상태는 PENDING_EMAIL_VERIFICATION이다.
 - 인증번호 생성·발송·확인은 F-1.1.3에서 구현한다.
 
+### F-1.1.1 아이디 중복 확인
+
+- GET /api/v1/auth/login-id/availability?login_id=User123
+- 인증 없이 사용할 수 있다.
+- 회원가입과 동일하게 영문자·숫자 5~20자만 허용한다.
+- 대소문자를 구분하지 않고 users.normalized_login_id로 조회한다.
+- 유효한 요청은 200과 login_id, available을 반환한다.
+- 조회 결과는 아이디를 예약하지 않으며 회원가입 UNIQUE 제약이 최종 중복을 막는다.
+- 잘못된 형식은 422, DB 조회 실패는 503을 반환한다.
+
 ## 이메일 인증
 
 - 6자리 코드

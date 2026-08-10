@@ -1,0 +1,19 @@
+id: "F-1.1.1"
+title: "아이디 중복 확인"
+domain: "auth"
+requirement: "FR-1"
+phase: "1"
+priority: "P0"
+status: "implemented"
+owner: "backend"
+history_path: "docs/history/auth/f-1-1-1-login-id-availability.md"
+source:
+  requirement_path: "docs/product/requirements.md"
+  external_url: null
+  reviewed_on: "2026-08-10"
+dependencies:
+  - "F-1.1"
+api_changes:
+  - "GET /api/v1/auth/login-id/availability"
+data_changes: []
+open_questions: []
