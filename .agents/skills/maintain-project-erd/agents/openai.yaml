@@ -1,0 +1,4 @@
+interface:
+  display_name: "프로젝트 ERD 유지"
+  short_description: "ERD와 기능 명세·마이그레이션의 일치를 관리합니다"
+  default_prompt: "$maintain-project-erd를 사용해 데이터 변경을 로컬 ERD와 기능 명세에 반영하세요."

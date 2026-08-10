@@ -1,0 +1,33 @@
+# 저장소나 로컬 데이터를 파괴할 수 있는 명령은 명시적인 승인을 요구합니다.
+
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "prompt",
+    justification = "강제 초기화는 로컬 작업을 버릴 수 있으므로 먼저 상태와 변경 사항을 확인해야 합니다.",
+    match = ["git reset --hard", "git reset --hard HEAD~1"],
+    not_match = ["git reset --soft HEAD~1"],
+)
+
+prefix_rule(
+    pattern = ["git", "clean"],
+    decision = "prompt",
+    justification = "Git clean은 추적하지 않는 하네스나 시드 파일을 영구 삭제할 수 있습니다.",
+    match = ["git clean -fd", "git clean -fdx"],
+    not_match = ["git status --short"],
+)
+
+prefix_rule(
+    pattern = ["docker", "compose", "down", "-v"],
+    decision = "prompt",
+    justification = "Docker 볼륨을 제거하면 로컬 PostgreSQL 데이터가 삭제됩니다.",
+    match = ["docker compose down -v"],
+    not_match = ["docker compose down"],
+)
+
+prefix_rule(
+    pattern = ["alembic", "downgrade"],
+    decision = "prompt",
+    justification = "데이터베이스 다운그레이드는 로컬 스키마나 데이터를 제거할 수 있습니다.",
+    match = ["alembic downgrade -1", "alembic downgrade base"],
+    not_match = ["alembic upgrade head"],
+)

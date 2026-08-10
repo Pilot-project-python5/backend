@@ -1,0 +1,17 @@
+id: "{{FEATURE_ID}}"
+title: "{{FEATURE_TITLE}}"
+domain: "{{DOMAIN}}"
+requirement: "{{REQUIREMENT_ID}}"
+phase: "{{PHASE}}"
+priority: "{{PRIORITY}}"
+status: "draft"
+owner: "{{OWNER}}"
+history_path: null
+source:
+  requirement_path: "docs/product/requirements.md"
+  external_url: null
+  reviewed_on: null
+dependencies: []
+api_changes: []
+data_changes: []
+open_questions: []

@@ -1,0 +1,73 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "allyakkkuk-backend"
+version = "0.1.0"
+description = "알약꾹 로컬 우선 백엔드 API"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "alembic>=1.18.5,<1.19",
+  "email-validator>=2.3,<3",
+  "fastapi>=0.116,<1.0",
+  "psycopg[binary]>=3.2,<4",
+  "pydantic-settings>=2.10,<3",
+  "sqlalchemy>=2.0.50,<2.1",
+  "uvicorn[standard]>=0.35,<1",
+]
+
+[dependency-groups]
+dev = [
+  "httpx>=0.28,<1",
+  "mypy>=1.17,<2",
+  "pytest>=8.4,<10",
+  "pytest-cov>=6.2,<8",
+  "ruff>=0.12,<1",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/allyakkkuk"]
+
+[tool.fastapi]
+entrypoint = "allyakkkuk.main:app"
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-config --strict-markers"
+testpaths = ["tests"]
+pythonpath = [".", "src"]
+markers = [
+  "unit: 외부 입출력 없는 단위 테스트",
+  "contract: HTTP·OpenAPI 계약 테스트",
+  "integration: PostgreSQL이 필요한 통합 테스트",
+  "feature(id): Feature Packet ID와 테스트를 연결",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"migrations/versions/*.py" = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = "src"
+files = ["src", "tests", "scripts"]
+exclude = ["migrations"]
+
+[tool.coverage.run]
+branch = true
+source = ["allyakkkuk"]
+omit = ["src/allyakkkuk/**/__main__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 80
