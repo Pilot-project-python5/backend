@@ -57,6 +57,8 @@ feature-check: build
 	@test -n "$(FEATURE)" || (echo "FEATURE=F-x.y가 필요합니다" >&2; exit 2)
 	$(COMPOSE) up --wait -d postgres-test
 	$(COMPOSE) run --rm --no-deps -e APP_ENV=test -e DATABASE_URL=$(TEST_DATABASE_URL) api \
+		alembic upgrade head
+	$(COMPOSE) run --rm --no-deps -e APP_ENV=test -e DATABASE_URL=$(TEST_DATABASE_URL) api \
 		python scripts/harness.py feature-check --feature "$(FEATURE)" --with-tests
 
 history-new:

@@ -31,6 +31,8 @@ erDiagram
         varchar password_hash
         timestamptz email_verified_at
         varchar status
+        timestamptz created_at
+        timestamptz updated_at
     }
 
     HEALTH_PROFILES {
@@ -39,6 +41,8 @@ erDiagram
         varchar gender
         numeric height_cm
         numeric weight_kg
+        timestamptz created_at
+        timestamptz updated_at
     }
 
     EMAIL_VERIFICATIONS {
@@ -66,8 +70,13 @@ erDiagram
 
 - users는 로그인 식별자, 이메일과 인증 상태의 원본이다.
 - health_profiles는 생년월일, 성별, 키와 몸무게를 사용자와 1:1로 분리한다.
-- normalized_login_id는 고유하다.
-- normalized_email의 UNIQUE 여부는 이메일 고유성 정책에서 확정한다.
+- F-1.1에서 users와 health_profiles를 실제 테이블로 생성한다.
+- normalized_login_id와 normalized_email은 각각 고유하다.
+- users.status는 PENDING_EMAIL_VERIFICATION, ACTIVE 또는 SUSPENDED이며 회원가입
+  직후에는 PENDING_EMAIL_VERIFICATION이다.
+- health_profiles.gender는 MALE 또는 FEMALE다.
+- height_cm은 50~250, weight_kg은 10~500 범위로 DB CHECK를 적용한다.
+- health_profiles.user_id는 PK이자 users.id FK이며 사용자 삭제 시 함께 삭제된다.
 - email_verified_at이 없는 사용자는 로그인할 수 없다.
 - email_verifications는 발급 이력마다 새 행을 만들고 10분 만료, 60초 재전송 대기와 최대 5회 실패를 적용한다.
 - refresh_sessions는 기기·세션별 만료와 폐기를 추적한다.
@@ -318,7 +327,7 @@ erDiagram
 ## 권장 고유 제약과 인덱스
 
 - users(normalized_login_id) UNIQUE
-- users(normalized_email) INDEX 또는 정책 확정 후 UNIQUE
+- users(normalized_email) UNIQUE
 - product_category_mappings(product_id, category_id) UNIQUE
 - product_nutrients(product_id, nutrient_id) UNIQUE
 - nutrient_reference_values(version_id, nutrient_id, gender, age_min, age_max)
@@ -343,7 +352,6 @@ erDiagram
 
 ## 미확정 설계 항목
 
-- 이메일 주소 고유성
 - 액세스·리프레시 토큰 수명과 회전 정책
 - 유통기한 필수 여부
 - 복용 계획과 수량 수정 API 제공 여부

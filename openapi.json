@@ -66,6 +66,14 @@
         "title": "ErrorResponse",
         "type": "object"
       },
+      "Gender": {
+        "enum": [
+          "MALE",
+          "FEMALE"
+        ],
+        "title": "Gender",
+        "type": "string"
+      },
       "HealthResponse": {
         "properties": {
           "service": {
@@ -89,6 +97,166 @@
         ],
         "title": "HealthResponse",
         "type": "object"
+      },
+      "SignupRequest": {
+        "examples": [
+          {
+            "birth_date": "1995-05-20",
+            "email": "user@example.com",
+            "gender": "MALE",
+            "height_cm": 175,
+            "login_id": "User123",
+            "name": "홍길동",
+            "password": "Safe!Pass123",
+            "password_confirmation": "Safe!Pass123",
+            "weight_kg": 70
+          }
+        ],
+        "properties": {
+          "birth_date": {
+            "format": "date",
+            "title": "Birth Date",
+            "type": "string"
+          },
+          "email": {
+            "format": "email",
+            "maxLength": 320,
+            "title": "Email",
+            "type": "string"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "height_cm": {
+            "anyOf": [
+              {
+                "maximum": 250.0,
+                "minimum": 50.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,3}|(?=[\\d.]{1,6}0*$)\\d{0,3}\\.\\d{0,2}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Height Cm"
+          },
+          "login_id": {
+            "maxLength": 20,
+            "minLength": 5,
+            "pattern": "^[A-Za-z0-9]+$",
+            "title": "Login Id",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 50,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "password": {
+            "format": "password",
+            "maxLength": 20,
+            "minLength": 8,
+            "title": "Password",
+            "type": "string",
+            "writeOnly": true
+          },
+          "password_confirmation": {
+            "format": "password",
+            "maxLength": 20,
+            "minLength": 8,
+            "title": "Password Confirmation",
+            "type": "string",
+            "writeOnly": true
+          },
+          "weight_kg": {
+            "anyOf": [
+              {
+                "maximum": 500.0,
+                "minimum": 10.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,4}|(?=[\\d.]{1,7}0*$)\\d{0,4}\\.\\d{0,2}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Weight Kg"
+          }
+        },
+        "required": [
+          "name",
+          "login_id",
+          "password",
+          "password_confirmation",
+          "email",
+          "birth_date",
+          "gender",
+          "height_cm",
+          "weight_kg"
+        ],
+        "title": "SignupRequest",
+        "type": "object"
+      },
+      "SignupResponse": {
+        "examples": [
+          {
+            "created_at": "2026-08-10T09:00:00Z",
+            "email": "user@example.com",
+            "email_verification_required": true,
+            "id": "11111111-1111-4111-8111-111111111111",
+            "login_id": "User123",
+            "status": "PENDING_EMAIL_VERIFICATION"
+          }
+        ],
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "email": {
+            "format": "email",
+            "title": "Email",
+            "type": "string"
+          },
+          "email_verification_required": {
+            "default": true,
+            "title": "Email Verification Required",
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "login_id": {
+            "title": "Login Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/UserStatus"
+          }
+        },
+        "required": [
+          "id",
+          "login_id",
+          "email",
+          "status",
+          "created_at"
+        ],
+        "title": "SignupResponse",
+        "type": "object"
+      },
+      "UserStatus": {
+        "enum": [
+          "PENDING_EMAIL_VERIFICATION",
+          "ACTIVE",
+          "SUSPENDED"
+        ],
+        "title": "UserStatus",
+        "type": "string"
       }
     }
   },
@@ -99,6 +267,107 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/auth/signup": {
+      "post": {
+        "operationId": "auth_signup",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignupRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignupResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "email": {
+                    "summary": "AUTH_EMAIL_UNAVAILABLE",
+                    "value": {
+                      "error": {
+                        "code": "AUTH_EMAIL_UNAVAILABLE",
+                        "fields": [],
+                        "message": "사용할 수 없는 이메일입니다.",
+                        "request_id": "opaque-request-id"
+                      }
+                    }
+                  },
+                  "login_id": {
+                    "summary": "AUTH_LOGIN_ID_UNAVAILABLE",
+                    "value": {
+                      "error": {
+                        "code": "AUTH_LOGIN_ID_UNAVAILABLE",
+                        "fields": [],
+                        "message": "사용할 수 없는 아이디입니다.",
+                        "request_id": "opaque-request-id"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "로그인 아이디 또는 이메일 중복"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "VALIDATION_FAILED",
+                    "fields": [],
+                    "message": "요청 값을 확인해주세요.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "가입 정보 검증 실패"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 처리 실패"
+          }
+        },
+        "summary": "이메일 미인증 회원가입",
+        "tags": [
+          "인증"
+        ]
+      }
+    },
     "/api/v1/health/live": {
       "get": {
         "operationId": "system_liveness",
