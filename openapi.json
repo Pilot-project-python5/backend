@@ -98,6 +98,30 @@
         "title": "HealthResponse",
         "type": "object"
       },
+      "LoginIdAvailabilityResponse": {
+        "examples": [
+          {
+            "available": true,
+            "login_id": "User123"
+          }
+        ],
+        "properties": {
+          "available": {
+            "title": "Available",
+            "type": "boolean"
+          },
+          "login_id": {
+            "title": "Login Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "login_id",
+          "available"
+        ],
+        "title": "LoginIdAvailabilityResponse",
+        "type": "object"
+      },
       "SignupRequest": {
         "examples": [
           {
@@ -267,6 +291,77 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/auth/login-id/availability": {
+      "get": {
+        "operationId": "auth_check_login_id_availability",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "login_id",
+            "required": true,
+            "schema": {
+              "maxLength": 20,
+              "minLength": 5,
+              "pattern": "^[A-Za-z0-9]+$",
+              "title": "Login Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginIdAvailabilityResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "VALIDATION_FAILED",
+                    "fields": [],
+                    "message": "요청 값을 확인해주세요.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "로그인 아이디 형식 검증 실패"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 조회 실패"
+          }
+        },
+        "summary": "로그인 아이디 사용 가능 여부 확인",
+        "tags": [
+          "인증"
+        ]
+      }
+    },
     "/api/v1/auth/signup": {
       "post": {
         "operationId": "auth_signup",

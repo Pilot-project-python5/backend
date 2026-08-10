@@ -1,4 +1,4 @@
-"""회원가입 애플리케이션 서비스."""
+"""회원가입과 로그인 아이디 조회 애플리케이션 서비스."""
 
 from __future__ import annotations
 
@@ -12,6 +12,8 @@ from allyakkkuk.auth.passwords import PasswordHasher
 from allyakkkuk.auth.repository import (
     DuplicateEmailError,
     DuplicateLoginIdError,
+    LoginIdAvailabilityPersistenceError,
+    LoginIdAvailabilityRepository,
     SignupData,
     SignupPersistenceError,
     SignupRepository,
@@ -39,6 +41,32 @@ class SignupResult:
     email: str
     status: UserStatus
     created_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
+class LoginIdAvailabilityResult:
+    login_id: str
+    available: bool
+
+
+class LoginIdAvailabilityService:
+    def __init__(self, repository: LoginIdAvailabilityRepository) -> None:
+        self._repository = repository
+
+    def check(self, login_id: str) -> LoginIdAvailabilityResult:
+        try:
+            already_exists = self._repository.exists(normalize_login_id(login_id))
+        except LoginIdAvailabilityPersistenceError as exc:
+            raise AppError(
+                status_code=503,
+                code="SERVICE_UNAVAILABLE",
+                message="서비스가 아직 준비되지 않았습니다.",
+            ) from exc
+
+        return LoginIdAvailabilityResult(
+            login_id=login_id,
+            available=not already_exists,
+        )
 
 
 class SignupService:

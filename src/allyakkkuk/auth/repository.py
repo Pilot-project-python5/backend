@@ -1,4 +1,4 @@
-"""회원가입 저장소 포트와 PostgreSQL 구현."""
+"""회원가입과 로그인 아이디 조회 저장소 포트·PostgreSQL 구현."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ from decimal import Decimal
 from typing import Protocol
 from uuid import UUID, uuid4
 
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -23,6 +24,10 @@ class DuplicateEmailError(Exception):
 
 
 class SignupPersistenceError(Exception):
+    pass
+
+
+class LoginIdAvailabilityPersistenceError(Exception):
     pass
 
 
@@ -52,6 +57,10 @@ class SignupRecord:
 
 class SignupRepository(Protocol):
     def create(self, data: SignupData) -> SignupRecord: ...
+
+
+class LoginIdAvailabilityRepository(Protocol):
+    def exists(self, normalized_login_id: str) -> bool: ...
 
 
 class SQLAlchemySignupRepository:
@@ -106,6 +115,22 @@ class SQLAlchemySignupRepository:
             status=UserStatus(user.status),
             created_at=user.created_at,
         )
+
+
+class SQLAlchemyLoginIdAvailabilityRepository:
+    def __init__(self, session: Session) -> None:
+        self._session = session
+
+    def exists(self, normalized_login_id: str) -> bool:
+        statement = (
+            select(User.id)
+            .where(User.normalized_login_id == normalized_login_id)
+            .limit(1)
+        )
+        try:
+            return self._session.scalar(statement) is not None
+        except SQLAlchemyError as exc:
+            raise LoginIdAvailabilityPersistenceError from exc
 
 
 def _constraint_name(exc: IntegrityError) -> str | None:
