@@ -3,3 +3,7 @@
 기능 PR에서 SQLAlchemy 모델을 추가할 때 이 모듈이 해당 모델 모듈을 가져오도록
 갱신한다. 등록되지 않은 모델은 alembic check에서 발견할 수 없다.
 """
+
+from allyakkkuk.auth.models import HealthProfile, User
+
+__all__ = ["HealthProfile", "User"]
