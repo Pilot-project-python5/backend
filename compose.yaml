@@ -1,0 +1,106 @@
+name: allyakkkuk
+
+x-app-environment: &app-environment
+  APP_ENV: ${APP_ENV:-local}
+  APP_DEBUG: ${APP_DEBUG:-true}
+  APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Seoul}
+  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
+  DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://allyakkkuk:allyakkkuk-local@postgres-dev:5432/allyakkkuk_dev}
+  MAIL_HOST: ${MAIL_HOST:-mail}
+  MAIL_PORT: ${MAIL_PORT:-1025}
+  MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-no-reply@allyakkkuk.local}
+  MAIL_FROM_NAME: ${MAIL_FROM_NAME:-알약꾹}
+  WORKER_POLL_SECONDS: ${WORKER_POLL_SECONDS:-60}
+
+x-app-service: &app-service
+  build:
+    context: .
+    dockerfile: Dockerfile
+  working_dir: /app
+  volumes:
+    - .:/app
+  environment: *app-environment
+
+services:
+  postgres-dev:
+    image: postgres:16.14-alpine3.23
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-allyakkkuk}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-allyakkkuk-local}
+      POSTGRES_DB: ${POSTGRES_DEV_DB:-allyakkkuk_dev}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  postgres-test:
+    image: postgres:16.14-alpine3.23
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-allyakkkuk}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-allyakkkuk-local}
+      POSTGRES_DB: ${POSTGRES_TEST_DB:-allyakkkuk_test}
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  mail:
+    image: axllent/mailpit:v1.27.4
+    environment:
+      MP_MAX_MESSAGES: 500
+      MP_DATABASE: /data/mailpit.db
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    volumes:
+      - mailpit-data:/data
+
+  api:
+    <<: *app-service
+    command:
+      - uvicorn
+      - allyakkkuk.main:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --reload
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres-dev:
+        condition: service_healthy
+      mail:
+        condition: service_started
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health/live')"
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  worker:
+    <<: *app-service
+    command: ["python", "-m", "allyakkkuk.worker"]
+    depends_on:
+      postgres-dev:
+        condition: service_healthy
+      mail:
+        condition: service_started
+
+volumes:
+  postgres-dev-data:
+  mailpit-data:

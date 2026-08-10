@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDD 기능 명세"
+  short_description: "로컬 기준으로 기능 명세와 인수 조건을 구조화합니다"
+  default_prompt: "$specify-sdd-feature를 사용해 로컬 요구사항 기준에서 승인 가능한 Feature Packet을 작성하세요."

@@ -1,0 +1,7 @@
+# 프로젝트 범위 설정은 이 저장소를 신뢰할 때만 적용됩니다.
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+project_doc_max_bytes = 32768
+
+[agents]
+enabled = false

@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDD 기능 검증"
+  short_description: "기능 구현과 로컬 명세·ERD·계약을 검증합니다"
+  default_prompt: "$verify-sdd-feature를 사용해 기능 하나를 로컬 명세·ERD와 인수 조건에 맞춰 검증하세요."
