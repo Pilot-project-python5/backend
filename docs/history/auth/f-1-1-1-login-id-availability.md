@@ -6,8 +6,8 @@ domain: "auth"
 status: "implemented"
 completed_on: "2026-08-10"
 feature_packet: "docs/features/auth/f-1-1-1-login-id-availability"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/3"
+commit: "e4ebc6f434787abba4c926a01c9d067f5bfbd604"
 ---
 
 # F-1.1.1 아이디 중복 확인 구현 이력
