@@ -231,6 +231,94 @@
         "title": "LoginIdAvailabilityResponse",
         "type": "object"
       },
+      "LoginRequest": {
+        "examples": [
+          {
+            "login_id": "User123",
+            "password": "Safe!Pass123"
+          }
+        ],
+        "properties": {
+          "login_id": {
+            "maxLength": 20,
+            "minLength": 5,
+            "pattern": "^[A-Za-z0-9]+$",
+            "title": "Login Id",
+            "type": "string"
+          },
+          "password": {
+            "format": "password",
+            "maxLength": 20,
+            "minLength": 8,
+            "title": "Password",
+            "type": "string",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "login_id",
+          "password"
+        ],
+        "title": "LoginRequest",
+        "type": "object"
+      },
+      "LoginResponse": {
+        "examples": [
+          {
+            "access_token_expires_at": "2026-08-11T09:15:00Z",
+            "authenticated_at": "2026-08-11T09:00:00Z",
+            "login_id": "User123",
+            "name": "홍길동",
+            "refresh_token_expires_at": "2026-08-25T09:00:00Z",
+            "status": "ACTIVE",
+            "user_id": "11111111-1111-4111-8111-111111111111"
+          }
+        ],
+        "properties": {
+          "access_token_expires_at": {
+            "format": "date-time",
+            "title": "Access Token Expires At",
+            "type": "string"
+          },
+          "authenticated_at": {
+            "format": "date-time",
+            "title": "Authenticated At",
+            "type": "string"
+          },
+          "login_id": {
+            "title": "Login Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "refresh_token_expires_at": {
+            "format": "date-time",
+            "title": "Refresh Token Expires At",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/UserStatus"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "login_id",
+          "name",
+          "status",
+          "authenticated_at",
+          "access_token_expires_at",
+          "refresh_token_expires_at"
+        ],
+        "title": "LoginResponse",
+        "type": "object"
+      },
       "SignupRequest": {
         "examples": [
           {
@@ -967,6 +1055,140 @@
           }
         },
         "summary": "이메일 인증번호 재전송",
+        "tags": [
+          "인증"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "auth_login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            },
+            "description": "로그인 성공. access·refresh token은 HttpOnly 쿠키로 전달",
+            "headers": {
+              "Cache-Control": {
+                "description": "인증 응답 캐시 금지",
+                "schema": {
+                  "example": "no-store",
+                  "type": "string"
+                }
+              },
+              "Set-Cookie": {
+                "description": "access token과 refresh token HttpOnly 쿠키",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "AUTH_INVALID_CREDENTIALS",
+                    "fields": [],
+                    "message": "아이디 또는 비밀번호가 올바르지 않습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "아이디 또는 비밀번호 불일치"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "account_suspended": {
+                    "summary": "AUTH_ACCOUNT_SUSPENDED",
+                    "value": {
+                      "error": {
+                        "code": "AUTH_ACCOUNT_SUSPENDED",
+                        "fields": [],
+                        "message": "정지된 계정입니다.",
+                        "request_id": "opaque-request-id"
+                      }
+                    }
+                  },
+                  "email_unverified": {
+                    "summary": "AUTH_EMAIL_UNVERIFIED",
+                    "value": {
+                      "error": {
+                        "code": "AUTH_EMAIL_UNVERIFIED",
+                        "fields": [],
+                        "message": "이메일 인증이 필요합니다.",
+                        "request_id": "opaque-request-id"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "이메일 미인증 또는 정지 계정"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "VALIDATION_FAILED",
+                    "fields": [],
+                    "message": "요청 값을 확인해주세요.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "요청 형식 검증 실패"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 처리 실패"
+          }
+        },
+        "summary": "로그인",
         "tags": [
           "인증"
         ]

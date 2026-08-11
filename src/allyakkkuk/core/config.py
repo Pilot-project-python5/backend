@@ -41,6 +41,10 @@ class Settings(BaseSettings):
     email_verification_secret: SecretStr = SecretStr(
         "local-only-email-verification-secret-change-me"
     )
+    auth_token_secret: SecretStr = SecretStr(
+        "local-only-auth-token-secret-change-before-deployment"
+    )
+    auth_cookie_secure: bool = False
 
     worker_poll_seconds: int = Field(default=60, ge=1, le=3600)
 
@@ -72,6 +76,13 @@ class Settings(BaseSettings):
     def validate_email_verification_secret(cls, value: SecretStr) -> SecretStr:
         if len(value.get_secret_value()) < 32:
             raise ValueError("email_verification_secret은 32자 이상이어야 합니다")
+        return value
+
+    @field_validator("auth_token_secret")
+    @classmethod
+    def validate_auth_token_secret(cls, value: SecretStr) -> SecretStr:
+        if len(value.get_secret_value()) < 32:
+            raise ValueError("auth_token_secret은 32자 이상이어야 합니다")
         return value
 
     @property

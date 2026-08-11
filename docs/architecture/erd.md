@@ -65,6 +65,7 @@ erDiagram
         timestamptz expires_at
         timestamptz revoked_at
         timestamptz last_used_at
+        timestamptz created_at
     }
 ```
 
@@ -89,7 +90,12 @@ erDiagram
 - used_at은 확인 완료, superseded_at은 새 발급에 의한 무효화를 뜻하며 한 행에 두
   값이 동시에 기록될 수 없다. 두 시각은 값이 있으면 created_at보다 빠를 수 없다.
 - 사용자별 최신 발급 조회를 위해 (user_id, created_at) 복합 인덱스를 사용한다.
-- refresh_sessions는 기기·세션별 만료와 폐기를 추적한다.
+- F-1.2에서 refresh_sessions를 실제 테이블로 생성해 기기·세션별 만료와 폐기를
+  추적하며 사용자 삭제 시 함께 삭제한다.
+- token_hash는 고유하고 원문을 저장하지 않는다. expires_at은 created_at 이후,
+  revoked_at과 last_used_at은 값이 있으면 created_at보다 빠를 수 없다.
+- 사용자 세션 이력 조회에 (user_id, created_at), 만료 정리에 expires_at 인덱스를
+  사용한다.
 
 ## 제품 카탈로그와 영양소 기준
 
@@ -362,7 +368,6 @@ erDiagram
 
 ## 미확정 설계 항목
 
-- 액세스·리프레시 토큰 수명과 회전 정책
 - 유통기한 필수 여부
 - 복용 계획과 수량 수정 API 제공 여부
 - 동일 제품의 미소진 재고가 있을 때 재구매 처리

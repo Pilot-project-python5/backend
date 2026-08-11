@@ -4,6 +4,11 @@
 갱신한다. 등록되지 않은 모델은 alembic check에서 발견할 수 없다.
 """
 
-from allyakkkuk.auth.models import EmailVerification, HealthProfile, User
+from allyakkkuk.auth.models import (
+    EmailVerification,
+    HealthProfile,
+    RefreshSession,
+    User,
+)
 
-__all__ = ["EmailVerification", "HealthProfile", "User"]
+__all__ = ["EmailVerification", "HealthProfile", "RefreshSession", "User"]

@@ -174,3 +174,48 @@ class EmailVerification(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False
     )
+
+
+class RefreshSession(Base):
+    __tablename__ = "refresh_sessions"
+    __table_args__ = (
+        UniqueConstraint("token_hash", name="uq_refresh_sessions_token_hash"),
+        CheckConstraint(
+            "expires_at > created_at",
+            name="ck_refresh_sessions_expires_at",
+        ),
+        CheckConstraint(
+            "revoked_at IS NULL OR revoked_at >= created_at",
+            name="ck_refresh_sessions_revoked_at",
+        ),
+        CheckConstraint(
+            "last_used_at IS NULL OR last_used_at >= created_at",
+            name="ck_refresh_sessions_last_used_at",
+        ),
+        Index(
+            "ix_refresh_sessions_user_created_at",
+            "user_id",
+            "created_at",
+        ),
+        Index("ix_refresh_sessions_expires_at", "expires_at"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    user_id: Mapped[UUID] = mapped_column(
+        Uuid,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    token_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    revoked_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    last_used_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
