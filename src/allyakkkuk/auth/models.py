@@ -12,7 +12,9 @@ from sqlalchemy import (
     Date,
     DateTime,
     ForeignKey,
+    Index,
     Numeric,
+    SmallInteger,
     String,
     UniqueConstraint,
     Uuid,
@@ -31,6 +33,10 @@ class UserStatus(StrEnum):
 class Gender(StrEnum):
     MALE = "MALE"
     FEMALE = "FEMALE"
+
+
+class EmailVerificationPurpose(StrEnum):
+    VERIFY_EMAIL = "VERIFY_EMAIL"
 
 
 class User(Base):
@@ -100,5 +106,71 @@ class HealthProfile(Base):
         DateTime(timezone=True), nullable=False
     )
     updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+
+
+class EmailVerification(Base):
+    __tablename__ = "email_verifications"
+    __table_args__ = (
+        CheckConstraint(
+            "purpose IN ('VERIFY_EMAIL')",
+            name="ck_email_verifications_purpose",
+        ),
+        CheckConstraint(
+            "failed_attempts BETWEEN 0 AND 5",
+            name="ck_email_verifications_failed_attempts",
+        ),
+        CheckConstraint(
+            "expires_at > created_at",
+            name="ck_email_verifications_expires_at",
+        ),
+        CheckConstraint(
+            "resend_available_at > created_at",
+            name="ck_email_verifications_resend_available_at",
+        ),
+        CheckConstraint(
+            "used_at IS NULL OR used_at >= created_at",
+            name="ck_email_verifications_used_at",
+        ),
+        CheckConstraint(
+            "superseded_at IS NULL OR superseded_at >= created_at",
+            name="ck_email_verifications_superseded_at",
+        ),
+        CheckConstraint(
+            "NOT (used_at IS NOT NULL AND superseded_at IS NOT NULL)",
+            name="ck_email_verifications_terminal_state",
+        ),
+        Index(
+            "ix_email_verifications_user_created_at",
+            "user_id",
+            "created_at",
+        ),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    user_id: Mapped[UUID] = mapped_column(
+        Uuid,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    purpose: Mapped[str] = mapped_column(String(32), nullable=False)
+    code_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    resend_available_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    failed_attempts: Mapped[int] = mapped_column(
+        SmallInteger, nullable=False, default=0
+    )
+    used_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    superseded_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False
     )

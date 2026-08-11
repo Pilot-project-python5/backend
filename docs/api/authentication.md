@@ -47,12 +47,21 @@
 
 ## 이메일 인증
 
-- 6자리 코드
-- 10분 유효
-- 60초 재전송 대기
-- 최대 5회 실패
-- 인증 전 로그인 불가
-- 코드 원문을 영구 저장하지 않는다
+### F-1.1.3 인증번호 발급·재전송·확인
+
+- POST /api/v1/auth/email-verifications는 가입 응답의 user_id로 인증번호를 발급한다.
+- POST /api/v1/auth/email-verifications/resend는 60초 이후 새 인증번호를 발급한다.
+- POST /api/v1/auth/email-verifications/confirm은 verification_id와 숫자 6자리
+  code를 확인한다.
+- 코드는 10분간 유효하고 expires_at과 같은 시각부터 만료다.
+- 새 코드를 발급하면 이전 미사용 코드는 즉시 무효화되고 실패 횟수는 0으로 시작한다.
+- 잘못된 코드는 최대 5회까지 누적하며 5번째 실패부터 해당 코드를 잠근다.
+- 잠긴 뒤에도 최초 발급 60초가 지나면 새 코드를 요청할 수 있다.
+- 확인 성공 시 users.status를 ACTIVE로 바꾸고 email_verified_at을 기록한다.
+- 코드 원문은 응답·로그·DB에 남기지 않으며 발급 ID와 환경 비밀값을 사용한
+  HMAC-SHA256 해시만 저장한다.
+- 1차 로컬 MVP의 이메일은 Mailpit으로 확인한다. 운영 공개 전 계정·IP 속도 제한과
+  운영 이메일 공급자·재시도 큐를 추가해야 한다.
 
 ## 세션
 

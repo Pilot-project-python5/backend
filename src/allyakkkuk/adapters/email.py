@@ -5,7 +5,7 @@ from __future__ import annotations
 import smtplib
 from email.message import EmailMessage
 
-from allyakkkuk.ports.email import EmailSender, OutboundEmail
+from allyakkkuk.ports.email import EmailDeliveryError, EmailSender, OutboundEmail
 
 
 class SmtpEmailSender(EmailSender):
@@ -30,8 +30,11 @@ class SmtpEmailSender(EmailSender):
         email.set_content(message.text_body)
         if message.html_body is not None:
             email.add_alternative(message.html_body, subtype="html")
-        with smtplib.SMTP(self._host, self._port, timeout=10) as smtp:
-            smtp.send_message(email)
+        try:
+            with smtplib.SMTP(self._host, self._port, timeout=10) as smtp:
+                smtp.send_message(email)
+        except (OSError, smtplib.SMTPException) as exc:
+            raise EmailDeliveryError from exc
 
 
 class FakeEmailSender(EmailSender):

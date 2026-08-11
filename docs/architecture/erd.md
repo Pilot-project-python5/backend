@@ -54,6 +54,8 @@ erDiagram
         timestamptz resend_available_at
         smallint failed_attempts
         timestamptz used_at
+        timestamptz superseded_at
+        timestamptz created_at
     }
 
     REFRESH_SESSIONS {
@@ -78,7 +80,15 @@ erDiagram
 - height_cm은 50~250, weight_kg은 10~500 범위로 DB CHECK를 적용한다.
 - health_profiles.user_id는 PK이자 users.id FK이며 사용자 삭제 시 함께 삭제된다.
 - email_verified_at이 없는 사용자는 로그인할 수 없다.
-- email_verifications는 발급 이력마다 새 행을 만들고 10분 만료, 60초 재전송 대기와 최대 5회 실패를 적용한다.
+- F-1.1.3에서 email_verifications를 실제 테이블로 생성하고 users와 다대일로
+  연결한다. 사용자를 삭제하면 인증 이력도 함께 삭제된다.
+- email_verifications는 발급 이력마다 새 행을 만들고 10분 만료, 60초 재전송
+  대기와 최대 5회 실패를 적용한다.
+- purpose는 VERIFY_EMAIL, failed_attempts는 0~5 범위다. expires_at과
+  resend_available_at은 created_at 이후여야 한다.
+- used_at은 확인 완료, superseded_at은 새 발급에 의한 무효화를 뜻하며 한 행에 두
+  값이 동시에 기록될 수 없다. 두 시각은 값이 있으면 created_at보다 빠를 수 없다.
+- 사용자별 최신 발급 조회를 위해 (user_id, created_at) 복합 인덱스를 사용한다.
 - refresh_sessions는 기기·세션별 만료와 폐기를 추적한다.
 
 ## 제품 카탈로그와 영양소 기준
