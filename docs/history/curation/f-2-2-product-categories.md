@@ -6,7 +6,7 @@ domain: "curation"
 status: "implemented"
 completed_on: "2026-08-12"
 feature_packet: "docs/features/curation/f-2-2-product-categories"
-pull_request: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/9"
 commit: null
 ---
 
