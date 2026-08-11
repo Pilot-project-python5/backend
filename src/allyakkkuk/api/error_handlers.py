@@ -20,7 +20,7 @@ def _request_id(request: Request) -> str:
     return str(getattr(request.state, "request_id", "unknown"))
 
 
-def _response(
+def app_error_response(
     request: Request,
     *,
     status_code: int,
@@ -42,7 +42,7 @@ def _response(
 def register_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(AppError)
     async def handle_app_error(request: Request, exc: AppError) -> JSONResponse:
-        return _response(
+        return app_error_response(
             request,
             status_code=exc.status_code,
             code=exc.code,
@@ -65,7 +65,7 @@ def register_error_handlers(app: FastAPI) -> None:
             )
             for error in exc.errors()
         ]
-        return _response(
+        return app_error_response(
             request,
             status_code=422,
             code="VALIDATION_FAILED",
@@ -78,13 +78,13 @@ def register_error_handlers(app: FastAPI) -> None:
         request: Request, exc: StarletteHTTPException
     ) -> JSONResponse:
         if exc.status_code == 404:
-            return _response(
+            return app_error_response(
                 request,
                 status_code=404,
                 code="RESOURCE_NOT_FOUND",
                 message="요청한 리소스를 찾을 수 없습니다.",
             )
-        return _response(
+        return app_error_response(
             request,
             status_code=exc.status_code,
             code="HTTP_ERROR",
@@ -95,7 +95,7 @@ def register_error_handlers(app: FastAPI) -> None:
     async def handle_unexpected_error(request: Request, exc: Exception) -> JSONResponse:
         context: dict[str, Any] = {"request_id": _request_id(request)}
         logger.exception("예상하지 못한 요청 처리 오류", extra=context)
-        return _response(
+        return app_error_response(
             request,
             status_code=500,
             code="INTERNAL_SERVER_ERROR",

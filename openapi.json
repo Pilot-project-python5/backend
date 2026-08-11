@@ -183,6 +183,19 @@
         "title": "Gender",
         "type": "string"
       },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
       "HealthResponse": {
         "properties": {
           "service": {
@@ -317,6 +330,39 @@
           "refresh_token_expires_at"
         ],
         "title": "LoginResponse",
+        "type": "object"
+      },
+      "SessionRefreshResponse": {
+        "examples": [
+          {
+            "access_token_expires_at": "2026-08-11T09:15:00Z",
+            "authenticated_at": "2026-08-11T09:00:00Z",
+            "refresh_token_expires_at": "2026-08-25T09:00:00Z"
+          }
+        ],
+        "properties": {
+          "access_token_expires_at": {
+            "format": "date-time",
+            "title": "Access Token Expires At",
+            "type": "string"
+          },
+          "authenticated_at": {
+            "format": "date-time",
+            "title": "Authenticated At",
+            "type": "string"
+          },
+          "refresh_token_expires_at": {
+            "format": "date-time",
+            "title": "Refresh Token Expires At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "authenticated_at",
+          "access_token_expires_at",
+          "refresh_token_expires_at"
+        ],
+        "title": "SessionRefreshResponse",
         "type": "object"
       },
       "SignupRequest": {
@@ -533,6 +579,46 @@
         ],
         "title": "UserStatus",
         "type": "string"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
       }
     }
   },
@@ -1260,6 +1346,196 @@
           }
         },
         "summary": "로그인 아이디 사용 가능 여부 확인",
+        "tags": [
+          "인증"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "auth_logout",
+        "parameters": [
+          {
+            "in": "cookie",
+            "name": "allyakkkuk_refresh_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Allyakkkuk Refresh Token"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "현재 세션 폐기 또는 이미 로그아웃 상태",
+            "headers": {
+              "Cache-Control": {
+                "description": "인증 응답 캐시 금지",
+                "schema": {
+                  "example": "no-store",
+                  "type": "string"
+                }
+              },
+              "Set-Cookie": {
+                "description": "회전 또는 삭제되는 access·refresh HttpOnly 쿠키",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 처리 실패"
+          }
+        },
+        "summary": "현재 기기 로그아웃",
+        "tags": [
+          "인증"
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "operationId": "auth_refresh_session",
+        "parameters": [
+          {
+            "in": "cookie",
+            "name": "allyakkkuk_refresh_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Allyakkkuk Refresh Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionRefreshResponse"
+                }
+              }
+            },
+            "description": "현재 refresh 세션 회전 성공",
+            "headers": {
+              "Cache-Control": {
+                "description": "인증 응답 캐시 금지",
+                "schema": {
+                  "example": "no-store",
+                  "type": "string"
+                }
+              },
+              "Set-Cookie": {
+                "description": "회전 또는 삭제되는 access·refresh HttpOnly 쿠키",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "AUTH_SESSION_INVALID",
+                    "fields": [],
+                    "message": "유효하지 않은 인증 세션입니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "refresh 세션 무효",
+            "headers": {
+              "Cache-Control": {
+                "description": "인증 응답 캐시 금지",
+                "schema": {
+                  "example": "no-store",
+                  "type": "string"
+                }
+              },
+              "Set-Cookie": {
+                "description": "회전 또는 삭제되는 access·refresh HttpOnly 쿠키",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 처리 실패"
+          }
+        },
+        "summary": "인증 세션 갱신",
         "tags": [
           "인증"
         ]
