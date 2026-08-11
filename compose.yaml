@@ -10,6 +10,7 @@ x-app-environment: &app-environment
   MAIL_PORT: ${MAIL_PORT:-1025}
   MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-no-reply@allyakkkuk.local}
   MAIL_FROM_NAME: ${MAIL_FROM_NAME:-알약꾹}
+  EMAIL_VERIFICATION_SECRET: ${EMAIL_VERIFICATION_SECRET:-local-only-email-verification-secret-change-me}
   WORKER_POLL_SECONDS: ${WORKER_POLL_SECONDS:-60}
 
 x-app-service: &app-service

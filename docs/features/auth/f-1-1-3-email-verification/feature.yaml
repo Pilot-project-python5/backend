@@ -1,0 +1,23 @@
+id: "F-1.1.3"
+title: "이메일 인증"
+domain: "auth"
+requirement: "FR-1"
+phase: "1"
+priority: "P0"
+status: "implemented"
+owner: "backend"
+history_path: "docs/history/auth/f-1-1-3-email-verification.md"
+source:
+  requirement_path: "docs/product/requirements.md"
+  external_url: null
+  reviewed_on: "2026-08-11"
+dependencies:
+  - "F-1.1"
+api_changes:
+  - "POST /api/v1/auth/email-verifications"
+  - "POST /api/v1/auth/email-verifications/resend"
+  - "POST /api/v1/auth/email-verifications/confirm"
+data_changes:
+  - "email_verifications 테이블 추가"
+  - "인증 성공 시 users.status와 users.email_verified_at 갱신"
+open_questions: []

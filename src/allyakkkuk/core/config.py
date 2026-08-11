@@ -6,7 +6,7 @@ from functools import lru_cache
 from typing import Literal
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import Field, field_validator
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     mail_port: int = Field(default=1025, ge=1, le=65535)
     mail_from_address: str = "no-reply@allyakkkuk.local"
     mail_from_name: str = "알약꾹"
+    email_verification_secret: SecretStr = SecretStr(
+        "local-only-email-verification-secret-change-me"
+    )
 
     worker_poll_seconds: int = Field(default=60, ge=1, le=3600)
 
@@ -62,6 +65,13 @@ class Settings(BaseSettings):
             ZoneInfo(value)
         except ZoneInfoNotFoundError as exc:
             raise ValueError(f"알 수 없는 IANA 시간대입니다: {value}") from exc
+        return value
+
+    @field_validator("email_verification_secret")
+    @classmethod
+    def validate_email_verification_secret(cls, value: SecretStr) -> SecretStr:
+        if len(value.get_secret_value()) < 32:
+            raise ValueError("email_verification_secret은 32자 이상이어야 합니다")
         return value
 
     @property

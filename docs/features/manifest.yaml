@@ -14,7 +14,7 @@ features:
   - { id: "F-1.1", title: "회원가입", slug: "signup", requirement: "FR-1", domain: "auth", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-1.1.1", title: "아이디 중복 확인", slug: "login-id-availability", requirement: "FR-1", domain: "auth", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-1.1.2", title: "가입 정보 검증", slug: "signup-validation", requirement: "FR-1", domain: "auth", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
-  - { id: "F-1.1.3", title: "이메일 인증", slug: "email-verification", requirement: "FR-1", domain: "auth", phase: 1, priority: "P0", owner: "backend", status: "planned" }
+  - { id: "F-1.1.3", title: "이메일 인증", slug: "email-verification", requirement: "FR-1", domain: "auth", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-1.2", title: "로그인", slug: "login", requirement: "FR-1", domain: "auth", phase: 1, priority: "P0", owner: "backend", status: "planned" }
   - { id: "F-1.3", title: "로그아웃 및 인증 유지", slug: "logout-session", requirement: "FR-1", domain: "auth", phase: 1, priority: "P0", owner: "backend", status: "planned" }
   - { id: "F-1.4", title: "세션 상태 확인", slug: "session-status", requirement: "FR-1", domain: "auth", phase: 1, priority: "P0", owner: "backend", status: "planned" }
