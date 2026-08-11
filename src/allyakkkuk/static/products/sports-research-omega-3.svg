@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <rect width="1200" height="720" fill="#edf8ff"/>
+  <path d="M0 500c180-80 300 80 480 0s300 80 480 0 240 20 240 20v200H0z" fill="#8ed8ff"/>
+  <g transform="translate(600 320) rotate(-18)">
+    <rect x="-115" y="-190" width="230" height="380" rx="45" fill="#8b4a24"/>
+    <rect x="-95" y="-100" width="190" height="190" rx="15" fill="#ffffff"/>
+    <text x="0" y="-28" text-anchor="middle" font-family="sans-serif" font-size="30" fill="#1764b0">OMEGA-3</text>
+    <text x="0" y="25" text-anchor="middle" font-family="sans-serif" font-size="22" fill="#17233c">TRIPLE</text>
+    <text x="0" y="58" text-anchor="middle" font-family="sans-serif" font-size="22" fill="#17233c">STRENGTH</text>
+  </g>
+  <text x="600" y="650" text-anchor="middle" font-family="sans-serif" font-size="34" fill="#17233c">Sports Research</text>
+</svg>

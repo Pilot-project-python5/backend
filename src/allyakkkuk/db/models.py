@@ -10,12 +10,18 @@ from allyakkkuk.auth.models import (
     RefreshSession,
     User,
 )
-from allyakkkuk.curation.models import ProductCategory
+from allyakkkuk.curation.models import (
+    Product,
+    ProductCategory,
+    ProductCategoryMapping,
+)
 
 __all__ = [
     "EmailVerification",
     "HealthProfile",
+    "Product",
     "ProductCategory",
+    "ProductCategoryMapping",
     "RefreshSession",
     "User",
 ]
