@@ -7,6 +7,8 @@ from typing import Protocol
 
 from sqlalchemy import Connection, Engine, text
 
+from allyakkkuk.curation.seeds import ProductCategorySeedSet
+
 logger = logging.getLogger(__name__)
 
 
@@ -16,7 +18,7 @@ class SeedSet(Protocol):
     def apply(self, connection: Connection) -> int: ...
 
 
-REGISTERED_SEEDS: tuple[SeedSet, ...] = ()
+REGISTERED_SEEDS: tuple[SeedSet, ...] = (ProductCategorySeedSet(),)
 
 
 def run_registered_seeds(

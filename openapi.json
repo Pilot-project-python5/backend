@@ -457,6 +457,62 @@
         "title": "LoginResponse",
         "type": "object"
       },
+      "ProductCategoryListResponse": {
+        "examples": [
+          {
+            "items": [
+              {
+                "name": "전체",
+                "slug": "all"
+              },
+              {
+                "name": "비타민",
+                "slug": "vitamin"
+              },
+              {
+                "name": "단백질",
+                "slug": "protein"
+              },
+              {
+                "name": "오메가3",
+                "slug": "omega-3"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ProductCategoryResponseItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "ProductCategoryListResponse",
+        "type": "object"
+      },
+      "ProductCategoryResponseItem": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name"
+        ],
+        "title": "ProductCategoryResponseItem",
+        "type": "object"
+      },
       "SessionRefreshResponse": {
         "examples": [
           {
@@ -1910,6 +1966,45 @@
         "summary": "가입 정보 사전 검증",
         "tags": [
           "인증"
+        ]
+      }
+    },
+    "/api/v1/curation/categories": {
+      "get": {
+        "operationId": "curation_list_product_categories",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductCategoryListResponse"
+                }
+              }
+            },
+            "description": "가상 전체와 활성 제품 카테고리 목록"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 조회 실패"
+          }
+        },
+        "summary": "활성 제품 카테고리 조회",
+        "tags": [
+          "큐레이션"
         ]
       }
     },
