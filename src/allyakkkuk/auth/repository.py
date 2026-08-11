@@ -1,4 +1,4 @@
-"""회원가입과 로그인 아이디 조회 저장소 포트·PostgreSQL 구현."""
+"""회원가입과 가입 정보 사전 검증 저장소 포트·PostgreSQL 구현."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from decimal import Decimal
 from typing import Protocol
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -28,6 +28,10 @@ class SignupPersistenceError(Exception):
 
 
 class LoginIdAvailabilityPersistenceError(Exception):
+    pass
+
+
+class SignupValidationPersistenceError(Exception):
     pass
 
 
@@ -55,12 +59,26 @@ class SignupRecord:
     created_at: datetime
 
 
+@dataclass(frozen=True, slots=True)
+class SignupValidationConflicts:
+    login_id_exists: bool
+    email_exists: bool
+
+
 class SignupRepository(Protocol):
     def create(self, data: SignupData) -> SignupRecord: ...
 
 
 class LoginIdAvailabilityRepository(Protocol):
     def exists(self, normalized_login_id: str) -> bool: ...
+
+
+class SignupValidationRepository(Protocol):
+    def find_conflicts(
+        self,
+        normalized_login_id: str,
+        normalized_email: str,
+    ) -> SignupValidationConflicts: ...
 
 
 class SQLAlchemySignupRepository:
@@ -131,6 +149,41 @@ class SQLAlchemyLoginIdAvailabilityRepository:
             return self._session.scalar(statement) is not None
         except SQLAlchemyError as exc:
             raise LoginIdAvailabilityPersistenceError from exc
+
+
+class SQLAlchemySignupValidationRepository:
+    def __init__(self, session: Session) -> None:
+        self._session = session
+
+    def find_conflicts(
+        self,
+        normalized_login_id: str,
+        normalized_email: str,
+    ) -> SignupValidationConflicts:
+        statement = select(
+            User.normalized_login_id,
+            User.normalized_email,
+        ).where(
+            or_(
+                User.normalized_login_id == normalized_login_id,
+                User.normalized_email == normalized_email,
+            )
+        )
+        try:
+            rows = self._session.execute(statement)
+            login_id_exists = False
+            email_exists = False
+            for row_login_id, row_email in rows:
+                login_id_exists = login_id_exists or (
+                    row_login_id == normalized_login_id
+                )
+                email_exists = email_exists or row_email == normalized_email
+            return SignupValidationConflicts(
+                login_id_exists=login_id_exists,
+                email_exists=email_exists,
+            )
+        except SQLAlchemyError as exc:
+            raise SignupValidationPersistenceError from exc
 
 
 def _constraint_name(exc: IntegrityError) -> str | None:

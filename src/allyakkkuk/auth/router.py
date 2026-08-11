@@ -1,4 +1,4 @@
-"""회원가입과 로그인 아이디 조회 API 라우터."""
+"""회원가입과 가입 정보 사전 검증 API 라우터."""
 
 from __future__ import annotations
 
@@ -12,17 +12,22 @@ from allyakkkuk.auth.passwords import Argon2PasswordHasher
 from allyakkkuk.auth.repository import (
     SQLAlchemyLoginIdAvailabilityRepository,
     SQLAlchemySignupRepository,
+    SQLAlchemySignupValidationRepository,
 )
 from allyakkkuk.auth.schemas import (
     LoginIdAvailabilityQuery,
     LoginIdAvailabilityResponse,
     SignupRequest,
     SignupResponse,
+    SignupValidationIssue,
+    SignupValidationResponse,
 )
 from allyakkkuk.auth.service import (
     LoginIdAvailabilityService,
     SignupCommand,
     SignupService,
+    SignupValidationCommand,
+    SignupValidationService,
 )
 from allyakkkuk.db.session import get_db_session
 from allyakkkuk.ports.clock import SystemClock
@@ -47,6 +52,15 @@ def get_login_id_availability_service(
 ) -> LoginIdAvailabilityService:
     return LoginIdAvailabilityService(
         repository=SQLAlchemyLoginIdAvailabilityRepository(session)
+    )
+
+
+def get_signup_validation_service(
+    session: Annotated[Session, Depends(get_db_session)],
+) -> SignupValidationService:
+    return SignupValidationService(
+        repository=SQLAlchemySignupValidationRepository(session),
+        clock=_clock,
     )
 
 
@@ -105,6 +119,63 @@ def check_login_id_availability(
     return LoginIdAvailabilityResponse(
         login_id=result.login_id,
         available=result.available,
+    )
+
+
+@router.post(
+    "/signup/validation",
+    response_model=SignupValidationResponse,
+    responses={
+        422: {
+            "model": ErrorResponse,
+            "description": "가입 요청 형식 검증 실패",
+            "content": {
+                "application/json": {
+                    "example": _error_example(
+                        "VALIDATION_FAILED", "요청 값을 확인해주세요."
+                    )["value"]
+                }
+            },
+        },
+        503: {
+            "model": ErrorResponse,
+            "description": "PostgreSQL 중복 조회 실패",
+            "content": {
+                "application/json": {
+                    "example": _error_example(
+                        "SERVICE_UNAVAILABLE", "서비스가 아직 준비되지 않았습니다."
+                    )["value"]
+                }
+            },
+        },
+    },
+    summary="가입 정보 사전 검증",
+    operation_id="auth_validate_signup",
+)
+def validate_signup(
+    payload: SignupRequest,
+    service: Annotated[
+        SignupValidationService,
+        Depends(get_signup_validation_service),
+    ],
+) -> SignupValidationResponse:
+    result = service.validate(
+        SignupValidationCommand(
+            login_id=payload.login_id,
+            email=str(payload.email),
+            birth_date=payload.birth_date,
+        )
+    )
+    return SignupValidationResponse(
+        valid=result.valid,
+        issues=[
+            SignupValidationIssue(
+                field=issue.field,
+                code=issue.code,
+                message=issue.message,
+            )
+            for issue in result.issues
+        ],
     )
 
 

@@ -1,4 +1,4 @@
-"""회원가입과 로그인 아이디 조회 HTTP 스키마."""
+"""회원가입과 가입 정보 사전 검증 HTTP 스키마."""
 
 from __future__ import annotations
 
@@ -118,6 +118,34 @@ class SignupResponse(BaseModel):
     status: UserStatus
     email_verification_required: bool = True
     created_at: datetime
+
+
+class SignupValidationIssue(BaseModel):
+    field: str
+    code: str
+    message: str
+
+
+class SignupValidationResponse(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={
+            "examples": [
+                {
+                    "valid": False,
+                    "issues": [
+                        {
+                            "field": "login_id",
+                            "code": "AUTH_LOGIN_ID_UNAVAILABLE",
+                            "message": "사용할 수 없는 아이디입니다.",
+                        }
+                    ],
+                }
+            ]
+        }
+    )
+
+    valid: bool
+    issues: list[SignupValidationIssue] = Field(default_factory=list)
 
 
 class LoginIdAvailabilityQuery(BaseModel):

@@ -1,4 +1,4 @@
-"""회원가입과 로그인 아이디 조회 애플리케이션 서비스."""
+"""회원가입과 가입 정보 사전 검증 애플리케이션 서비스."""
 
 from __future__ import annotations
 
@@ -17,6 +17,8 @@ from allyakkkuk.auth.repository import (
     SignupData,
     SignupPersistenceError,
     SignupRepository,
+    SignupValidationPersistenceError,
+    SignupValidationRepository,
 )
 from allyakkkuk.core.errors import AppError, ErrorFieldData
 from allyakkkuk.ports.clock import Clock
@@ -47,6 +49,80 @@ class SignupResult:
 class LoginIdAvailabilityResult:
     login_id: str
     available: bool
+
+
+@dataclass(frozen=True, slots=True)
+class SignupValidationCommand:
+    login_id: str
+    email: str
+    birth_date: date
+
+
+@dataclass(frozen=True, slots=True)
+class SignupValidationIssueResult:
+    field: str
+    code: str
+    message: str
+
+
+@dataclass(frozen=True, slots=True)
+class SignupValidationResult:
+    valid: bool
+    issues: tuple[SignupValidationIssueResult, ...]
+
+
+class SignupValidationService:
+    def __init__(
+        self,
+        repository: SignupValidationRepository,
+        clock: Clock,
+    ) -> None:
+        self._repository = repository
+        self._clock = clock
+
+    def validate(self, command: SignupValidationCommand) -> SignupValidationResult:
+        try:
+            conflicts = self._repository.find_conflicts(
+                normalize_login_id(command.login_id),
+                normalize_email(command.email),
+            )
+        except SignupValidationPersistenceError as exc:
+            raise AppError(
+                status_code=503,
+                code="SERVICE_UNAVAILABLE",
+                message="서비스가 아직 준비되지 않았습니다.",
+            ) from exc
+
+        issues: list[SignupValidationIssueResult] = []
+        if conflicts.login_id_exists:
+            issues.append(
+                SignupValidationIssueResult(
+                    field="login_id",
+                    code="AUTH_LOGIN_ID_UNAVAILABLE",
+                    message="사용할 수 없는 아이디입니다.",
+                )
+            )
+        if conflicts.email_exists:
+            issues.append(
+                SignupValidationIssueResult(
+                    field="email",
+                    code="AUTH_EMAIL_UNAVAILABLE",
+                    message="사용할 수 없는 이메일입니다.",
+                )
+            )
+        if command.birth_date > self._clock.now().date():
+            issues.append(
+                SignupValidationIssueResult(
+                    field="birth_date",
+                    code="birth_date_future",
+                    message="생년월일은 미래일 수 없습니다.",
+                )
+            )
+
+        return SignupValidationResult(
+            valid=not issues,
+            issues=tuple(issues),
+        )
 
 
 class LoginIdAvailabilityService:
