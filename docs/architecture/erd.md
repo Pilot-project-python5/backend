@@ -96,6 +96,9 @@ erDiagram
   revoked_at과 last_used_at은 값이 있으면 created_at보다 빠를 수 없다.
 - 사용자 세션 이력 조회에 (user_id, created_at), 만료 정리에 expires_at 인덱스를
   사용한다.
+- F-1.3 refresh 성공은 expires_at을 연장하지 않고 token_hash와 last_used_at만
+  갱신한다. 로그아웃·이전 토큰 재사용·비활성 계정은 revoked_at을 기록하며 행을
+  물리 삭제하지 않는다. 이 상태 전이는 기존 컬럼을 사용하므로 ERD 구조는 바뀌지 않는다.
 
 ## 제품 카탈로그와 영양소 기준
 

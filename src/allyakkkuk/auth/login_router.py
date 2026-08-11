@@ -2,28 +2,25 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
 
 from allyakkkuk.api.schemas import ErrorResponse
+from allyakkkuk.auth.cookies import (
+    SessionCookiePolicy,
+    set_auth_cookies,
+    set_no_store_headers,
+)
 from allyakkkuk.auth.login_repository import SQLAlchemyLoginRepository
 from allyakkkuk.auth.login_schemas import LoginRequest, LoginResponse, reveal_password
 from allyakkkuk.auth.login_service import LoginCommand, LoginService
 from allyakkkuk.auth.passwords import Argon2PasswordHasher
-from allyakkkuk.auth.tokens import (
-    ACCESS_TOKEN_TTL,
-    REFRESH_TOKEN_TTL,
-    JwtSessionTokenIssuer,
-)
+from allyakkkuk.auth.tokens import JwtSessionTokenIssuer
 from allyakkkuk.core.config import get_settings
 from allyakkkuk.db.session import get_db_session
 from allyakkkuk.ports.clock import SystemClock
-
-ACCESS_COOKIE_NAME = "allyakkkuk_access_token"
-REFRESH_COOKIE_NAME = "allyakkkuk_refresh_token"
 
 router = APIRouter(prefix="/auth", tags=["인증"])
 _settings = get_settings()
@@ -33,16 +30,11 @@ _token_issuer = JwtSessionTokenIssuer(_settings.auth_token_secret.get_secret_val
 _clock = SystemClock()
 
 
-@dataclass(frozen=True, slots=True)
-class LoginCookiePolicy:
-    secure: bool
-    same_site: Literal["lax", "strict", "none"] = "lax"
-    access_path: str = "/api/v1"
-    refresh_path: str = "/api/v1/auth"
+LoginCookiePolicy = SessionCookiePolicy
 
 
 def get_login_cookie_policy() -> LoginCookiePolicy:
-    return LoginCookiePolicy(secure=_settings.auth_cookie_secure)
+    return SessionCookiePolicy(secure=_settings.auth_cookie_secure)
 
 
 def get_login_service(
@@ -163,27 +155,15 @@ def login(
             password=reveal_password(payload.password),
         )
     )
-    response.headers["Cache-Control"] = "no-store"
-    response.headers["Pragma"] = "no-cache"
-    response.set_cookie(
-        key=ACCESS_COOKIE_NAME,
-        value=result.access_token,
-        max_age=int(ACCESS_TOKEN_TTL.total_seconds()),
-        expires=result.access_token_expires_at,
-        path=cookie_policy.access_path,
-        secure=cookie_policy.secure,
-        httponly=True,
-        samesite=cookie_policy.same_site,
-    )
-    response.set_cookie(
-        key=REFRESH_COOKIE_NAME,
-        value=result.refresh_token,
-        max_age=int(REFRESH_TOKEN_TTL.total_seconds()),
-        expires=result.refresh_token_expires_at,
-        path=cookie_policy.refresh_path,
-        secure=cookie_policy.secure,
-        httponly=True,
-        samesite=cookie_policy.same_site,
+    set_no_store_headers(response)
+    set_auth_cookies(
+        response,
+        access_token=result.access_token,
+        refresh_token=result.refresh_token,
+        authenticated_at=result.authenticated_at,
+        access_token_expires_at=result.access_token_expires_at,
+        refresh_token_expires_at=result.refresh_token_expires_at,
+        policy=cookie_policy,
     )
     return LoginResponse(
         user_id=result.user_id,

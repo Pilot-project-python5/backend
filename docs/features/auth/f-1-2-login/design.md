@@ -21,8 +21,8 @@
 - 액세스 JWT는 HS256과 AUTH_TOKEN_SECRET을 사용하며 iss=allyakkkuk,
   aud=allyakkkuk-api, sub=user UUID, sid=refresh session UUID, type=access,
   jti·iat·exp를 포함한다.
-- 리프레시 원문은 secrets.token_urlsafe(48)로 만들고 session UUID와 함께
-  HMAC-SHA256 해시한다.
+- 리프레시 secret은 secrets.token_urlsafe(48)로 만들고 session UUID와 함께
+  HMAC-SHA256 해시한다. F-1.3부터 원문은 selector·secret 형식으로 조합한다.
 - 두 토큰은 응답 모델·오류·로그·DB 원문에 포함하지 않는다.
 
 ## 데이터 설계

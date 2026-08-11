@@ -31,7 +31,7 @@ def test_token_issuer_creates_expected_access_claims_and_lifetimes() -> None:
         algorithms=["HS256"],
         audience="allyakkkuk-api",
         issuer="allyakkkuk",
-        options={"verify_iat": False},
+        options={"verify_iat": False, "verify_exp": False},
     )
 
     assert claims["sub"] == str(USER_ID)

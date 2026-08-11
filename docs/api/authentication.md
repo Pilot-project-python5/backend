@@ -85,7 +85,28 @@
 - 프론트엔드와 API가 교차 사이트로 분리되면 SameSite=None+Secure와 별도 CSRF
   방어를 함께 설계해야 한다.
 
+### F-1.3 로그아웃 및 인증 유지
+
+- POST /api/v1/auth/refresh는 요청 본문 없이 refresh 쿠키를 회전한다.
+- refresh 원문은 `session UUID.secret` 형식이며 64자 이상 secret 원문은 저장하지
+  않는다. session UUID와 secret을 AUTH_TOKEN_SECRET으로 HMAC-SHA256한 값만 저장한다.
+- 성공 시 같은 refresh_sessions 행의 token_hash·last_used_at을 갱신하고 새 access·
+  refresh 쿠키와 두 만료 시각을 200으로 반환한다.
+- access는 갱신 시점부터 15분이다. refresh 만료는 최초 로그인부터 14일로 고정하며
+  쿠키 Max-Age는 남은 초로 설정한다.
+- 회전된 이전 refresh token을 다시 사용하면 해당 세션을 폐기한다. 클라이언트는 같은
+  세션의 refresh 요청을 직렬화해야 한다.
+- 누락·형식 오류·미등록·만료·폐기·불일치·비활성 계정은 같은
+  401 AUTH_SESSION_INVALID이며 인증 쿠키를 삭제한다.
+- POST /api/v1/auth/logout은 일치하는 현재 기기 세션만 폐기하고 두 쿠키를 삭제한다.
+  세션이 없거나 이미 무효해도 204인 멱등 API다.
+- DB 처리 실패는 503이며 기존 쿠키를 변경하지 않는다.
+- F-1.2 형식으로 이미 발급된 로컬 refresh token은 selector가 없어 한 번 재로그인이
+  필요하다.
+- 현재 사용자 확인과 보호 API access JWT 검증은 F-1.4 범위다.
+
 ## Swagger
 
-Swagger에서 로그인 API를 실행한 뒤 동일 출처 요청에서 인증 쿠키 흐름을 검증할 수
-있어야 한다. 로컬 프론트엔드 출처와 자격증명 전달 정책은 환경설정으로 관리한다.
+Swagger에서 로그인·refresh·logout API를 실행한 뒤 동일 출처 요청에서 인증 쿠키
+흐름을 검증할 수 있어야 한다. 로컬 프론트엔드 출처와 자격증명 전달 정책은
+환경설정으로 관리한다.

@@ -22,8 +22,9 @@ ACTIVE 사용자로서, 자격 증명을 제출해 토큰 원문이 응답 본�
 6. ACTIVE이면서 email_verified_at이 있는 사용자만 로그인할 수 있다.
 7. 액세스 토큰은 HS256 JWT이며 15분 동안 유효하다. issuer, audience, subject,
    session ID, token type, issued-at, expiration과 JWT ID를 포함한다.
-8. 리프레시 토큰은 48바이트 이상의 안전한 난수 기반 불투명 토큰이며 14일 동안
-   유효하다. 원문 대신 서버 비밀값 기반 HMAC-SHA256 해시만 DB에 저장한다.
+8. 리프레시 토큰은 48바이트 안전 난수 secret을 포함한 불투명 토큰이며 14일 동안
+   유효하다. 원문 대신 서버 비밀값 기반 HMAC-SHA256 해시만 DB에 저장한다. F-1.3부터
+   세션 조회와 회전을 위해 `session UUID.secret` 원문 형식을 사용한다.
 9. 로그인 성공마다 새 refresh_sessions 행을 만들어 기기별 다중 로그인을 허용한다.
 10. 액세스와 리프레시 토큰은 응답 본문에 포함하지 않고 HttpOnly 쿠키로만 전달한다.
 11. 액세스 쿠키 경로는 /api/v1, 리프레시 쿠키 경로는 /api/v1/auth다. 두 쿠키 모두
