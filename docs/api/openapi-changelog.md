@@ -4,6 +4,7 @@
 
 | 날짜 | 기능 ID | 변경 | 호환성 | 마이그레이션 참고 사항 |
 | --- | --- | --- | --- | --- |
+| 2026-08-12 | F-2.2 | GET /api/v1/curation/categories 공개 목록과 200/503 계약 추가 | 신규 공개 읽기 API로 기존 호출과 호환 | product_categories 마이그레이션 20260812_0006과 기준 시드 필요 |
 | 2026-08-11 | F-1.4 | GET /api/v1/auth/me, AccessCookieAuth와 200/401/503 계약 추가 | 신규 API와 재사용 인증 의존성으로 기존 호출과 호환 | users·health_profiles·refresh_sessions 읽기 전용, 마이그레이션 없음 |
 | 2026-08-11 | F-1.3 | POST /api/v1/auth/refresh·logout, 회전·쿠키 삭제와 200/204/401/503 계약 추가 | 신규 API이며 F-1.2 로컬 refresh 원문 형식은 재로그인 필요 | 기존 refresh_sessions 상태 컬럼 재사용, 마이그레이션 없음 |
 | 2026-08-11 | F-1.2 | POST /api/v1/auth/login, HttpOnly 세션 쿠키와 200/401/403/422/503 계약 추가 | 신규 API로 기존 호출과 호환 | refresh_sessions 마이그레이션 20260811_0005 필요 |

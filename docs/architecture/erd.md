@@ -207,6 +207,12 @@ erDiagram
 ### 책임과 제약
 
 - products는 영양제와 의약품의 공통 카탈로그이며 product_type으로 구분한다.
+- F-2.2에서 product_categories를 실제 테이블로 구현한다. slug는 소문자 영숫자와
+  내부 하이픈 형식의 고유 자연 키이고, name은 trim 기준 1~50자, sort_order는 0
+  이상이다. 활성 목록 조회는 (is_active, sort_order, slug) 인덱스를 사용한다.
+- `all`·`전체`는 분류 행이 아닌 필터 미적용 가상 응답이므로 product_categories와
+  향후 product_category_mappings에 저장하지 않는다.
+- 논리 ERD의 products·product_category_mappings 관계는 F-2.3에서 실제 구현한다.
 - 제품과 카테고리는 다대다 관계를 기본안으로 둔다.
 - product_nutrients는 영양제에만 허용하며 amount_per_unit은 0보다 커야 한다.
 - 의약품의 효능, 복용법, 주의와 보관 정보는 medication_details에 저장한다.

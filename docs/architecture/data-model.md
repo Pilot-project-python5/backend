@@ -16,7 +16,8 @@
 
 ## 카탈로그
 
-- ProductCategory(제품 카테고리)
+- ProductCategory(제품 카테고리): 고유 slug, 표시 이름, 활성 여부, 정렬 순서. F-2.2에서
+  실제 테이블과 기준 시드를 추가했으며 `all`·`전체`는 DB 행이 아닌 API 가상 항목이다.
 - Product(제품): 영양제 또는 의약품 유형, 브랜드, 이름, 이미지, 단위 형태, 총 용량, 게시 상태
 - Nutrient(영양성분)
 - ProductNutrient(제품 영양성분): 제품의 단위당 성분 함량
