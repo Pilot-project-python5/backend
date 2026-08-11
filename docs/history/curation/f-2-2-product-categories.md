@@ -77,8 +77,8 @@ PostgreSQL 시드로 반복 실행해도 같은 상태로 수렴한다.
 | 검증 항목 | 실행 명령 또는 근거 | 결과 |
 | --- | --- | --- |
 | 인수 조건 | AC-F-2.2-001~006을 단위·통합·계약·인수 테스트에 연결 | 6개 조건 모두 자동화 |
-| 대상 기능 검사 | `make feature-check FEATURE=F-2.2` | 10개 통과 |
-| 전체 로컬 검증 | `make verify` | 210개 통과, 커버리지 94.79% |
+| 대상 기능 검사 | `make feature-check FEATURE=F-2.2` | 11개 통과 |
+| 전체 로컬 검증 | `make verify` | 211개 통과, 커버리지 94.89% |
 | 정적 검사 | `ruff format --check`, `ruff check`, `mypy` | 모두 통과 |
 | 데이터·ERD | 0006 downgrade·upgrade, ERD validator, `alembic check`, 시드 2회 | 모두 통과, 스키마 차이 없음 |
 | API 계약 | `make openapi` 뒤 전체 검증의 OpenAPI 검사 | `openapi.json` 일치 |

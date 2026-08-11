@@ -65,6 +65,6 @@ CHECK, NOT NULL과 (is_active, sort_order, slug) 인덱스가 일치해야 한�
 | AC-F-2.2-001 | tests/acceptance/curation/test_product_categories.py | 공개 목록·정렬 |
 | AC-F-2.2-002 | tests/integration/curation/test_product_category_repository.py | 비활성·동순위 |
 | AC-F-2.2-003 | tests/unit/curation/test_product_category_service.py | all 단독 응답 |
-| AC-F-2.2-004 | tests/unit/curation/test_product_category_service.py, tests/contract/curation/test_product_category_contract.py | 통합 503 |
+| AC-F-2.2-004 | tests/unit/curation/test_product_category_service.py, tests/unit/curation/test_product_category_repository_failures.py, tests/contract/curation/test_product_category_contract.py | 실행·결과 읽기 실패의 통합 503 |
 | AC-F-2.2-005 | tests/integration/curation/test_product_category_seed.py | 결정적 멱등 upsert |
 | AC-F-2.2-006 | tests/contract/curation/test_product_category_contract.py | 공개 OpenAPI 계약 |

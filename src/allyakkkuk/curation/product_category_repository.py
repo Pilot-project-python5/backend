@@ -41,13 +41,13 @@ class SQLAlchemyProductCategoryRepository:
                 )
                 .order_by(ProductCategory.sort_order, ProductCategory.slug)
             ).scalars()
+            return tuple(
+                ProductCategoryRecord(
+                    slug=category.slug,
+                    name=category.name,
+                    sort_order=category.sort_order,
+                )
+                for category in categories
+            )
         except SQLAlchemyError as exc:
             raise ProductCategoryPersistenceError from exc
-        return tuple(
-            ProductCategoryRecord(
-                slug=category.slug,
-                name=category.name,
-                sort_order=category.sort_order,
-            )
-            for category in categories
-        )
