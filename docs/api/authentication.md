@@ -65,11 +65,27 @@
 
 ## 세션
 
-- 액세스와 리프레시 토큰은 HttpOnly Secure 쿠키를 사용한다.
-- 인증 실패는 아이디와 비밀번호 중 어떤 값이 틀렸는지 노출하지 않는다.
-- 로그아웃은 현재 리프레시 세션을 폐기한다.
-- 토큰 수명, 회전, SameSite와 CSRF 정책은 F-1.2 Feature Packet에서 확정한다.
+### F-1.2 로그인
+
+- POST /api/v1/auth/login은 로그인 아이디와 비밀번호를 받는다.
+- 아이디는 trim·casefold 정규화해 조회하며, 미등록 아이디와 틀린 비밀번호는 모두
+  401 AUTH_INVALID_CREDENTIALS로 응답한다.
+- 이메일 미인증 계정은 403 AUTH_EMAIL_UNVERIFIED, 정지 계정은
+  403 AUTH_ACCOUNT_SUSPENDED로 차단한다.
+- 액세스 토큰은 15분 HS256 JWT이며, 리프레시 토큰은 14일 불투명 난수 토큰이다.
+- 응답 본문에는 토큰을 넣지 않는다. `allyakkkuk_access_token`과
+  `allyakkkuk_refresh_token` HttpOnly 쿠키로만 전달한다.
+- 두 쿠키는 SameSite=Lax다. 로컬·테스트는 `AUTH_COOKIE_SECURE=false`, HTTPS 배포
+  환경은 `AUTH_COOKIE_SECURE=true`를 사용해야 한다.
+- 액세스 쿠키 경로는 /api/v1, 리프레시 쿠키 경로는 /api/v1/auth다.
+- 로그인 성공마다 별도 refresh_sessions 행을 만들어 다중 기기 로그인을 허용한다.
+  DB에는 `AUTH_TOKEN_SECRET`과 세션 ID로 HMAC-SHA256한 리프레시 해시만 저장한다.
+- 인증 응답은 Cache-Control: no-store와 Pragma: no-cache를 사용한다.
+- 토큰 검증·갱신·회전과 로그아웃은 F-1.3 이후 범위다.
+- 프론트엔드와 API가 교차 사이트로 분리되면 SameSite=None+Secure와 별도 CSRF
+  방어를 함께 설계해야 한다.
 
 ## Swagger
 
-Swagger에서 로그인 API를 실행한 뒤 동일 출처 요청에서 인증 쿠키 흐름을 검증할 수 있어야 한다. 로컬 프론트엔드 출처와 자격증명 전달 정책은 환경설정으로 관리한다.
+Swagger에서 로그인 API를 실행한 뒤 동일 출처 요청에서 인증 쿠키 흐름을 검증할 수
+있어야 한다. 로컬 프론트엔드 출처와 자격증명 전달 정책은 환경설정으로 관리한다.
