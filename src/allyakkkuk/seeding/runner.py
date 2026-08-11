@@ -7,6 +7,7 @@ from typing import Protocol
 
 from sqlalchemy import Connection, Engine, text
 
+from allyakkkuk.curation.product_nutrient_seeds import ProductNutrientSeedSet
 from allyakkkuk.curation.product_seeds import ProductSeedSet
 from allyakkkuk.curation.seeds import ProductCategorySeedSet
 
@@ -22,6 +23,7 @@ class SeedSet(Protocol):
 REGISTERED_SEEDS: tuple[SeedSet, ...] = (
     ProductCategorySeedSet(),
     ProductSeedSet(),
+    ProductNutrientSeedSet(),
 )
 
 

@@ -146,3 +146,67 @@ class ProductCategoryMapping(Base):
         ForeignKey("product_categories.id", ondelete="CASCADE"),
         primary_key=True,
     )
+
+
+class Nutrient(Base):
+    __tablename__ = "nutrients"
+    __table_args__ = (
+        UniqueConstraint("code", name="uq_nutrients_code"),
+        CheckConstraint(
+            "code ~ '^[A-Z0-9]+(_[A-Z0-9]+)*$'",
+            name="ck_nutrients_code_format",
+        ),
+        CheckConstraint(
+            "char_length(btrim(name)) BETWEEN 1 AND 100",
+            name="ck_nutrients_name_length",
+        ),
+        CheckConstraint(
+            "canonical_unit IN ('MG', 'G', 'MCG', 'IU')",
+            name="ck_nutrients_canonical_unit",
+        ),
+        Index("ix_nutrients_active_code", "is_active", "code"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    code: Mapped[str] = mapped_column(String(50), nullable=False)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    canonical_unit: Mapped[str] = mapped_column(String(10), nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+
+
+class ProductNutrient(Base):
+    __tablename__ = "product_nutrients"
+    __table_args__ = (
+        CheckConstraint(
+            "amount_per_unit > 0",
+            name="ck_product_nutrients_amount_per_unit",
+        ),
+        CheckConstraint(
+            "unit IN ('MG', 'G', 'MCG', 'IU')",
+            name="ck_product_nutrients_unit",
+        ),
+        CheckConstraint(
+            "sort_order >= 0",
+            name="ck_product_nutrients_sort_order",
+        ),
+        Index(
+            "ix_product_nutrients_product_sort",
+            "product_id",
+            "sort_order",
+            "nutrient_id",
+        ),
+    )
+
+    product_id: Mapped[UUID] = mapped_column(
+        Uuid,
+        ForeignKey("products.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    nutrient_id: Mapped[UUID] = mapped_column(
+        Uuid,
+        ForeignKey("nutrients.id", ondelete="RESTRICT"),
+        primary_key=True,
+    )
+    amount_per_unit: Mapped[Decimal] = mapped_column(Numeric(12, 4), nullable=False)
+    unit: Mapped[str] = mapped_column(String(10), nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

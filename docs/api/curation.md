@@ -59,3 +59,44 @@
   "has_next": false
 }
 ~~~
+
+## F-2.4 추천 제품 상세
+
+- GET /api/v1/curation/products/{product_id}
+- 인증 없이 호출하는 공개 읽기 API다.
+- product_id는 UUID이며 형식 오류는 422 VALIDATION_FAILED다.
+- 게시 상태이고 활성 카테고리 연결이 하나 이상인 제품만 상세에 노출한다.
+- 미존재·비게시·활성 카테고리 연결 없음은 모두 404 PRODUCT_NOT_FOUND다.
+- F-2.3 목록 공통 필드에 package와 nutrients를 추가한다.
+- category_slugs는 활성 카테고리만 sort_order·slug 순으로 제공한다.
+- nutrients는 활성 성분만 제품별 sort_order·code 순으로 제공하며 없으면 빈 배열이다.
+- units_per_package와 amount_per_unit은 Decimal 정밀도를 보존하는 JSON 문자열이다.
+- 1차 성분 단위는 MG, G, MCG, IU다.
+- DB 실패는 503 SERVICE_UNAVAILABLE로 반환한다.
+- 전문가 코멘트와 구매 링크는 F-2.4.1·F-2.4.2에서 응답을 독립 확장한다.
+
+~~~json
+{
+  "id": "22000000-0000-4000-8000-000000000001",
+  "sku": "LIFE-TWO-PER-DAY",
+  "product_type": "SUPPLEMENT",
+  "brand": "Life Extension",
+  "name": "라이프익스텐션 투퍼데이",
+  "image_url": "/static/products/life-extension-two-per-day.svg",
+  "display_price": 28400,
+  "currency": "KRW",
+  "category_slugs": ["vitamin"],
+  "package": {
+    "unit_form": "TABLET",
+    "units_per_package": "120"
+  },
+  "nutrients": [
+    {
+      "code": "VITAMIN_C",
+      "name": "비타민 C",
+      "amount_per_unit": "235",
+      "unit": "MG"
+    }
+  ]
+}
+~~~
