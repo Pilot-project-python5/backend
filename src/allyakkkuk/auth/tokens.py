@@ -6,11 +6,12 @@ import hashlib
 import hmac
 import secrets
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Protocol
 from uuid import UUID, uuid4
 
 import jwt
+from jwt import InvalidTokenError
 
 ACCESS_TOKEN_TTL = timedelta(minutes=15)
 REFRESH_TOKEN_TTL = timedelta(days=14)
@@ -31,6 +32,15 @@ class IssuedSessionTokens:
 class RefreshTokenParts:
     session_id: UUID
     secret: str
+
+
+@dataclass(frozen=True, slots=True)
+class AccessTokenClaims:
+    user_id: UUID
+    session_id: UUID
+    token_id: UUID
+    issued_at: datetime
+    expires_at: datetime
 
 
 class SessionTokenIssuer(Protocol):
@@ -58,6 +68,14 @@ class SessionTokenRotator(Protocol):
         issued_at: datetime,
         refresh_token_expires_at: datetime,
     ) -> IssuedSessionTokens: ...
+
+
+class AccessTokenVerifier(Protocol):
+    def verify_access_token(
+        self,
+        raw_token: str | None,
+        verified_at: datetime,
+    ) -> AccessTokenClaims | None: ...
 
 
 def parse_refresh_token(raw_token: str | None) -> RefreshTokenParts | None:
@@ -108,6 +126,64 @@ class JwtSessionTokenIssuer:
     def parse_refresh_token(self, raw_token: str | None) -> RefreshTokenParts | None:
         return parse_refresh_token(raw_token)
 
+    def verify_access_token(
+        self,
+        raw_token: str | None,
+        verified_at: datetime,
+    ) -> AccessTokenClaims | None:
+        if raw_token is None or not raw_token or verified_at.tzinfo is None:
+            return None
+        try:
+            payload = jwt.decode(
+                raw_token,
+                self._secret,
+                algorithms=["HS256"],
+                audience=ACCESS_TOKEN_AUDIENCE,
+                issuer=ACCESS_TOKEN_ISSUER,
+                options={
+                    "require": [
+                        "iss",
+                        "aud",
+                        "sub",
+                        "sid",
+                        "type",
+                        "jti",
+                        "iat",
+                        "exp",
+                    ],
+                    "verify_exp": False,
+                    "verify_iat": False,
+                },
+            )
+            if payload.get("type") != "access":
+                return None
+            user_id = _uuid_claim(payload.get("sub"))
+            session_id = _uuid_claim(payload.get("sid"))
+            token_id = _uuid_claim(payload.get("jti"))
+            issued_at = _datetime_claim(payload.get("iat"))
+            expires_at = _datetime_claim(payload.get("exp"))
+        except (InvalidTokenError, ValueError, TypeError, OverflowError, OSError):
+            return None
+
+        if (
+            user_id is None
+            or session_id is None
+            or token_id is None
+            or issued_at is None
+            or expires_at is None
+            or issued_at > verified_at
+            or expires_at <= issued_at
+            or verified_at >= expires_at
+        ):
+            return None
+        return AccessTokenClaims(
+            user_id=user_id,
+            session_id=session_id,
+            token_id=token_id,
+            issued_at=issued_at,
+            expires_at=expires_at,
+        )
+
     def _issue_pair(
         self,
         user_id: UUID,
@@ -157,3 +233,18 @@ class JwtSessionTokenIssuer:
             raise ValueError("유효하지 않은 refresh token 형식입니다")
         message = f"refresh:{session_id}:{parts.secret}".encode()
         return hmac.new(self._secret, message, hashlib.sha256).hexdigest()
+
+
+def _uuid_claim(value: object) -> UUID | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        return UUID(value)
+    except ValueError:
+        return None
+
+
+def _datetime_claim(value: object) -> datetime | None:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    return datetime.fromtimestamp(value, tz=UTC)

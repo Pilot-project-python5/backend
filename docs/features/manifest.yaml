@@ -17,7 +17,7 @@ features:
   - { id: "F-1.1.3", title: "이메일 인증", slug: "email-verification", requirement: "FR-1", domain: "auth", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-1.2", title: "로그인", slug: "login", requirement: "FR-1", domain: "auth", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-1.3", title: "로그아웃 및 인증 유지", slug: "logout-session", requirement: "FR-1", domain: "auth", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
-  - { id: "F-1.4", title: "세션 상태 확인", slug: "session-status", requirement: "FR-1", domain: "auth", phase: 1, priority: "P0", owner: "backend", status: "planned" }
+  - { id: "F-1.4", title: "세션 상태 확인", slug: "session-status", requirement: "FR-1", domain: "auth", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-2.1", title: "전문가 소개", slug: "expert-introduction", requirement: "FR-2", domain: "curation", phase: 1, priority: "P0", owner: "frontend", status: "external" }
   - { id: "F-2.2", title: "제품 카테고리", slug: "product-categories", requirement: "FR-2", domain: "curation", phase: 1, priority: "P0", owner: "backend", status: "planned" }
   - { id: "F-2.3", title: "추천 제품 목록", slug: "recommended-products", requirement: "FR-2", domain: "curation", phase: 1, priority: "P0", owner: "backend", status: "planned" }
