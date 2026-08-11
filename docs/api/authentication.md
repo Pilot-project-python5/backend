@@ -81,7 +81,8 @@
 - 로그인 성공마다 별도 refresh_sessions 행을 만들어 다중 기기 로그인을 허용한다.
   DB에는 `AUTH_TOKEN_SECRET`과 세션 ID로 HMAC-SHA256한 리프레시 해시만 저장한다.
 - 인증 응답은 Cache-Control: no-store와 Pragma: no-cache를 사용한다.
-- 토큰 검증·갱신·회전과 로그아웃은 F-1.3 이후 범위다.
+- refresh token 검증·갱신·회전과 로그아웃은 F-1.3, access JWT 검증과 현재 사용자
+  조회는 F-1.4에서 제공한다.
 - 프론트엔드와 API가 교차 사이트로 분리되면 SameSite=None+Secure와 별도 CSRF
   방어를 함께 설계해야 한다.
 
@@ -105,8 +106,27 @@
   필요하다.
 - 현재 사용자 확인과 보호 API access JWT 검증은 F-1.4 범위다.
 
+### F-1.4 현재 사용자와 세션 상태 확인
+
+- GET /api/v1/auth/me는 `allyakkkuk_access_token` HttpOnly 쿠키로 인증한다.
+- AccessCookieAuth OpenAPI cookie security scheme을 사용하며 보호 API는 같은 공통
+  인증 의존성을 재사용한다.
+- access JWT는 HS256 서명, issuer, audience, access type과 sub·sid·jti·iat·exp 필수
+  claim의 UUID·시간 형식을 검증한다.
+- JWT sub 사용자와 sid refresh 세션의 소유 관계를 DB에서 확인한다.
+- ACTIVE·이메일 인증 사용자와 미폐기·고정 만료 전 세션만 인증된다. 로그아웃 또는
+  세션 만료 뒤에는 남은 JWT exp와 관계없이 즉시 401이다.
+- 성공 시 authenticated=true, 공개 사용자·건강 프로필 정보와 access·refresh 만료
+  시각을 반환한다. 비밀번호·정규화 식별자·token과 내부 hash는 노출하지 않는다.
+- 쿠키 누락·JWT 오류·만료·사용자·세션 불일치·비활성 계정은 같은
+  401 AUTH_REQUIRED이며 DB 조회 실패는 503 SERVICE_UNAVAILABLE다.
+- /me는 자동 refresh하거나 쿠키를 변경하지 않는다. 프론트엔드는 401이면 F-1.3
+  refresh를 호출하고 refresh도 401이면 로그인을 요청한다.
+- 성공 응답은 Cache-Control: no-store와 Pragma: no-cache를 사용한다.
+
 ## Swagger
 
-Swagger에서 로그인·refresh·logout API를 실행한 뒤 동일 출처 요청에서 인증 쿠키
-흐름을 검증할 수 있어야 한다. 로컬 프론트엔드 출처와 자격증명 전달 정책은
-환경설정으로 관리한다.
+Swagger에서 로그인·refresh·logout·me API를 실행한 뒤 동일 출처 요청에서 인증 쿠키
+흐름을 검증할 수 있어야 한다. /me의 자물쇠 표시는 AccessCookieAuth 쿠키 보안 정의를
+뜻하며 실제 token 값은 로그인 응답의 HttpOnly 쿠키로 전달된다. 로컬 프론트엔드
+출처와 자격증명 전달 정책은 환경설정으로 관리한다.

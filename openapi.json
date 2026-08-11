@@ -1,6 +1,131 @@
 {
   "components": {
     "schemas": {
+      "CurrentSessionView": {
+        "properties": {
+          "access_token_expires_at": {
+            "format": "date-time",
+            "title": "Access Token Expires At",
+            "type": "string"
+          },
+          "refresh_token_expires_at": {
+            "format": "date-time",
+            "title": "Refresh Token Expires At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token_expires_at",
+          "refresh_token_expires_at"
+        ],
+        "title": "CurrentSessionView",
+        "type": "object"
+      },
+      "CurrentUserResponse": {
+        "examples": [
+          {
+            "authenticated": true,
+            "session": {
+              "access_token_expires_at": "2026-08-11T09:15:00Z",
+              "refresh_token_expires_at": "2026-08-25T09:00:00Z"
+            },
+            "user": {
+              "birth_date": "1995-05-20",
+              "email": "user@example.com",
+              "email_verified_at": "2026-08-11T09:00:00Z",
+              "gender": "MALE",
+              "height_cm": "175.00",
+              "id": "11111111-1111-4111-8111-111111111111",
+              "login_id": "User123",
+              "name": "홍길동",
+              "status": "ACTIVE",
+              "weight_kg": "70.00"
+            }
+          }
+        ],
+        "properties": {
+          "authenticated": {
+            "const": true,
+            "default": true,
+            "title": "Authenticated",
+            "type": "boolean"
+          },
+          "session": {
+            "$ref": "#/components/schemas/CurrentSessionView"
+          },
+          "user": {
+            "$ref": "#/components/schemas/CurrentUserView"
+          }
+        },
+        "required": [
+          "user",
+          "session"
+        ],
+        "title": "CurrentUserResponse",
+        "type": "object"
+      },
+      "CurrentUserView": {
+        "properties": {
+          "birth_date": {
+            "format": "date",
+            "title": "Birth Date",
+            "type": "string"
+          },
+          "email": {
+            "format": "email",
+            "title": "Email",
+            "type": "string"
+          },
+          "email_verified_at": {
+            "format": "date-time",
+            "title": "Email Verified At",
+            "type": "string"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "height_cm": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Height Cm",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "login_id": {
+            "title": "Login Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/UserStatus"
+          },
+          "weight_kg": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Weight Kg",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "login_id",
+          "name",
+          "email",
+          "status",
+          "email_verified_at",
+          "birth_date",
+          "gender",
+          "height_cm",
+          "weight_kg"
+        ],
+        "title": "CurrentUserView",
+        "type": "object"
+      },
       "EmailVerificationConfirmRequest": {
         "examples": [
           {
@@ -619,6 +744,14 @@
         ],
         "title": "ValidationError",
         "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "AccessCookieAuth": {
+        "description": "HttpOnly access JWT 쿠키",
+        "in": "cookie",
+        "name": "allyakkkuk_access_token",
+        "type": "apiKey"
       }
     }
   },
@@ -1421,6 +1554,77 @@
           }
         },
         "summary": "현재 기기 로그아웃",
+        "tags": [
+          "인증"
+        ]
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "operationId": "auth_get_current_user",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUserResponse"
+                }
+              }
+            },
+            "description": "현재 사용자와 access·refresh 세션 만료 상태",
+            "headers": {
+              "Cache-Control": {
+                "description": "개인 인증 응답 캐시 금지",
+                "schema": {
+                  "example": "no-store",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "AUTH_REQUIRED",
+                    "fields": [],
+                    "message": "인증이 필요합니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "access 인증 실패"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 조회 실패"
+          }
+        },
+        "security": [
+          {
+            "AccessCookieAuth": []
+          }
+        ],
+        "summary": "현재 사용자와 세션 상태 확인",
         "tags": [
           "인증"
         ]

@@ -3,6 +3,7 @@
 from fastapi import APIRouter
 
 from allyakkkuk.api.health import router as health_router
+from allyakkkuk.auth.current_user_router import router as current_user_router
 from allyakkkuk.auth.email_verification_router import (
     router as email_verification_router,
 )
@@ -16,3 +17,4 @@ api_router.include_router(auth_router)
 api_router.include_router(email_verification_router)
 api_router.include_router(login_router)
 api_router.include_router(session_router)
+api_router.include_router(current_user_router)
