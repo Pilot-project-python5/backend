@@ -131,8 +131,11 @@ erDiagram
         varchar image_url
         varchar unit_form
         numeric units_per_package
-        numeric display_price
+        integer display_price
         boolean is_published
+        integer sort_order
+        timestamptz created_at
+        timestamptz updated_at
     }
 
     PRODUCT_CATEGORY_MAPPINGS {
@@ -212,8 +215,16 @@ erDiagram
   이상이다. 활성 목록 조회는 (is_active, sort_order, slug) 인덱스를 사용한다.
 - `all`·`전체`는 분류 행이 아닌 필터 미적용 가상 응답이므로 product_categories와
   향후 product_category_mappings에 저장하지 않는다.
-- 논리 ERD의 products·product_category_mappings 관계는 F-2.3에서 실제 구현한다.
-- 제품과 카테고리는 다대다 관계를 기본안으로 둔다.
+- F-2.3에서 products·product_category_mappings를 실제 구현한다. 제품은 sku 고유 자연
+  키, SUPPLEMENT 또는 MEDICATION 유형, 비공백 브랜드·이름·이미지 URL, 허용 package
+  단위, 양수 총 단위 수, 0 이상 표시 가격·정렬 순서와 updated_at >= created_at 제약을
+  가진다.
+- 제품과 카테고리는 다대다이며 매핑의 product_id·category_id를 복합 PK로 사용한다.
+  양쪽 원본 삭제 시 매핑은 CASCADE하고 category_id·product_id 조회 인덱스를 둔다.
+- 공개 추천 목록은 게시 제품이면서 활성 카테고리 연결이 최소 하나 있어야 한다.
+  products의 (is_published, sort_order, sku) 인덱스로 편집 순서를 안정화한다.
+- F-2.3은 패키지 필드를 제품 시드와 함께 저장하지만 구성 성분 관계와 상세 API는
+  F-2.4에서 구현한다.
 - product_nutrients는 영양제에만 허용하며 amount_per_unit은 0보다 커야 한다.
 - 의약품의 효능, 복용법, 주의와 보관 정보는 medication_details에 저장한다.
 - 전문가 소개는 프론트엔드 정적 콘텐츠이므로 1차에는 experts 테이블을 만들지 않는다.

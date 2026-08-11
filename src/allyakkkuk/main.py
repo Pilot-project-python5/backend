@@ -2,14 +2,19 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from allyakkkuk.api.error_handlers import register_error_handlers
 from allyakkkuk.api.middleware import request_id_middleware
 from allyakkkuk.api.router import api_router
 from allyakkkuk.core.config import Settings, get_settings
 from allyakkkuk.core.logging import configure_logging
+
+STATIC_DIRECTORY = Path(__file__).resolve().parent / "static"
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -34,6 +39,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     register_error_handlers(application)
     application.include_router(api_router, prefix=resolved.api_prefix)
+    application.mount(
+        "/static",
+        StaticFiles(directory=STATIC_DIRECTORY),
+        name="static",
+    )
     return application
 
 

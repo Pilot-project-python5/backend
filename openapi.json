@@ -513,6 +513,123 @@
         "title": "ProductCategoryResponseItem",
         "type": "object"
       },
+      "ProductListItemResponse": {
+        "properties": {
+          "brand": {
+            "title": "Brand",
+            "type": "string"
+          },
+          "category_slugs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Category Slugs",
+            "type": "array"
+          },
+          "currency": {
+            "const": "KRW",
+            "default": "KRW",
+            "title": "Currency",
+            "type": "string"
+          },
+          "display_price": {
+            "title": "Display Price",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "image_url": {
+            "title": "Image Url",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "product_type": {
+            "title": "Product Type",
+            "type": "string"
+          },
+          "sku": {
+            "title": "Sku",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "sku",
+          "product_type",
+          "brand",
+          "name",
+          "image_url",
+          "display_price",
+          "category_slugs"
+        ],
+        "title": "ProductListItemResponse",
+        "type": "object"
+      },
+      "ProductListResponse": {
+        "examples": [
+          {
+            "has_next": false,
+            "items": [
+              {
+                "brand": "Life Extension",
+                "category_slugs": [
+                  "vitamin"
+                ],
+                "currency": "KRW",
+                "display_price": 28400,
+                "id": "22000000-0000-4000-8000-000000000001",
+                "image_url": "/static/products/life-extension-two-per-day.svg",
+                "name": "라이프익스텐션 투퍼데이",
+                "product_type": "SUPPLEMENT",
+                "sku": "LIFE-TWO-PER-DAY"
+              }
+            ],
+            "page": 1,
+            "page_size": 20,
+            "total": 3
+          }
+        ],
+        "properties": {
+          "has_next": {
+            "title": "Has Next",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ProductListItemResponse"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "page": {
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "page",
+          "page_size",
+          "total",
+          "has_next"
+        ],
+        "title": "ProductListResponse",
+        "type": "object"
+      },
       "SessionRefreshResponse": {
         "examples": [
           {
@@ -2003,6 +2120,111 @@
           }
         },
         "summary": "활성 제품 카테고리 조회",
+        "tags": [
+          "큐레이션"
+        ]
+      }
+    },
+    "/api/v1/curation/products": {
+      "get": {
+        "operationId": "curation_list_recommended_products",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "default": "all",
+              "maxLength": 50,
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "title": "Category",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Page Size",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductListResponse"
+                }
+              }
+            },
+            "description": "게시 추천 제품 페이지"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "CATEGORY_NOT_FOUND",
+                    "fields": [],
+                    "message": "카테고리를 찾을 수 없습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "활성 카테고리 없음"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 조회 실패"
+          }
+        },
+        "summary": "게시 추천 제품 목록 조회",
         "tags": [
           "큐레이션"
         ]
