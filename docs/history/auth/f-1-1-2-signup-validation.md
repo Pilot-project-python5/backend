@@ -6,8 +6,8 @@ domain: "auth"
 status: "implemented"
 completed_on: "2026-08-11"
 feature_packet: "docs/features/auth/f-1-1-2-signup-validation"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/4"
+commit: "2b424f1e25dfd1503e79faeb4b33dac3d9476a50"
 ---
 
 # F-1.1.2 가입 정보 검증 구현 이력
