@@ -6,8 +6,8 @@ domain: "curation"
 status: "implemented"
 completed_on: "2026-08-12"
 feature_packet: "docs/features/curation/f-2-4-product-detail"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/11"
+commit: "b930113"
 ---
 
 # F-2.4 추천 제품 정보 구현 이력

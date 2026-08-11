@@ -29,4 +29,4 @@
 - [x] 로컬 전체 검증을 실행한다
 - [x] docs/history에 구현 이력을 작성하고 엄격 검증을 실행한다
 - [x] feature.yaml의 history_path를 연결하고 status를 implemented로 갱신한다
-- [ ] PR 본문에 근거를 기록한다
+- [x] PR 본문에 근거를 기록한다
