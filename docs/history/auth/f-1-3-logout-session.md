@@ -6,7 +6,7 @@ domain: "auth"
 status: "implemented"
 completed_on: "2026-08-11"
 feature_packet: "docs/features/auth/f-1-3-logout-session"
-pull_request: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/7"
 commit: null
 ---
 
