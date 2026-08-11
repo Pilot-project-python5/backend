@@ -273,6 +273,61 @@
         "title": "SignupResponse",
         "type": "object"
       },
+      "SignupValidationIssue": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "field": {
+            "title": "Field",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "code",
+          "message"
+        ],
+        "title": "SignupValidationIssue",
+        "type": "object"
+      },
+      "SignupValidationResponse": {
+        "examples": [
+          {
+            "issues": [
+              {
+                "code": "AUTH_LOGIN_ID_UNAVAILABLE",
+                "field": "login_id",
+                "message": "사용할 수 없는 아이디입니다."
+              }
+            ],
+            "valid": false
+          }
+        ],
+        "properties": {
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/SignupValidationIssue"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "valid": {
+            "title": "Valid",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "valid"
+        ],
+        "title": "SignupValidationResponse",
+        "type": "object"
+      },
       "UserStatus": {
         "enum": [
           "PENDING_EMAIL_VERIFICATION",
@@ -458,6 +513,73 @@
           }
         },
         "summary": "이메일 미인증 회원가입",
+        "tags": [
+          "인증"
+        ]
+      }
+    },
+    "/api/v1/auth/signup/validation": {
+      "post": {
+        "operationId": "auth_validate_signup",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignupRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignupValidationResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "VALIDATION_FAILED",
+                    "fields": [],
+                    "message": "요청 값을 확인해주세요.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "가입 요청 형식 검증 실패"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 중복 조회 실패"
+          }
+        },
+        "summary": "가입 정보 사전 검증",
         "tags": [
           "인증"
         ]
