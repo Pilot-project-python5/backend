@@ -6,8 +6,8 @@ domain: "auth"
 status: "implemented"
 completed_on: "2026-08-11"
 feature_packet: "docs/features/auth/f-1-1-3-email-verification"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/5"
+commit: "62bd1f981b7b954a025133f2c9577489e3023c27"
 ---
 
 # F-1.1.3 이메일 인증 구현 이력
