@@ -11,17 +11,21 @@ from allyakkkuk.auth.models import (
     User,
 )
 from allyakkkuk.curation.models import (
+    Nutrient,
     Product,
     ProductCategory,
     ProductCategoryMapping,
+    ProductNutrient,
 )
 
 __all__ = [
     "EmailVerification",
     "HealthProfile",
+    "Nutrient",
     "Product",
     "ProductCategory",
     "ProductCategoryMapping",
+    "ProductNutrient",
     "RefreshSession",
     "User",
 ]
