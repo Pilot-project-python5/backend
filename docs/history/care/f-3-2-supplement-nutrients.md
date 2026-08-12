@@ -6,8 +6,8 @@ domain: "care"
 status: "implemented"
 completed_on: "2026-08-12"
 feature_packet: "docs/features/care/f-3-2-supplement-nutrients"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/15"
+commit: "01b5274"
 ---
 
 # F-3.2 영양제 성분 연결 구현 이력
