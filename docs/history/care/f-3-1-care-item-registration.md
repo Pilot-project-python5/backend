@@ -6,8 +6,8 @@ domain: "care"
 status: "implemented"
 completed_on: "2026-08-12"
 feature_packet: "docs/features/care/f-3-1-care-item-registration"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/14"
+commit: "e3f6e24"
 ---
 
 # F-3.1 복용 제품 등록 구현 이력
