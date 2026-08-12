@@ -6,8 +6,8 @@ domain: "care"
 status: "implemented"
 completed_on: "2026-08-12"
 feature_packet: "docs/features/care/f-3-3-inventory-quantity"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/16"
+commit: "eaece5b"
 ---
 
 # F-3.3 구매 및 보유 수량 구현 이력
