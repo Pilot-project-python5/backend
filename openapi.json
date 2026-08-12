@@ -84,6 +84,7 @@
             "intakes_per_day": 2,
             "product_id": "22000000-0000-4000-8000-000000000001",
             "purchase_date": "2026-08-10",
+            "quantity_unit": "CAPSULE",
             "total_quantity": "60"
           }
         ],
@@ -122,6 +123,16 @@
             "title": "Purchase Date",
             "type": "string"
           },
+          "quantity_unit": {
+            "enum": [
+              "TABLET",
+              "CAPSULE",
+              "SCOOP",
+              "PACKET"
+            ],
+            "title": "Quantity Unit",
+            "type": "string"
+          },
           "total_quantity": {
             "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
             "title": "Total Quantity",
@@ -134,6 +145,7 @@
           "purchase_date",
           "intake_start_date",
           "total_quantity",
+          "quantity_unit",
           "dose_per_intake",
           "intakes_per_day",
           "created_at"

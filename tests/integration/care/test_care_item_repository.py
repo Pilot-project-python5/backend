@@ -98,6 +98,7 @@ def test_repository_registers_unpublished_catalog_item_as_distinct_history() -> 
     assert second is not None
     assert first.id != second.id
     assert first.user_id == second.user_id == USER_ID
+    assert first.quantity_unit == second.quantity_unit == "TABLET"
     with SessionFactory() as session:
         count = session.scalar(
             select(func.count())
@@ -141,6 +142,7 @@ def test_care_item_schema_matches_model_and_erd_contract() -> None:
         "purchase_date",
         "intake_start_date",
         "total_quantity",
+        "quantity_unit",
         "dose_per_intake",
         "intakes_per_day",
         "created_at",
@@ -150,6 +152,7 @@ def test_care_item_schema_matches_model_and_erd_contract() -> None:
     assert checks >= {
         "ck_care_items_date_order",
         "ck_care_items_total_quantity",
+        "ck_care_items_quantity_unit",
         "ck_care_items_dose_per_intake",
         "ck_care_items_dose_within_total",
         "ck_care_items_intakes_per_day",

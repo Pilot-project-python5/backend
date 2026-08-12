@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from datetime import UTC, date, datetime
+from datetime import UTC, datetime
 from decimal import Decimal
 from uuid import UUID
 
 import pytest
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import delete, inspect, select
+from sqlalchemy import delete, inspect, select, text
 
 from allyakkkuk.auth.models import User, UserStatus
 from allyakkkuk.care.models import CareItem, CareNutrientSnapshot
@@ -78,21 +78,6 @@ def _product(product_id: UUID, product_type: str) -> Product:
     )
 
 
-def _care_item(item_id: UUID, product_id: UUID) -> CareItem:
-    return CareItem(
-        id=item_id,
-        user_id=USER_ID,
-        product_id=product_id,
-        purchase_date=date(2026, 8, 10),
-        intake_start_date=date(2026, 8, 12),
-        total_quantity=Decimal("30"),
-        dose_per_intake=Decimal("1"),
-        intakes_per_day=1,
-        created_at=NOW,
-        updated_at=NOW,
-    )
-
-
 def _seed_at_0011() -> None:
     with SessionFactory.begin() as session:
         session.add(
@@ -154,10 +139,34 @@ def _seed_at_0011() -> None:
                     unit="MG",
                     sort_order=1,
                 ),
-                _care_item(SUPPLEMENT_ITEM_ID, SUPPLEMENT_ID),
-                _care_item(MEDICATION_ITEM_ID, MEDICATION_ID),
             ]
         )
+        session.flush()
+        for item_id, product_id in (
+            (SUPPLEMENT_ITEM_ID, SUPPLEMENT_ID),
+            (MEDICATION_ITEM_ID, MEDICATION_ID),
+        ):
+            session.execute(
+                text(
+                    """
+                    INSERT INTO care_items (
+                        id, user_id, product_id, purchase_date,
+                        intake_start_date, total_quantity, dose_per_intake,
+                        intakes_per_day, created_at, updated_at
+                    ) VALUES (
+                        :id, :user_id, :product_id, DATE '2026-08-10',
+                        DATE '2026-08-12', 30, 1, 1, :created_at, :updated_at
+                    )
+                    """
+                ),
+                {
+                    "id": item_id,
+                    "user_id": USER_ID,
+                    "product_id": product_id,
+                    "created_at": NOW,
+                    "updated_at": NOW,
+                },
+            )
 
 
 def _clean_at_head() -> None:

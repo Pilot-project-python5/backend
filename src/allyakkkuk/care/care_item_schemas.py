@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from datetime import date, datetime
 from decimal import Decimal
+from typing import Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
 MAX_QUANTITY = Decimal("999999999.999")
+QuantityUnit = Literal["TABLET", "CAPSULE", "SCOOP", "PACKET"]
 
 
 class CareItemCreateRequest(BaseModel):
@@ -55,6 +57,7 @@ class CareItemResponse(BaseModel):
                     "purchase_date": "2026-08-10",
                     "intake_start_date": "2026-08-12",
                     "total_quantity": "60",
+                    "quantity_unit": "CAPSULE",
                     "dose_per_intake": "1",
                     "intakes_per_day": 2,
                     "created_at": "2026-08-12T09:00:00Z",
@@ -68,6 +71,7 @@ class CareItemResponse(BaseModel):
     purchase_date: date
     intake_start_date: date
     total_quantity: Decimal
+    quantity_unit: QuantityUnit
     dose_per_intake: Decimal
     intakes_per_day: int
     created_at: datetime

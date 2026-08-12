@@ -4,6 +4,7 @@
 
 | 날짜 | 기능 ID | 변경 | 호환성 | 마이그레이션 참고 사항 |
 | --- | --- | --- | --- | --- |
+| 2026-08-12 | F-3.3 | POST /api/v1/care/items 201 응답에 서버 결정 quantity_unit 추가 | 기존 요청·응답 필드를 유지하는 additive 응답 확장 | care_items.quantity_unit 마이그레이션 20260812_0013과 기존 행 Product 단위 백필 필요 |
 | 2026-08-12 | F-3.1 | POST /api/v1/care/items 보호 생성 API와 201/401/404/422/503 계약 추가 | 신규 API로 기존 호출과 호환, 응답에 사용자 ID를 노출하지 않음 | care_items 마이그레이션 20260812_0011 필요, 사용자 데이터 시드 없음 |
 | 2026-08-12 | F-2.4.2 | GET /api/v1/curation/products/{product_id}/purchase 307·404·422·503 계약과 보안 헤더 추가 | 신규 공개 리다이렉트 API로 기존 응답과 호환 | purchase_links 마이그레이션 20260812_0010과 HTTPS 개발 시드 필요 |
 | 2026-08-12 | F-2.4.1 | 제품 상세 200 응답에 expert_comments 배열 추가 | 기존 상세 필드를 유지하는 additive 응답 확장, 목록은 변경 없음 | expert_comments 마이그레이션 20260812_0009과 코멘트 시드 필요 |

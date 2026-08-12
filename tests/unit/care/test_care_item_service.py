@@ -68,6 +68,7 @@ def record() -> CareItemRecord:
         purchase_date=value.purchase_date,
         intake_start_date=value.intake_start_date,
         total_quantity=value.total_quantity,
+        quantity_unit="CAPSULE",
         dose_per_intake=value.dose_per_intake,
         intakes_per_day=value.intakes_per_day,
         created_at=NOW,
@@ -84,6 +85,7 @@ def test_register_creates_user_owned_care_item_with_server_time() -> None:
 
     assert result.id == ITEM_ID
     assert result.total_quantity == Decimal("60")
+    assert result.quantity_unit == "CAPSULE"
     assert repository.calls == [
         CareItemCreateData(
             user_id=USER_ID,

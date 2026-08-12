@@ -34,6 +34,7 @@ class CareItemRegistrationResult:
     purchase_date: date
     intake_start_date: date
     total_quantity: Decimal
+    quantity_unit: str
     dose_per_intake: Decimal
     intakes_per_day: int
     created_at: datetime
@@ -109,6 +110,7 @@ class CareItemService:
             purchase_date=result.purchase_date,
             intake_start_date=result.intake_start_date,
             total_quantity=result.total_quantity,
+            quantity_unit=result.quantity_unit,
             dose_per_intake=result.dose_per_intake,
             intakes_per_day=result.intakes_per_day,
             created_at=result.created_at,

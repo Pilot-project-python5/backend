@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Any
+from typing import Annotated, Any, cast
 from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Depends, Response, status
@@ -13,7 +13,11 @@ from allyakkkuk.auth.cookies import set_no_store_headers
 from allyakkkuk.auth.current_user_dependencies import require_current_user
 from allyakkkuk.auth.current_user_service import AuthenticatedUser
 from allyakkkuk.care.care_item_repository import SQLAlchemyCareItemRepository
-from allyakkkuk.care.care_item_schemas import CareItemCreateRequest, CareItemResponse
+from allyakkkuk.care.care_item_schemas import (
+    CareItemCreateRequest,
+    CareItemResponse,
+    QuantityUnit,
+)
 from allyakkkuk.care.care_item_service import (
     CareItemRegistrationCommand,
     CareItemService,
@@ -123,6 +127,7 @@ def register_care_item(
         purchase_date=result.purchase_date,
         intake_start_date=result.intake_start_date,
         total_quantity=result.total_quantity,
+        quantity_unit=cast(QuantityUnit, result.quantity_unit),
         dose_per_intake=result.dose_per_intake,
         intakes_per_day=result.intakes_per_day,
         created_at=result.created_at,

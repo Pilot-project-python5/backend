@@ -286,6 +286,7 @@ erDiagram
         date purchase_date
         date intake_start_date
         numeric total_quantity
+        varchar quantity_unit
         numeric dose_per_intake
         smallint intakes_per_day
         timestamptz created_at
@@ -323,6 +324,12 @@ erDiagram
   날짜를 DB CHECK에 넣지 않고 등록 서비스에서 검증한다.
 - total_quantity와 dose_per_intake는 NUMERIC(12,3), 0 초과
   999999999.999 이하이며 dose_per_intake는 total_quantity 이하다.
+- F-3.3에서 total_quantity는 해당 구매 항목의 최초 구매 총량으로 확정하고
+  quantity_unit을 실제 컬럼으로 추가한다. quantity_unit은 등록 시 Product.unit_form을
+  복사한 TABLET·CAPSULE·SCOOP·PACKET 중 하나이며 이후 카탈로그 변경으로 갱신하지
+  않는다.
+- 같은 제품을 소진 전에 다시 사도 기존 항목의 수량을 합산·수정하지 않고 새
+  CareItem으로 보존한다. 실제 복용 기록이 없으므로 mutable 잔량 컬럼은 만들지 않는다.
 - intakes_per_day는 1~24이고 updated_at은 created_at보다 빠를 수 없다.
 - 사용자별 최신 이력은 `(user_id, created_at, id)`, 제품 참조는 `product_id`
   인덱스를 사용한다. B-tree 역방향 스캔으로 최신순 조회를 지원한다.
@@ -431,7 +438,6 @@ erDiagram
 
 - 유통기한 필수 여부
 - 복용 계획과 수량 수정 API 제공 여부
-- 동일 제품의 미소진 재고가 있을 때 재구매 처리
 - 복용 항목 삭제와 이력 보존 기간
 - 나누어떨어지지 않는 수량의 마지막 복용일 계산
 - 영양소 CSV 열, 단위 변환, 출처와 버전 규칙

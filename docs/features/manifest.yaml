@@ -27,7 +27,7 @@ features:
   - { id: "F-2.5", title: "추천 소식 알림", slug: "curation-news", requirement: "FR-2", domain: "curation", phase: 2, priority: "P1", owner: "backend", status: "deferred" }
   - { id: "F-3.1", title: "복용 제품 등록", slug: "care-item-registration", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-3.2", title: "영양제 성분 연결", slug: "supplement-nutrients", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
-  - { id: "F-3.3", title: "구매 및 보유 수량", slug: "inventory-quantity", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "planned" }
+  - { id: "F-3.3", title: "구매 및 보유 수량", slug: "inventory-quantity", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-3.4", title: "복용 제품 조회·삭제", slug: "care-item-query-delete", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "planned" }
   - { id: "F-3.5", title: "일일 섭취량 계산", slug: "daily-intake", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "planned" }
   - { id: "F-3.6", title: "영양성분 현황", slug: "nutrient-status", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "planned" }
