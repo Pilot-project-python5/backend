@@ -328,7 +328,16 @@ erDiagram
   인덱스를 사용한다. B-tree 역방향 스캔으로 최신순 조회를 지원한다.
 - expected_depletion_date와 소진 상태는 F-3.7·F-3.8, 유통기한과 만료 상태는
   F-3.11에서 별도 마이그레이션으로 추가한다.
-- 영양제만 등록 시점의 성분 스냅샷을 만들고 의약품은 영양소 합계에서 제외한다.
+- F-3.2에서 care_nutrient_snapshots를 실제 테이블로 구현한다. SUPPLEMENT 등록 시
+  활성 성분의 nutrient_id·당시 이름·단위당 함량·단위를 복사하며 MEDICATION과
+  활성 성분이 없는 영양제는 스냅샷을 만들지 않는다.
+- `(care_item_id, nutrient_id)`는 고유하고 amount_per_unit은 NUMERIC(12,4)의
+  양수, nutrient_name은 trim 기준 1~100자, unit은 MG·G·MCG·IU 중 하나다.
+- care_item 삭제 시 스냅샷은 CASCADE하고 nutrient 삭제는 RESTRICT한다. 영양성분
+  참조 조회에는 `nutrient_id` 인덱스를 사용한다.
+- 제품·성분 카탈로그가 바뀌어도 이미 저장한 스냅샷은 갱신·삭제하지 않는다.
+  0012 적용 전에 존재한 영양제 항목은 적용 시점의 활성 카탈로그 값으로 한 번
+  백필한다.
 - 실제 복용 기록과 일일 섭취량 행은 만들지 않으며 복용 계획으로 계산한다.
 
 ## 알림과 이메일
