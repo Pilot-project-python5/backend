@@ -10,6 +10,7 @@ from allyakkkuk.auth.email_verification_router import (
 from allyakkkuk.auth.login_router import router as login_router
 from allyakkkuk.auth.router import router as auth_router
 from allyakkkuk.auth.session_router import router as session_router
+from allyakkkuk.care.care_item_router import router as care_item_router
 from allyakkkuk.curation.product_category_router import (
     router as product_category_router,
 )
@@ -28,3 +29,4 @@ api_router.include_router(product_category_router)
 api_router.include_router(product_router)
 api_router.include_router(product_detail_router)
 api_router.include_router(purchase_link_router)
+api_router.include_router(care_item_router)

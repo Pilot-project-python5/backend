@@ -1,0 +1,21 @@
+id: "F-3.1"
+title: "복용 제품 등록"
+domain: "care"
+requirement: "FR-3"
+phase: "1"
+priority: "P0"
+status: "implemented"
+owner: "backend"
+history_path: "docs/history/care/f-3-1-care-item-registration.md"
+source:
+  requirement_path: "docs/product/requirements.md"
+  external_url: "https://app.notion.com/p/3b82779e926281e8b5abed44db581a78"
+  reviewed_on: "2026-08-12"
+dependencies:
+  - "F-1.4"
+  - "F-2.3"
+api_changes:
+  - "POST /api/v1/care/items 201 복용 제품 등록 추가"
+data_changes:
+  - "care_items 테이블 추가"
+open_questions: []

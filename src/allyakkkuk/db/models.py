@@ -10,6 +10,7 @@ from allyakkkuk.auth.models import (
     RefreshSession,
     User,
 )
+from allyakkkuk.care.models import CareItem
 from allyakkkuk.curation.models import (
     ExpertComment,
     Nutrient,
@@ -21,6 +22,7 @@ from allyakkkuk.curation.models import (
 )
 
 __all__ = [
+    "CareItem",
     "EmailVerification",
     "ExpertComment",
     "HealthProfile",
