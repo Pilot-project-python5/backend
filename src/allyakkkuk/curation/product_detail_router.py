@@ -14,6 +14,7 @@ from allyakkkuk.curation.product_detail_repository import (
 )
 from allyakkkuk.curation.product_detail_service import ProductDetailService
 from allyakkkuk.curation.product_schemas import (
+    ExpertCommentResponse,
     NutrientUnit,
     ProductDetailResponse,
     ProductNutrientResponse,
@@ -100,5 +101,13 @@ def get_recommended_product(
                 unit=cast(NutrientUnit, item.unit),
             )
             for item in result.nutrients
+        ],
+        expert_comments=[
+            ExpertCommentResponse(
+                id=item.id,
+                author_label=item.author_label,
+                content=item.content,
+            )
+            for item in result.expert_comments
         ],
     )

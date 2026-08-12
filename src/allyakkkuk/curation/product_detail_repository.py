@@ -12,6 +12,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from allyakkkuk.curation.models import (
+    ExpertComment,
     Nutrient,
     Product,
     ProductCategory,
@@ -33,6 +34,13 @@ class NutrientRecord:
 
 
 @dataclass(frozen=True, slots=True)
+class ExpertCommentRecord:
+    id: UUID
+    author_label: str
+    content: str
+
+
+@dataclass(frozen=True, slots=True)
 class ProductDetailRecord:
     id: UUID
     sku: str
@@ -45,6 +53,7 @@ class ProductDetailRecord:
     unit_form: str
     units_per_package: Decimal
     nutrients: tuple[NutrientRecord, ...]
+    expert_comments: tuple[ExpertCommentRecord, ...] = ()
 
 
 class ProductDetailRepository(Protocol):
@@ -111,6 +120,20 @@ class SQLAlchemyProductDetailRepository:
                     .order_by(ProductNutrient.sort_order, Nutrient.code)
                 )
             )
+            expert_comment_rows = tuple(
+                self._session.execute(
+                    select(
+                        ExpertComment.id,
+                        ExpertComment.author_label,
+                        ExpertComment.content,
+                    )
+                    .where(
+                        ExpertComment.product_id == product.id,
+                        ExpertComment.is_active.is_(True),
+                    )
+                    .order_by(ExpertComment.sort_order, ExpertComment.id)
+                )
+            )
         except SQLAlchemyError as exc:
             raise ProductDetailPersistenceError from exc
 
@@ -133,5 +156,13 @@ class SQLAlchemyProductDetailRepository:
                     unit=unit,
                 )
                 for code, name, amount_per_unit, unit in nutrient_rows
+            ),
+            expert_comments=tuple(
+                ExpertCommentRecord(
+                    id=comment_id,
+                    author_label=author_label,
+                    content=content,
+                )
+                for comment_id, author_label, content in expert_comment_rows
             ),
         )

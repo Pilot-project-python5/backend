@@ -238,6 +238,13 @@ erDiagram
   1차 시드와 향후 쓰기 서비스에서 검증한다.
 - 공개 제품 상세는 게시 제품과 활성 카테고리 연결을 요구하고 활성 성분만
   product_nutrients.sort_order, nutrients.code 순으로 제공한다.
+- F-2.4.1에서 expert_comments를 실제 테이블로 구현한다. UUID PK와 product_id FK,
+  trim 기준 1~100자 author_label, 1~2000자 일반 문자열 content, 활성 여부와 0 이상
+  sort_order를 가진다.
+- 제품 삭제 시 코멘트는 CASCADE하며 공개 상세는 활성 코멘트만 sort_order·id로
+  정렬한다. `(product_id, is_active, sort_order, id)` 인덱스를 사용한다.
+- F-2.1 전문가 소개가 프론트엔드 정적 콘텐츠이므로 experts 테이블을 만들지 않고
+  author_label을 표시 스냅샷으로 보존한다.
 - 의약품의 효능, 복용법, 주의와 보관 정보는 medication_details에 저장한다.
 - 전문가 소개는 프론트엔드 정적 콘텐츠이므로 1차에는 experts 테이블을 만들지 않는다.
 - 영양소 기준 원본은 CSV이며 버전과 checksum을 보존한다.

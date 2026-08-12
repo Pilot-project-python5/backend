@@ -4,6 +4,7 @@
 
 | 날짜 | 기능 ID | 변경 | 호환성 | 마이그레이션 참고 사항 |
 | --- | --- | --- | --- | --- |
+| 2026-08-12 | F-2.4.1 | 제품 상세 200 응답에 expert_comments 배열 추가 | 기존 상세 필드를 유지하는 additive 응답 확장, 목록은 변경 없음 | expert_comments 마이그레이션 20260812_0009과 코멘트 시드 필요 |
 | 2026-08-12 | F-2.4 | GET /api/v1/curation/products/{product_id} 공개 상세와 패키지·성분·200/404/422/503 계약 추가 | 신규 공개 읽기 API로 F-2.3 목록과 기존 호출에 호환 | nutrients·product_nutrients 마이그레이션 20260812_0008과 성분 시드 필요 |
 | 2026-08-12 | F-2.3 | GET /api/v1/curation/products 공개 필터·페이지 목록과 200/404/422/503 계약 추가 | 신규 공개 읽기 API와 정적 이미지 경로로 기존 호출과 호환 | products·product_category_mappings 마이그레이션 20260812_0007과 제품 시드 필요 |
 | 2026-08-12 | F-2.2 | GET /api/v1/curation/categories 공개 목록과 200/503 계약 추가 | 신규 공개 읽기 API로 기존 호출과 호환 | product_categories 마이그레이션 20260812_0006과 기준 시드 필요 |

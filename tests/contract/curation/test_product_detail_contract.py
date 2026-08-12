@@ -89,6 +89,7 @@ def test_product_detail_returns_public_package_and_nutrient_contract() -> None:
                 "unit": "MG",
             }
         ],
+        "expert_comments": [],
     }
 
 

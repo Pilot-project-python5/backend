@@ -22,6 +22,13 @@ class NutrientAmount:
 
 
 @dataclass(frozen=True, slots=True)
+class ExpertComment:
+    id: UUID
+    author_label: str
+    content: str
+
+
+@dataclass(frozen=True, slots=True)
 class ProductDetail:
     id: UUID
     sku: str
@@ -34,6 +41,7 @@ class ProductDetail:
     unit_form: str
     units_per_package: Decimal
     nutrients: tuple[NutrientAmount, ...]
+    expert_comments: tuple[ExpertComment, ...] = ()
 
 
 class ProductDetailService:
@@ -76,5 +84,13 @@ class ProductDetailService:
                     unit=item.unit,
                 )
                 for item in result.nutrients
+            ),
+            expert_comments=tuple(
+                ExpertComment(
+                    id=item.id,
+                    author_label=item.author_label,
+                    content=item.content,
+                )
+                for item in result.expert_comments
             ),
         )

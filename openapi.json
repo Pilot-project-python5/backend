@@ -300,6 +300,30 @@
         "title": "ErrorResponse",
         "type": "object"
       },
+      "ExpertCommentResponse": {
+        "properties": {
+          "author_label": {
+            "title": "Author Label",
+            "type": "string"
+          },
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "author_label",
+          "content"
+        ],
+        "title": "ExpertCommentResponse",
+        "type": "object"
+      },
       "Gender": {
         "enum": [
           "MALE",
@@ -522,6 +546,13 @@
             ],
             "currency": "KRW",
             "display_price": 28400,
+            "expert_comments": [
+              {
+                "author_label": "MJ's COMMENT",
+                "content": "개발용 전문가 추천 코멘트",
+                "id": "24000000-0000-4000-8000-000000000001"
+              }
+            ],
             "id": "22000000-0000-4000-8000-000000000001",
             "image_url": "/static/products/life-extension-two-per-day.svg",
             "name": "라이프익스텐션 투퍼데이",
@@ -562,6 +593,13 @@
           "display_price": {
             "title": "Display Price",
             "type": "integer"
+          },
+          "expert_comments": {
+            "items": {
+              "$ref": "#/components/schemas/ExpertCommentResponse"
+            },
+            "title": "Expert Comments",
+            "type": "array"
           },
           "id": {
             "format": "uuid",
@@ -605,7 +643,8 @@
           "display_price",
           "category_slugs",
           "package",
-          "nutrients"
+          "nutrients",
+          "expert_comments"
         ],
         "title": "ProductDetailResponse",
         "type": "object"

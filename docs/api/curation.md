@@ -97,6 +97,30 @@
       "amount_per_unit": "235",
       "unit": "MG"
     }
+  ],
+  "expert_comments": []
+}
+~~~
+
+## F-2.4.1 전문가 코멘트
+
+- 기존 GET /api/v1/curation/products/{product_id}의 200 응답에
+  expert_comments 배열을 추가한다.
+- F-2.3 목록에는 코멘트를 추가하지 않고 UI 토글을 열 때 상세를 조회한다.
+- 활성 코멘트만 sort_order, id 오름차순으로 제공하며 없으면 빈 배열이다.
+- 각 항목은 id, author_label, content를 포함한다.
+- content는 렌더링 형식을 부여하지 않은 일반 JSON 문자열이다.
+- 공개 제품 조건과 404 PRODUCT_NOT_FOUND, 422 VALIDATION_FAILED,
+  503 SERVICE_UNAVAILABLE은 F-2.4 계약을 유지한다.
+
+~~~json
+{
+  "expert_comments": [
+    {
+      "id": "24000000-0000-4000-8000-000000000001",
+      "author_label": "MJ's COMMENT",
+      "content": "개발용 전문가 추천 코멘트"
+    }
   ]
 }
 ~~~

@@ -11,6 +11,7 @@ from allyakkkuk.auth.models import (
     User,
 )
 from allyakkkuk.curation.models import (
+    ExpertComment,
     Nutrient,
     Product,
     ProductCategory,
@@ -20,6 +21,7 @@ from allyakkkuk.curation.models import (
 
 __all__ = [
     "EmailVerification",
+    "ExpertComment",
     "HealthProfile",
     "Nutrient",
     "Product",
