@@ -43,6 +43,10 @@ class CareItem(Base):
             name="ck_care_items_dose_within_total",
         ),
         CheckConstraint(
+            "quantity_unit IN ('TABLET', 'CAPSULE', 'SCOOP', 'PACKET')",
+            name="ck_care_items_quantity_unit",
+        ),
+        CheckConstraint(
             "intakes_per_day BETWEEN 1 AND 24",
             name="ck_care_items_intakes_per_day",
         ),
@@ -73,6 +77,7 @@ class CareItem(Base):
     purchase_date: Mapped[date] = mapped_column(Date, nullable=False)
     intake_start_date: Mapped[date] = mapped_column(Date, nullable=False)
     total_quantity: Mapped[Decimal] = mapped_column(Numeric(12, 3), nullable=False)
+    quantity_unit: Mapped[str] = mapped_column(String(20), nullable=False)
     dose_per_intake: Mapped[Decimal] = mapped_column(Numeric(12, 3), nullable=False)
     intakes_per_day: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     created_at: Mapped[datetime] = mapped_column(

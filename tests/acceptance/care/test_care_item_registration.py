@@ -157,6 +157,8 @@ def test_logged_in_user_registers_same_catalog_product_as_distinct_history() -> 
     assert login.status_code == 200
     assert first.status_code == second.status_code == 201
     assert first.json()["id"] != second.json()["id"]
+    assert first.json()["quantity_unit"] == "CAPSULE"
+    assert second.json()["quantity_unit"] == "CAPSULE"
     with SessionFactory() as session:
         stored = tuple(
             session.scalars(
@@ -168,3 +170,4 @@ def test_logged_in_user_registers_same_catalog_product_as_distinct_history() -> 
     assert len(stored) == 2
     assert all(item.product_id == PRODUCT_ID for item in stored)
     assert all(item.total_quantity == Decimal("60") for item in stored)
+    assert all(item.quantity_unit == "CAPSULE" for item in stored)

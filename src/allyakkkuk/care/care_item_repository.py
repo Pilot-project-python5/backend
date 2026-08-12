@@ -40,6 +40,7 @@ class CareItemRecord:
     purchase_date: date
     intake_start_date: date
     total_quantity: Decimal
+    quantity_unit: str
     dose_per_intake: Decimal
     intakes_per_day: int
     created_at: datetime
@@ -83,7 +84,7 @@ class SQLAlchemyCareItemRepository:
     def create(self, data: CareItemCreateData) -> CareItemRecord | None:
         try:
             product = self._session.execute(
-                select(Product.id, Product.product_type)
+                select(Product.id, Product.product_type, Product.unit_form)
                 .where(Product.id == data.product_id)
                 .limit(1)
             ).one_or_none()
@@ -127,6 +128,7 @@ class SQLAlchemyCareItemRepository:
                 purchase_date=data.purchase_date,
                 intake_start_date=data.intake_start_date,
                 total_quantity=data.total_quantity,
+                quantity_unit=product.unit_form,
                 dose_per_intake=data.dose_per_intake,
                 intakes_per_day=data.intakes_per_day,
                 created_at=data.created_at,
@@ -146,6 +148,7 @@ class SQLAlchemyCareItemRepository:
             purchase_date=item.purchase_date,
             intake_start_date=item.intake_start_date,
             total_quantity=item.total_quantity,
+            quantity_unit=item.quantity_unit,
             dose_per_intake=item.dose_per_intake,
             intakes_per_day=item.intakes_per_day,
             created_at=item.created_at,
