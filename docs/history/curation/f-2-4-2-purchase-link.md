@@ -6,8 +6,8 @@ domain: "curation"
 status: "implemented"
 completed_on: "2026-08-12"
 feature_packet: "docs/features/curation/f-2-4-2-purchase-link"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/13"
+commit: "2d690c8"
 ---
 
 # F-2.4.2 외부 구매 연결 구현 이력
