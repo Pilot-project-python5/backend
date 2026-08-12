@@ -6,8 +6,8 @@ domain: "curation"
 status: "implemented"
 completed_on: "2026-08-12"
 feature_packet: "docs/features/curation/f-2-4-1-expert-comment"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/12"
+commit: "9cdfd33"
 ---
 
 # F-2.4.1 전문가 코멘트 구현 이력
