@@ -73,7 +73,8 @@
 - units_per_package와 amount_per_unit은 Decimal 정밀도를 보존하는 JSON 문자열이다.
 - 1차 성분 단위는 MG, G, MCG, IU다.
 - DB 실패는 503 SERVICE_UNAVAILABLE로 반환한다.
-- 전문가 코멘트와 구매 링크는 F-2.4.1·F-2.4.2에서 응답을 독립 확장한다.
+- 전문가 코멘트는 F-2.4.1에서 상세 응답을 확장하고 구매 링크는 F-2.4.2의 별도
+  리다이렉트 경로로 제공한다.
 
 ~~~json
 {
@@ -123,4 +124,27 @@
     }
   ]
 }
+~~~
+
+## F-2.4.2 외부 구매 연결
+
+- GET /api/v1/curation/products/{product_id}/purchase
+- 인증 없이 호출하는 공개 리다이렉트 API다.
+- 게시 제품이면서 활성 카테고리 연결이 있는 제품만 공개한다.
+- 활성 링크 중 sort_order, id 오름차순 첫 항목으로 307 Temporary Redirect한다.
+- 성공 응답은 Location과 `Cache-Control: no-store`,
+  `Referrer-Policy: no-referrer` 헤더를 포함하고 본문은 없다.
+- 미존재·비게시·활성 카테고리 없음은 404 PRODUCT_NOT_FOUND다.
+- 공개 제품에 활성 링크가 없으면 404 PURCHASE_LINK_NOT_FOUND다.
+- product_id 형식 오류는 422 VALIDATION_FAILED, DB 또는 저장 URL 안전성 실패는
+  503 SERVICE_UNAVAILABLE다.
+- URL은 hostname이 있는 HTTPS 절대 URL이며 userinfo·fragment·공백을 허용하지 않고
+  최대 2048자다.
+- 클릭·사용자·구매 이력을 쓰지 않는다.
+
+~~~http
+HTTP/1.1 307 Temporary Redirect
+Location: https://example.com/allyakkkuk/products/life-two-per-day
+Cache-Control: no-store
+Referrer-Policy: no-referrer
 ~~~

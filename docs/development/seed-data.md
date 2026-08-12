@@ -76,6 +76,20 @@ F-2.2부터 제품 카테고리를 레지스트리에 등록하며, 제품·의�
 - 시드 문구는 UI·Swagger·프론트엔드 연동용 샘플이며 의료적 효능을 보증하지 않는다.
 - 별도 experts 기준 테이블 없이 author_label을 표시 스냅샷으로 저장한다.
 
+## F-2.4.2 외부 구매 링크
+
+| 고정 UUID | 제품 SKU | 판매처 표시 | URL | 활성 | 정렬 |
+| --- | --- | --- | --- | --- | ---: |
+| `25000000-0000-4000-8000-000000000001` | `LIFE-TWO-PER-DAY` | 개발용 구매처 | `https://example.com/allyakkkuk/products/life-two-per-day` | 예 | 10 |
+| `25000000-0000-4000-8000-000000000002` | `BSN-SYNTHA-6-ISOLATE-CHOCOLATE` | 개발용 구매처 | `https://example.com/allyakkkuk/products/bsn-syntha-6-isolate` | 예 | 10 |
+| `25000000-0000-4000-8000-000000000003` | `SPORTS-RESEARCH-OMEGA-3` | 개발용 구매처 | `https://example.com/allyakkkuk/products/sports-research-omega-3` | 예 | 10 |
+
+- 고정 link UUID를 키로 사용하고 제품 SKU를 실제 product_id로 해석한다.
+- 반복 실행하면 제품 연결·판매처 표시·URL·활성·정렬을 승인 상태로 복원한다.
+- URL은 시드 적용 전에 애플리케이션 안전 검증을 거치고 DB CHECK도 적용한다.
+- example.com은 로컬 개발·Swagger·프론트엔드 연동용이며 실제 판매처가 아니다.
+- 클릭 기록은 저장하지 않는다.
+
 ## 필수 데이터
 
 - 제품 카테고리(F-2.2 완료)
@@ -84,7 +98,7 @@ F-2.2부터 제품 카테고리를 레지스트리에 등록하며, 제품·의�
 - 제품별 단위와 총 용량
 - 영양제별 단위당 성분(F-2.4 완료)
 - 전문가 코멘트(F-2.4.1 완료)
-- 활성 외부 구매 링크
+- 활성 외부 구매 링크(F-2.4.2 완료)
 - 영양소 기준 CSV
 
 ## 규칙

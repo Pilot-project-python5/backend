@@ -245,6 +245,13 @@ erDiagram
   정렬한다. `(product_id, is_active, sort_order, id)` 인덱스를 사용한다.
 - F-2.1 전문가 소개가 프론트엔드 정적 콘텐츠이므로 experts 테이블을 만들지 않고
   author_label을 표시 스냅샷으로 보존한다.
+- F-2.4.2에서 purchase_links를 실제 테이블로 구현한다. UUID PK와 product_id FK,
+  trim 기준 1~100자 provider_name, 9~2048자 HTTPS URL, 활성 여부와 0 이상 sort_order를
+  가진다. URL은 공백·fragment와 authority userinfo를 허용하지 않는다.
+- 제품 삭제 시 구매 링크는 CASCADE하며 이동 API는 활성 링크만 sort_order·id로
+  정렬해 첫 항목을 선택한다. `(product_id, is_active, sort_order, id)` 인덱스를 사용한다.
+- 구매 이동은 클릭·사용자·구매 이력을 저장하지 않으므로 1차 ERD에 추적 엔티티를
+  추가하지 않는다.
 - 의약품의 효능, 복용법, 주의와 보관 정보는 medication_details에 저장한다.
 - 전문가 소개는 프론트엔드 정적 콘텐츠이므로 1차에는 experts 테이블을 만들지 않는다.
 - 영양소 기준 원본은 CSV이며 버전과 checksum을 보존한다.
