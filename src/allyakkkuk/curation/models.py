@@ -210,3 +210,39 @@ class ProductNutrient(Base):
     amount_per_unit: Mapped[Decimal] = mapped_column(Numeric(12, 4), nullable=False)
     unit: Mapped[str] = mapped_column(String(10), nullable=False)
     sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+
+class ExpertComment(Base):
+    __tablename__ = "expert_comments"
+    __table_args__ = (
+        CheckConstraint(
+            "char_length(btrim(author_label)) BETWEEN 1 AND 100",
+            name="ck_expert_comments_author_label_length",
+        ),
+        CheckConstraint(
+            "char_length(btrim(content)) BETWEEN 1 AND 2000",
+            name="ck_expert_comments_content_length",
+        ),
+        CheckConstraint(
+            "sort_order >= 0",
+            name="ck_expert_comments_sort_order",
+        ),
+        Index(
+            "ix_expert_comments_product_active_sort",
+            "product_id",
+            "is_active",
+            "sort_order",
+            "id",
+        ),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    product_id: Mapped[UUID] = mapped_column(
+        Uuid,
+        ForeignKey("products.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    author_label: Mapped[str] = mapped_column(String(100), nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

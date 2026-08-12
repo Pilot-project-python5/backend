@@ -22,7 +22,7 @@ features:
   - { id: "F-2.2", title: "제품 카테고리", slug: "product-categories", requirement: "FR-2", domain: "curation", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-2.3", title: "추천 제품 목록", slug: "recommended-products", requirement: "FR-2", domain: "curation", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-2.4", title: "추천 제품 정보", slug: "product-detail", requirement: "FR-2", domain: "curation", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
-  - { id: "F-2.4.1", title: "전문가 코멘트", slug: "expert-comment", requirement: "FR-2", domain: "curation", phase: 1, priority: "P0", owner: "backend", status: "planned" }
+  - { id: "F-2.4.1", title: "전문가 코멘트", slug: "expert-comment", requirement: "FR-2", domain: "curation", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-2.4.2", title: "외부 구매 연결", slug: "purchase-link", requirement: "FR-2", domain: "curation", phase: 1, priority: "P0", owner: "backend", status: "planned" }
   - { id: "F-2.5", title: "추천 소식 알림", slug: "curation-news", requirement: "FR-2", domain: "curation", phase: 2, priority: "P1", owner: "backend", status: "deferred" }
   - { id: "F-3.1", title: "복용 제품 등록", slug: "care-item-registration", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "planned" }

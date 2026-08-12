@@ -1,0 +1,21 @@
+id: "F-2.4.1"
+title: "전문가 코멘트"
+domain: "curation"
+requirement: "FR-2"
+phase: "1"
+priority: "P0"
+status: "implemented"
+owner: "backend"
+history_path: "docs/history/curation/f-2-4-1-expert-comment.md"
+source:
+  requirement_path: "docs/product/requirements.md"
+  external_url: "https://app.notion.com/p/3b82779e926281c4b8feef88cc416b73"
+  reviewed_on: "2026-08-12"
+dependencies:
+  - "F-2.4"
+api_changes:
+  - "GET /api/v1/curation/products/{product_id} 성공 응답에 expert_comments 추가"
+data_changes:
+  - "expert_comments 테이블 추가"
+  - "개발용 제품별 전문가 코멘트 시드 추가"
+open_questions: []

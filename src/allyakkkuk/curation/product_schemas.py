@@ -80,6 +80,12 @@ class ProductNutrientResponse(BaseModel):
     unit: NutrientUnit
 
 
+class ExpertCommentResponse(BaseModel):
+    id: UUID
+    author_label: str
+    content: str
+
+
 class ProductDetailResponse(ProductListItemResponse):
     model_config = ConfigDict(
         json_schema_extra={
@@ -106,6 +112,13 @@ class ProductDetailResponse(ProductListItemResponse):
                             "unit": "MG",
                         }
                     ],
+                    "expert_comments": [
+                        {
+                            "id": "24000000-0000-4000-8000-000000000001",
+                            "author_label": "MJ's COMMENT",
+                            "content": "개발용 전문가 추천 코멘트",
+                        }
+                    ],
                 }
             ]
         }
@@ -113,3 +126,4 @@ class ProductDetailResponse(ProductListItemResponse):
 
     package: ProductPackageResponse
     nutrients: list[ProductNutrientResponse]
+    expert_comments: list[ExpertCommentResponse]
