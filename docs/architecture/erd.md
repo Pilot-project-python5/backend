@@ -285,15 +285,11 @@ erDiagram
         uuid product_id FK
         date purchase_date
         date intake_start_date
-        date expiration_date
         numeric total_quantity
         numeric dose_per_intake
         smallint intakes_per_day
-        date expected_depletion_date
-        varchar lifecycle_status
-        varchar inventory_status
-        varchar expiration_status
-        timestamptz ended_at
+        timestamptz created_at
+        timestamptz updated_at
     }
 
     CARE_NUTRIENT_SNAPSHOTS {
@@ -320,10 +316,18 @@ erDiagram
 
 - care_items는 구매·복용 등록 한 건을 독립된 재고 단위로 보존한다.
 - 재구매는 새 care_items 행을 만들고 기존 소진 이력을 덮어쓰지 않는다.
-- total_quantity, dose_per_intake와 intakes_per_day는 0보다 커야 한다.
-- 마지막 복용 예정일을 expected_depletion_date로 저장하고 D-day 기준으로 사용한다.
-- 소진 D-5부터 LOW_STOCK, D-day 다음 날부터 DEPLETED다.
-- 재고 상태와 유통기한 상태를 분리한다.
+- F-3.1에서 care_items를 실제 테이블로 구현한다. user_id는 users.id를 참조하고
+  사용자 삭제 시 CASCADE하며, product_id는 products.id를 참조하고 제품 삭제는
+  RESTRICT한다.
+- intake_start_date는 purchase_date 이상이어야 한다. 미래 구매일 금지는 변하는 서버
+  날짜를 DB CHECK에 넣지 않고 등록 서비스에서 검증한다.
+- total_quantity와 dose_per_intake는 NUMERIC(12,3), 0 초과
+  999999999.999 이하이며 dose_per_intake는 total_quantity 이하다.
+- intakes_per_day는 1~24이고 updated_at은 created_at보다 빠를 수 없다.
+- 사용자별 최신 이력은 `(user_id, created_at, id)`, 제품 참조는 `product_id`
+  인덱스를 사용한다. B-tree 역방향 스캔으로 최신순 조회를 지원한다.
+- expected_depletion_date와 소진 상태는 F-3.7·F-3.8, 유통기한과 만료 상태는
+  F-3.11에서 별도 마이그레이션으로 추가한다.
 - 영양제만 등록 시점의 성분 스냅샷을 만들고 의약품은 영양소 합계에서 제외한다.
 - 실제 복용 기록과 일일 섭취량 행은 만들지 않으며 복용 계획으로 계산한다.
 
@@ -382,9 +386,10 @@ erDiagram
 - 사용자 나이: birth_date와 계산 기준일로 계산하며 저장하지 않는다.
 - 일일 예정 섭취량: 활성 영양제 스냅샷 × 회당 복용량 × 하루 횟수로 계산한다.
 - 기준량 달성 비율: 예정 섭취량과 나이·성별 기준량으로 계산한다.
-- 예상 소진일: 계산 후 care_items에 저장해 알림 예약과 목록 조회에 사용한다.
+- 예상 소진일: F-3.7에서 계산 후 care_items에 추가해 알림 예약과 목록 조회에 사용한다.
 - D-day: expected_depletion_date와 조회 기준일의 차이로 계산한다.
-- 재고·유통기한 상태: 도메인 규칙으로 계산하고 검색·작업자 처리를 위해 저장한다.
+- 재고·유통기한 상태: 후속 기능에서 도메인 규칙으로 계산하고 검색·작업자 처리를
+  위해 추가한다.
 
 ## 권장 고유 제약과 인덱스
 
@@ -393,9 +398,10 @@ erDiagram
 - product_category_mappings(product_id, category_id) UNIQUE
 - product_nutrients(product_id, nutrient_id) UNIQUE
 - nutrient_reference_values(version_id, nutrient_id, gender, age_min, age_max)
-- care_items(user_id, lifecycle_status, created_at DESC)
-- care_items(expected_depletion_date, inventory_status)
-- care_items(expiration_date, expiration_status)
+- care_items(user_id, created_at, id)
+- care_items(product_id)
+- care_items(expected_depletion_date, inventory_status) — F-3.7·F-3.8 예정
+- care_items(expiration_date, expiration_status) — F-3.11 예정
 - care_nutrient_snapshots(care_item_id, nutrient_id) UNIQUE
 - notifications(care_item_id, notification_type, reference_date, trigger_days_before) UNIQUE
 - notifications(user_id, read_at, created_at DESC)
