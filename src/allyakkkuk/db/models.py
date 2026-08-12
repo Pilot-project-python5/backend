@@ -17,6 +17,7 @@ from allyakkkuk.curation.models import (
     ProductCategory,
     ProductCategoryMapping,
     ProductNutrient,
+    PurchaseLink,
 )
 
 __all__ = [
@@ -28,6 +29,7 @@ __all__ = [
     "ProductCategory",
     "ProductCategoryMapping",
     "ProductNutrient",
+    "PurchaseLink",
     "RefreshSession",
     "User",
 ]

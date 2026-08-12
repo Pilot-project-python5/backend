@@ -2505,6 +2505,112 @@
         ]
       }
     },
+    "/api/v1/curation/products/{product_id}/purchase": {
+      "get": {
+        "operationId": "curation_redirect_to_purchase",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "product_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Product Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "307": {
+            "description": "활성 외부 구매 링크로 임시 이동",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Location": {
+                "schema": {
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "Referrer-Policy": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "product_not_found": {
+                    "summary": "공개 추천 제품 없음",
+                    "value": {
+                      "error": {
+                        "code": "PRODUCT_NOT_FOUND",
+                        "fields": [],
+                        "message": "제품을 찾을 수 없습니다.",
+                        "request_id": "opaque-request-id"
+                      }
+                    }
+                  },
+                  "purchase_link_not_found": {
+                    "summary": "활성 구매 링크 없음",
+                    "value": {
+                      "error": {
+                        "code": "PURCHASE_LINK_NOT_FOUND",
+                        "fields": [],
+                        "message": "구매 링크를 찾을 수 없습니다.",
+                        "request_id": "opaque-request-id"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "공개 추천 제품 또는 활성 구매 링크 없음"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 조회 또는 구매 URL 검증 실패"
+          }
+        },
+        "summary": "활성 외부 구매 링크로 이동",
+        "tags": [
+          "큐레이션"
+        ]
+      }
+    },
     "/api/v1/health/live": {
       "get": {
         "operationId": "system_liveness",

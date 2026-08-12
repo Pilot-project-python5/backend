@@ -246,3 +246,47 @@ class ExpertComment(Base):
     content: Mapped[str] = mapped_column(Text, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+
+class PurchaseLink(Base):
+    __tablename__ = "purchase_links"
+    __table_args__ = (
+        CheckConstraint(
+            "char_length(btrim(provider_name)) BETWEEN 1 AND 100",
+            name="ck_purchase_links_provider_name_length",
+        ),
+        CheckConstraint(
+            "char_length(url) BETWEEN 9 AND 2048",
+            name="ck_purchase_links_url_length",
+        ),
+        CheckConstraint(
+            "url ~ '^https://[^[:space:]#]+$'",
+            name="ck_purchase_links_url_https",
+        ),
+        CheckConstraint(
+            "url !~ '^https://[^/]*@'",
+            name="ck_purchase_links_url_no_userinfo",
+        ),
+        CheckConstraint(
+            "sort_order >= 0",
+            name="ck_purchase_links_sort_order",
+        ),
+        Index(
+            "ix_purchase_links_product_active_sort",
+            "product_id",
+            "is_active",
+            "sort_order",
+            "id",
+        ),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    product_id: Mapped[UUID] = mapped_column(
+        Uuid,
+        ForeignKey("products.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    provider_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    url: Mapped[str] = mapped_column(Text, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

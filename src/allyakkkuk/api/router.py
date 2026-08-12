@@ -15,6 +15,7 @@ from allyakkkuk.curation.product_category_router import (
 )
 from allyakkkuk.curation.product_detail_router import router as product_detail_router
 from allyakkkuk.curation.product_router import router as product_router
+from allyakkkuk.curation.purchase_link_router import router as purchase_link_router
 
 api_router = APIRouter()
 api_router.include_router(health_router)
@@ -26,3 +27,4 @@ api_router.include_router(current_user_router)
 api_router.include_router(product_category_router)
 api_router.include_router(product_router)
 api_router.include_router(product_detail_router)
+api_router.include_router(purchase_link_router)

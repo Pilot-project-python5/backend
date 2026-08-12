@@ -10,6 +10,7 @@ from sqlalchemy import Connection, Engine, text
 from allyakkkuk.curation.expert_comment_seeds import ExpertCommentSeedSet
 from allyakkkuk.curation.product_nutrient_seeds import ProductNutrientSeedSet
 from allyakkkuk.curation.product_seeds import ProductSeedSet
+from allyakkkuk.curation.purchase_link_seeds import PurchaseLinkSeedSet
 from allyakkkuk.curation.seeds import ProductCategorySeedSet
 
 logger = logging.getLogger(__name__)
@@ -26,6 +27,7 @@ REGISTERED_SEEDS: tuple[SeedSet, ...] = (
     ProductSeedSet(),
     ProductNutrientSeedSet(),
     ExpertCommentSeedSet(),
+    PurchaseLinkSeedSet(),
 )
 
 
