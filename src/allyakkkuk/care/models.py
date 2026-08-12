@@ -14,6 +14,8 @@ from sqlalchemy import (
     Index,
     Numeric,
     SmallInteger,
+    String,
+    UniqueConstraint,
     Uuid,
 )
 from sqlalchemy.orm import Mapped, mapped_column
@@ -79,3 +81,44 @@ class CareItem(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False
     )
+
+
+class CareNutrientSnapshot(Base):
+    """복용 제품 등록 시점의 영양 성분 값."""
+
+    __tablename__ = "care_nutrient_snapshots"
+    __table_args__ = (
+        UniqueConstraint(
+            "care_item_id",
+            "nutrient_id",
+            name="uq_care_nutrient_snapshots_item_nutrient",
+        ),
+        CheckConstraint(
+            "char_length(btrim(nutrient_name)) BETWEEN 1 AND 100",
+            name="ck_care_nutrient_snapshots_name_length",
+        ),
+        CheckConstraint(
+            "amount_per_unit > 0",
+            name="ck_care_nutrient_snapshots_amount",
+        ),
+        CheckConstraint(
+            "unit IN ('MG', 'G', 'MCG', 'IU')",
+            name="ck_care_nutrient_snapshots_unit",
+        ),
+        Index("ix_care_nutrient_snapshots_nutrient_id", "nutrient_id"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    care_item_id: Mapped[UUID] = mapped_column(
+        Uuid,
+        ForeignKey("care_items.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    nutrient_id: Mapped[UUID] = mapped_column(
+        Uuid,
+        ForeignKey("nutrients.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    nutrient_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    amount_per_unit: Mapped[Decimal] = mapped_column(Numeric(12, 4), nullable=False)
+    unit: Mapped[str] = mapped_column(String(10), nullable=False)

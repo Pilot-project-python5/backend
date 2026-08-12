@@ -12,8 +12,8 @@ from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from allyakkkuk.care.models import CareItem
-from allyakkkuk.curation.models import Product
+from allyakkkuk.care.models import CareItem, CareNutrientSnapshot
+from allyakkkuk.curation.models import Nutrient, Product, ProductNutrient
 
 
 class CareItemPersistenceError(Exception):
@@ -45,6 +45,33 @@ class CareItemRecord:
     created_at: datetime
 
 
+@dataclass(frozen=True, slots=True)
+class NutrientSnapshotSource:
+    nutrient_id: UUID
+    nutrient_name: str
+    amount_per_unit: Decimal
+    unit: str
+
+
+def build_nutrient_snapshots(
+    care_item_id: UUID,
+    sources: tuple[NutrientSnapshotSource, ...],
+) -> tuple[CareNutrientSnapshot, ...]:
+    """카탈로그 조회 결과를 변경 불가능한 등록 시점 값으로 복사한다."""
+
+    return tuple(
+        CareNutrientSnapshot(
+            id=uuid4(),
+            care_item_id=care_item_id,
+            nutrient_id=source.nutrient_id,
+            nutrient_name=source.nutrient_name,
+            amount_per_unit=source.amount_per_unit,
+            unit=source.unit,
+        )
+        for source in sources
+    )
+
+
 class CareItemRepository(Protocol):
     def create(self, data: CareItemCreateData) -> CareItemRecord | None: ...
 
@@ -55,14 +82,46 @@ class SQLAlchemyCareItemRepository:
 
     def create(self, data: CareItemCreateData) -> CareItemRecord | None:
         try:
-            product_id = self._session.scalar(
-                select(Product.id).where(Product.id == data.product_id).limit(1)
-            )
-            if product_id is None:
+            product = self._session.execute(
+                select(Product.id, Product.product_type)
+                .where(Product.id == data.product_id)
+                .limit(1)
+            ).one_or_none()
+            if product is None:
                 return None
 
+            snapshot_sources: tuple[NutrientSnapshotSource, ...] = ()
+            if product.product_type == "SUPPLEMENT":
+                rows = self._session.execute(
+                    select(
+                        Nutrient.id,
+                        Nutrient.name,
+                        ProductNutrient.amount_per_unit,
+                        ProductNutrient.unit,
+                    )
+                    .join(
+                        ProductNutrient,
+                        ProductNutrient.nutrient_id == Nutrient.id,
+                    )
+                    .where(
+                        ProductNutrient.product_id == data.product_id,
+                        Nutrient.is_active.is_(True),
+                    )
+                    .order_by(ProductNutrient.sort_order, Nutrient.code)
+                )
+                snapshot_sources = tuple(
+                    NutrientSnapshotSource(
+                        nutrient_id=row.id,
+                        nutrient_name=row.name,
+                        amount_per_unit=row.amount_per_unit,
+                        unit=row.unit,
+                    )
+                    for row in rows
+                )
+
+            item_id = uuid4()
             item = CareItem(
-                id=uuid4(),
+                id=item_id,
                 user_id=data.user_id,
                 product_id=data.product_id,
                 purchase_date=data.purchase_date,
@@ -74,6 +133,7 @@ class SQLAlchemyCareItemRepository:
                 updated_at=data.created_at,
             )
             self._session.add(item)
+            self._session.add_all(build_nutrient_snapshots(item_id, snapshot_sources))
             self._session.commit()
         except SQLAlchemyError as exc:
             self._session.rollback()
