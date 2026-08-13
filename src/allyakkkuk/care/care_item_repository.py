@@ -8,7 +8,7 @@ from decimal import Decimal
 from typing import Protocol
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
+from sqlalchemy import func, select, update
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -47,6 +47,29 @@ class CareItemRecord:
 
 
 @dataclass(frozen=True, slots=True)
+class CareItemListRecord:
+    id: UUID
+    product_id: UUID
+    product_type: str
+    brand: str
+    name: str
+    image_url: str
+    purchase_date: date
+    intake_start_date: date
+    total_quantity: Decimal
+    quantity_unit: str
+    dose_per_intake: Decimal
+    intakes_per_day: int
+    created_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
+class CareItemPageRecord:
+    items: tuple[CareItemListRecord, ...]
+    total: int
+
+
+@dataclass(frozen=True, slots=True)
 class NutrientSnapshotSource:
     nutrient_id: UUID
     nutrient_name: str
@@ -75,6 +98,24 @@ def build_nutrient_snapshots(
 
 class CareItemRepository(Protocol):
     def create(self, data: CareItemCreateData) -> CareItemRecord | None: ...
+
+
+class CareItemManagementRepository(Protocol):
+    def list_active(
+        self,
+        *,
+        user_id: UUID,
+        page: int,
+        page_size: int,
+    ) -> CareItemPageRecord: ...
+
+    def soft_delete(
+        self,
+        *,
+        user_id: UUID,
+        care_item_id: UUID,
+        deleted_at: datetime,
+    ) -> bool: ...
 
 
 class SQLAlchemyCareItemRepository:
@@ -153,3 +194,79 @@ class SQLAlchemyCareItemRepository:
             intakes_per_day=item.intakes_per_day,
             created_at=item.created_at,
         )
+
+    def list_active(
+        self,
+        *,
+        user_id: UUID,
+        page: int,
+        page_size: int,
+    ) -> CareItemPageRecord:
+        try:
+            filters = (
+                CareItem.user_id == user_id,
+                CareItem.deleted_at.is_(None),
+            )
+            total = self._session.scalar(
+                select(func.count()).select_from(CareItem).where(*filters)
+            )
+            resolved_total = int(total or 0)
+            offset = (page - 1) * page_size
+            if offset >= resolved_total:
+                return CareItemPageRecord(items=(), total=resolved_total)
+
+            rows = self._session.execute(
+                select(CareItem, Product)
+                .join(Product, Product.id == CareItem.product_id)
+                .where(*filters)
+                .order_by(CareItem.created_at.desc(), CareItem.id.desc())
+                .offset(offset)
+                .limit(page_size)
+            )
+            items = tuple(
+                CareItemListRecord(
+                    id=item.id,
+                    product_id=item.product_id,
+                    product_type=product.product_type,
+                    brand=product.brand,
+                    name=product.name,
+                    image_url=product.image_url,
+                    purchase_date=item.purchase_date,
+                    intake_start_date=item.intake_start_date,
+                    total_quantity=item.total_quantity,
+                    quantity_unit=item.quantity_unit,
+                    dose_per_intake=item.dose_per_intake,
+                    intakes_per_day=item.intakes_per_day,
+                    created_at=item.created_at,
+                )
+                for item, product in rows
+            )
+        except SQLAlchemyError as exc:
+            raise CareItemPersistenceError from exc
+
+        return CareItemPageRecord(items=items, total=resolved_total)
+
+    def soft_delete(
+        self,
+        *,
+        user_id: UUID,
+        care_item_id: UUID,
+        deleted_at: datetime,
+    ) -> bool:
+        try:
+            deleted_id = self._session.scalar(
+                update(CareItem)
+                .where(
+                    CareItem.id == care_item_id,
+                    CareItem.user_id == user_id,
+                    CareItem.deleted_at.is_(None),
+                )
+                .values(deleted_at=deleted_at, updated_at=deleted_at)
+                .returning(CareItem.id)
+            )
+            self._session.commit()
+        except SQLAlchemyError as exc:
+            self._session.rollback()
+            raise CareItemPersistenceError from exc
+
+        return deleted_id is not None
