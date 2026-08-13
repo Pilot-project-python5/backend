@@ -6,8 +6,8 @@ domain: "care"
 status: "implemented"
 completed_on: "2026-08-13"
 feature_packet: "docs/features/care/f-3-5-daily-intake"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/18"
+commit: "32163f9"
 ---
 
 # F-3.5 일일 섭취량 계산 구현 이력
