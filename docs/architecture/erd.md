@@ -291,6 +291,7 @@ erDiagram
         smallint intakes_per_day
         timestamptz created_at
         timestamptz updated_at
+        timestamptz deleted_at
     }
 
     CARE_NUTRIENT_SNAPSHOTS {
@@ -330,9 +331,14 @@ erDiagram
   않는다.
 - 같은 제품을 소진 전에 다시 사도 기존 항목의 수량을 합산·수정하지 않고 새
   CareItem으로 보존한다. 실제 복용 기록이 없으므로 mutable 잔량 컬럼은 만들지 않는다.
-- intakes_per_day는 1~24이고 updated_at은 created_at보다 빠를 수 없다.
+- F-3.4에서 삭제는 물리 삭제가 아니라 nullable deleted_at을 서버 시각으로 기록하는
+  소프트 삭제로 처리한다. 삭제된 CareItem과 성분 스냅샷은 보존하며 활성 목록과 후속
+  계산·알림 대상에서는 제외한다. deleted_at은 NULL이거나 created_at 이상이어야 한다.
+- intakes_per_day는 1~24이고 updated_at은 created_at보다 빠를 수 없다. 소프트 삭제
+  때 deleted_at과 updated_at을 같은 시각으로 기록한다.
 - 사용자별 최신 이력은 `(user_id, created_at, id)`, 제품 참조는 `product_id`
-  인덱스를 사용한다. B-tree 역방향 스캔으로 최신순 조회를 지원한다.
+  인덱스를 사용한다. 활성 목록은 같은 열의 `deleted_at IS NULL` 부분 인덱스를 사용하고
+  B-tree 역방향 스캔으로 최신순 조회를 지원한다.
 - expected_depletion_date와 소진 상태는 F-3.7·F-3.8, 유통기한과 만료 상태는
   F-3.11에서 별도 마이그레이션으로 추가한다.
 - F-3.2에서 care_nutrient_snapshots를 실제 테이블로 구현한다. SUPPLEMENT 등록 시
@@ -340,8 +346,9 @@ erDiagram
   활성 성분이 없는 영양제는 스냅샷을 만들지 않는다.
 - `(care_item_id, nutrient_id)`는 고유하고 amount_per_unit은 NUMERIC(12,4)의
   양수, nutrient_name은 trim 기준 1~100자, unit은 MG·G·MCG·IU 중 하나다.
-- care_item 삭제 시 스냅샷은 CASCADE하고 nutrient 삭제는 RESTRICT한다. 영양성분
-  참조 조회에는 `nutrient_id` 인덱스를 사용한다.
+- care_item 행을 물리 삭제하면 스냅샷은 CASCADE하고 nutrient 삭제는 RESTRICT한다.
+  F-3.4 사용자 소프트 삭제는 스냅샷을 보존한다. 영양성분 참조 조회에는
+  `nutrient_id` 인덱스를 사용한다.
 - 제품·성분 카탈로그가 바뀌어도 이미 저장한 스냅샷은 갱신·삭제하지 않는다.
   0012 적용 전에 존재한 영양제 항목은 적용 시점의 활성 카탈로그 값으로 한 번
   백필한다.
@@ -438,7 +445,7 @@ erDiagram
 
 - 유통기한 필수 여부
 - 복용 계획과 수량 수정 API 제공 여부
-- 복용 항목 삭제와 이력 보존 기간
+- 삭제된 복용 항목의 복원·물리 정리와 이력 보존 기간
 - 나누어떨어지지 않는 수량의 마지막 복용일 계산
 - 영양소 CSV 열, 단위 변환, 출처와 버전 규칙
 - 오전 9시의 IANA 기준 시간대

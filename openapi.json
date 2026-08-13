@@ -74,6 +74,157 @@
         "title": "CareItemCreateRequest",
         "type": "object"
       },
+      "CareItemListItemResponse": {
+        "properties": {
+          "brand": {
+            "title": "Brand",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "dose_per_intake": {
+            "pattern": "^(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "title": "Dose Per Intake",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "image_url": {
+            "title": "Image Url",
+            "type": "string"
+          },
+          "intake_start_date": {
+            "format": "date",
+            "title": "Intake Start Date",
+            "type": "string"
+          },
+          "intakes_per_day": {
+            "title": "Intakes Per Day",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "product_id": {
+            "format": "uuid",
+            "title": "Product Id",
+            "type": "string"
+          },
+          "product_type": {
+            "enum": [
+              "SUPPLEMENT",
+              "MEDICATION"
+            ],
+            "title": "Product Type",
+            "type": "string"
+          },
+          "purchase_date": {
+            "format": "date",
+            "title": "Purchase Date",
+            "type": "string"
+          },
+          "quantity_unit": {
+            "enum": [
+              "TABLET",
+              "CAPSULE",
+              "SCOOP",
+              "PACKET"
+            ],
+            "title": "Quantity Unit",
+            "type": "string"
+          },
+          "total_quantity": {
+            "pattern": "^(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "title": "Total Quantity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "product_id",
+          "product_type",
+          "brand",
+          "name",
+          "image_url",
+          "purchase_date",
+          "intake_start_date",
+          "total_quantity",
+          "quantity_unit",
+          "dose_per_intake",
+          "intakes_per_day",
+          "created_at"
+        ],
+        "title": "CareItemListItemResponse",
+        "type": "object"
+      },
+      "CareItemListResponse": {
+        "examples": [
+          {
+            "has_next": false,
+            "items": [
+              {
+                "brand": "Life Extension",
+                "created_at": "2026-08-13T09:00:00Z",
+                "dose_per_intake": "1",
+                "id": "31000000-0000-4000-8000-000000000001",
+                "image_url": "/static/products/life-extension-two-per-day.svg",
+                "intake_start_date": "2026-08-12",
+                "intakes_per_day": 2,
+                "name": "라이프익스텐션 투퍼데이",
+                "product_id": "22000000-0000-4000-8000-000000000001",
+                "product_type": "SUPPLEMENT",
+                "purchase_date": "2026-08-10",
+                "quantity_unit": "CAPSULE",
+                "total_quantity": "60"
+              }
+            ],
+            "page": 1,
+            "page_size": 20,
+            "total": 1
+          }
+        ],
+        "properties": {
+          "has_next": {
+            "title": "Has Next",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CareItemListItemResponse"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "page": {
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "page",
+          "page_size",
+          "total",
+          "has_next"
+        ],
+        "title": "CareItemListResponse",
+        "type": "object"
+      },
       "CareItemResponse": {
         "examples": [
           {
@@ -2435,6 +2586,110 @@
       }
     },
     "/api/v1/care/items": {
+      "get": {
+        "operationId": "care_list_items",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Page Size",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CareItemListResponse"
+                }
+              }
+            },
+            "description": "현재 사용자의 활성 복용 제품 페이지",
+            "headers": {
+              "Cache-Control": {
+                "description": "개인 건강 관련 응답 캐시 금지",
+                "schema": {
+                  "example": "no-store",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "AUTH_REQUIRED",
+                    "fields": [],
+                    "message": "인증이 필요합니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "access 인증 실패"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 조회 실패"
+          }
+        },
+        "security": [
+          {
+            "AccessCookieAuth": []
+          }
+        ],
+        "summary": "내 활성 복용 제품 목록 조회",
+        "tags": [
+          "마이케어"
+        ]
+      },
       "post": {
         "operationId": "care_register_item",
         "requestBody": {
@@ -2546,6 +2801,110 @@
           }
         ],
         "summary": "복용 제품 등록",
+        "tags": [
+          "마이케어"
+        ]
+      }
+    },
+    "/api/v1/care/items/{care_item_id}": {
+      "delete": {
+        "operationId": "care_delete_item",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "care_item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Care Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "복용 항목 소프트 삭제 성공",
+            "headers": {
+              "Cache-Control": {
+                "description": "개인 건강 관련 응답 캐시 금지",
+                "schema": {
+                  "example": "no-store",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "AUTH_REQUIRED",
+                    "fields": [],
+                    "message": "인증이 필요합니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "access 인증 실패"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "CARE_ITEM_NOT_FOUND",
+                    "fields": [],
+                    "message": "복용 항목을 찾을 수 없습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "현재 사용자의 활성 복용 항목 없음"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 처리 실패"
+          }
+        },
+        "security": [
+          {
+            "AccessCookieAuth": []
+          }
+        ],
+        "summary": "내 복용 제품 삭제",
         "tags": [
           "마이케어"
         ]

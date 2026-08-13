@@ -17,6 +17,7 @@ from sqlalchemy import (
     String,
     UniqueConstraint,
     Uuid,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -54,6 +55,10 @@ class CareItem(Base):
             "updated_at >= created_at",
             name="ck_care_items_updated_at",
         ),
+        CheckConstraint(
+            "deleted_at IS NULL OR deleted_at >= created_at",
+            name="ck_care_items_deleted_at",
+        ),
         Index(
             "ix_care_items_user_created_at",
             "user_id",
@@ -61,6 +66,13 @@ class CareItem(Base):
             "id",
         ),
         Index("ix_care_items_product_id", "product_id"),
+        Index(
+            "ix_care_items_active_user_created_at",
+            "user_id",
+            "created_at",
+            "id",
+            postgresql_where=text("deleted_at IS NULL"),
+        ),
     )
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
@@ -85,6 +97,9 @@ class CareItem(Base):
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False
+    )
+    deleted_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True, default=None
     )
 
 

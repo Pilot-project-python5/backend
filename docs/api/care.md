@@ -67,8 +67,66 @@
 - 같은 제품을 소진 전에 다시 등록해도 기존 수량을 합산·수정하지 않고 독립 CareItem을
   생성한다.
 
+## F-3.4 복용 제품 조회·삭제
+
+### 활성 목록 조회
+
+- `GET /api/v1/care/items?page=1&page_size=20`
+- HttpOnly access JWT 쿠키가 필요한 보호 API이며 현재 사용자 소유의 삭제되지 않은
+  CareItem만 반환한다.
+- page는 1 이상, page_size는 기본 20이고 1~100이다. 응답은 items·page·page_size·
+  total·has_next를 제공하며 범위를 넘는 페이지도 200과 빈 items를 반환한다.
+- `created_at DESC, id DESC` 최신 등록순으로 안정 정렬한다. 같은 제품 재구매분은
+  합산하지 않고 독립 항목으로 반환한다.
+- 각 항목은 CareItem의 ID·제품 ID·구매일·복용 시작일·총수량·단위·회당 복용량·하루
+  횟수·등록 시각과 현재 Product의 유형·브랜드·이름·이미지를 제공한다.
+- 제품이 비게시 상태로 바뀌어도 이미 등록한 활성 항목은 숨기지 않는다. 제품 표시
+  정보는 현재 카탈로그 값이고 구매 시점 스냅샷은 아니다.
+- total_quantity와 dose_per_intake는 불필요한 끝자리 0을 제거한 Decimal 문자열이다.
+- 사용자 ID, deleted_at과 영양성분 스냅샷은 응답하지 않는다.
+- 성공은 200과 `Cache-Control: no-store`, 인증 실패는 401 `AUTH_REQUIRED`, 잘못된
+  페이지 값은 422 `VALIDATION_FAILED`, DB 실패는 503 `SERVICE_UNAVAILABLE`다.
+
+~~~json
+{
+  "items": [
+    {
+      "id": "31000000-0000-4000-8000-000000000001",
+      "product_id": "22000000-0000-4000-8000-000000000001",
+      "product_type": "SUPPLEMENT",
+      "brand": "Life Extension",
+      "name": "라이프익스텐션 투퍼데이",
+      "image_url": "/static/products/life-extension-two-per-day.svg",
+      "purchase_date": "2026-08-10",
+      "intake_start_date": "2026-08-12",
+      "total_quantity": "60",
+      "quantity_unit": "CAPSULE",
+      "dose_per_intake": "1",
+      "intakes_per_day": 2,
+      "created_at": "2026-08-13T09:00:00Z"
+    }
+  ],
+  "page": 1,
+  "page_size": 20,
+  "total": 1,
+  "has_next": false
+}
+~~~
+
+### 이력 보존형 삭제
+
+- `DELETE /api/v1/care/items/{care_item_id}`
+- 현재 사용자의 활성 CareItem만 삭제할 수 있고 성공은 본문 없는 204와
+  `Cache-Control: no-store`다.
+- 삭제는 서버 현재 시각을 deleted_at과 updated_at에 기록하는 소프트 삭제다.
+  CareItem과 F-3.2 성분 스냅샷 행은 보존하고 이후 활성 목록에서 제외한다.
+- 다른 사용자 소유, 미존재와 이미 삭제된 항목은 존재 여부를 구분하지 않고 404
+  `CARE_ITEM_NOT_FOUND`로 통일한다.
+- 인증 실패는 401 `AUTH_REQUIRED`, 잘못된 UUID는 422 `VALIDATION_FAILED`, DB 실패는
+  503 `SERVICE_UNAVAILABLE`다.
+- 삭제 복원·휴지통·보존 기간 만료 후 물리 정리는 F-3.4 범위에 포함하지 않는다.
+
 ### 후속 기능 경계
 
-- 목록 조회·삭제와 이력 보존은 F-3.4에서 제공한다.
 - 예상 소진일·상태·알림은 F-3.7 이후에 추가한다.
 - 유통기한은 F-3.11에서 추가하며 F-3.1 요청에는 포함하지 않는다.

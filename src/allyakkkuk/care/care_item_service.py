@@ -10,6 +10,8 @@ from zoneinfo import ZoneInfo
 
 from allyakkkuk.care.care_item_repository import (
     CareItemCreateData,
+    CareItemListRecord,
+    CareItemManagementRepository,
     CareItemPersistenceError,
     CareItemRepository,
 )
@@ -38,6 +40,32 @@ class CareItemRegistrationResult:
     dose_per_intake: Decimal
     intakes_per_day: int
     created_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
+class CareItemListItem:
+    id: UUID
+    product_id: UUID
+    product_type: str
+    brand: str
+    name: str
+    image_url: str
+    purchase_date: date
+    intake_start_date: date
+    total_quantity: Decimal
+    quantity_unit: str
+    dose_per_intake: Decimal
+    intakes_per_day: int
+    created_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
+class CareItemListResult:
+    items: tuple[CareItemListItem, ...]
+    page: int
+    page_size: int
+    total: int
+    has_next: bool
 
 
 class CareItemService:
@@ -115,6 +143,83 @@ class CareItemService:
             intakes_per_day=result.intakes_per_day,
             created_at=result.created_at,
         )
+
+
+class CareItemManagementService:
+    def __init__(
+        self,
+        repository: CareItemManagementRepository,
+        clock: Clock,
+    ) -> None:
+        self._repository = repository
+        self._clock = clock
+
+    def list_items(
+        self,
+        *,
+        user_id: UUID,
+        page: int,
+        page_size: int,
+    ) -> CareItemListResult:
+        try:
+            result = self._repository.list_active(
+                user_id=user_id,
+                page=page,
+                page_size=page_size,
+            )
+        except CareItemPersistenceError as exc:
+            raise _service_unavailable() from exc
+
+        return CareItemListResult(
+            items=tuple(_list_item(item) for item in result.items),
+            page=page,
+            page_size=page_size,
+            total=result.total,
+            has_next=page * page_size < result.total,
+        )
+
+    def delete_item(self, *, user_id: UUID, care_item_id: UUID) -> None:
+        try:
+            deleted = self._repository.soft_delete(
+                user_id=user_id,
+                care_item_id=care_item_id,
+                deleted_at=self._clock.now(),
+            )
+        except CareItemPersistenceError as exc:
+            raise _service_unavailable() from exc
+
+        if not deleted:
+            raise AppError(
+                status_code=404,
+                code="CARE_ITEM_NOT_FOUND",
+                message="복용 항목을 찾을 수 없습니다.",
+            )
+
+
+def _list_item(item: CareItemListRecord) -> CareItemListItem:
+    return CareItemListItem(
+        id=item.id,
+        product_id=item.product_id,
+        product_type=item.product_type,
+        brand=item.brand,
+        name=item.name,
+        image_url=item.image_url,
+        purchase_date=item.purchase_date,
+        intake_start_date=item.intake_start_date,
+        total_quantity=item.total_quantity,
+        quantity_unit=item.quantity_unit,
+        dose_per_intake=item.dose_per_intake,
+        intakes_per_day=item.intakes_per_day,
+        created_at=item.created_at,
+    )
+
+
+def _service_unavailable() -> AppError:
+    return AppError(
+        status_code=503,
+        code="SERVICE_UNAVAILABLE",
+        message="서비스가 아직 준비되지 않았습니다.",
+    )
 
 
 def _validation_error(*, field: str, code: str, message: str) -> AppError:

@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from typing import Annotated, Any, cast
+from uuid import UUID
 from zoneinfo import ZoneInfo
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
 
 from allyakkkuk.api.schemas import ErrorResponse
@@ -15,10 +16,15 @@ from allyakkkuk.auth.current_user_service import AuthenticatedUser
 from allyakkkuk.care.care_item_repository import SQLAlchemyCareItemRepository
 from allyakkkuk.care.care_item_schemas import (
     CareItemCreateRequest,
+    CareItemListItemResponse,
+    CareItemListResponse,
     CareItemResponse,
+    ProductType,
     QuantityUnit,
+    decimal_string,
 )
 from allyakkkuk.care.care_item_service import (
+    CareItemManagementService,
     CareItemRegistrationCommand,
     CareItemService,
 )
@@ -39,6 +45,15 @@ def get_care_item_service(
         SQLAlchemyCareItemRepository(session),
         _clock,
         _time_zone,
+    )
+
+
+def get_care_item_management_service(
+    session: Annotated[Session, Depends(get_db_session)],
+) -> CareItemManagementService:
+    return CareItemManagementService(
+        SQLAlchemyCareItemRepository(session),
+        _clock,
     )
 
 
@@ -63,6 +78,121 @@ def _error_response(
             }
         },
     }
+
+
+_PRIVATE_RESPONSE_HEADERS = {
+    "Cache-Control": {
+        "description": "개인 건강 관련 응답 캐시 금지",
+        "schema": {"type": "string", "example": "no-store"},
+    }
+}
+
+
+@router.get(
+    "/items",
+    response_model=CareItemListResponse,
+    responses={
+        200: {
+            "description": "현재 사용자의 활성 복용 제품 페이지",
+            "headers": _PRIVATE_RESPONSE_HEADERS,
+        },
+        401: _error_response(
+            "access 인증 실패",
+            "AUTH_REQUIRED",
+            "인증이 필요합니다.",
+        ),
+        503: _error_response(
+            "PostgreSQL 조회 실패",
+            "SERVICE_UNAVAILABLE",
+            "서비스가 아직 준비되지 않았습니다.",
+        ),
+    },
+    summary="내 활성 복용 제품 목록 조회",
+    operation_id="care_list_items",
+)
+def list_care_items(
+    response: Response,
+    current: Annotated[AuthenticatedUser, Depends(require_current_user)],
+    service: Annotated[
+        CareItemManagementService,
+        Depends(get_care_item_management_service),
+    ],
+    page: Annotated[int, Query(ge=1)] = 1,
+    page_size: Annotated[int, Query(ge=1, le=100)] = 20,
+) -> CareItemListResponse:
+    result = service.list_items(
+        user_id=current.user_id,
+        page=page,
+        page_size=page_size,
+    )
+    set_no_store_headers(response)
+    return CareItemListResponse(
+        items=[
+            CareItemListItemResponse(
+                id=item.id,
+                product_id=item.product_id,
+                product_type=cast(ProductType, item.product_type),
+                brand=item.brand,
+                name=item.name,
+                image_url=item.image_url,
+                purchase_date=item.purchase_date,
+                intake_start_date=item.intake_start_date,
+                total_quantity=decimal_string(item.total_quantity),
+                quantity_unit=cast(QuantityUnit, item.quantity_unit),
+                dose_per_intake=decimal_string(item.dose_per_intake),
+                intakes_per_day=item.intakes_per_day,
+                created_at=item.created_at,
+            )
+            for item in result.items
+        ],
+        page=result.page,
+        page_size=result.page_size,
+        total=result.total,
+        has_next=result.has_next,
+    )
+
+
+@router.delete(
+    "/items/{care_item_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
+    responses={
+        204: {
+            "description": "복용 항목 소프트 삭제 성공",
+            "headers": _PRIVATE_RESPONSE_HEADERS,
+        },
+        401: _error_response(
+            "access 인증 실패",
+            "AUTH_REQUIRED",
+            "인증이 필요합니다.",
+        ),
+        404: _error_response(
+            "현재 사용자의 활성 복용 항목 없음",
+            "CARE_ITEM_NOT_FOUND",
+            "복용 항목을 찾을 수 없습니다.",
+        ),
+        503: _error_response(
+            "PostgreSQL 처리 실패",
+            "SERVICE_UNAVAILABLE",
+            "서비스가 아직 준비되지 않았습니다.",
+        ),
+    },
+    summary="내 복용 제품 삭제",
+    operation_id="care_delete_item",
+)
+def delete_care_item(
+    care_item_id: UUID,
+    response: Response,
+    current: Annotated[AuthenticatedUser, Depends(require_current_user)],
+    service: Annotated[
+        CareItemManagementService,
+        Depends(get_care_item_management_service),
+    ],
+) -> Response:
+    service.delete_item(user_id=current.user_id, care_item_id=care_item_id)
+    response.status_code = status.HTTP_204_NO_CONTENT
+    set_no_store_headers(response)
+    return response
 
 
 @router.post(

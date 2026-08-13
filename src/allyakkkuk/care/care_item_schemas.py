@@ -4,13 +4,22 @@ from __future__ import annotations
 
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Literal
+from typing import Annotated, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
 MAX_QUANTITY = Decimal("999999999.999")
 QuantityUnit = Literal["TABLET", "CAPSULE", "SCOOP", "PACKET"]
+ProductType = Literal["SUPPLEMENT", "MEDICATION"]
+DecimalString = Annotated[str, Field(pattern=r"^(?:0|[1-9]\d*)(?:\.\d+)?$")]
+
+
+def decimal_string(value: Decimal) -> str:
+    rendered = format(value, "f")
+    if "." in rendered:
+        rendered = rendered.rstrip("0").rstrip(".")
+    return rendered
 
 
 class CareItemCreateRequest(BaseModel):
@@ -75,3 +84,59 @@ class CareItemResponse(BaseModel):
     dose_per_intake: Decimal
     intakes_per_day: int
     created_at: datetime
+
+
+class CareItemListItemResponse(BaseModel):
+    id: UUID
+    product_id: UUID
+    product_type: ProductType
+    brand: str
+    name: str
+    image_url: str
+    purchase_date: date
+    intake_start_date: date
+    total_quantity: DecimalString
+    quantity_unit: QuantityUnit
+    dose_per_intake: DecimalString
+    intakes_per_day: int
+    created_at: datetime
+
+
+class CareItemListResponse(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={
+            "examples": [
+                {
+                    "items": [
+                        {
+                            "id": "31000000-0000-4000-8000-000000000001",
+                            "product_id": "22000000-0000-4000-8000-000000000001",
+                            "product_type": "SUPPLEMENT",
+                            "brand": "Life Extension",
+                            "name": "라이프익스텐션 투퍼데이",
+                            "image_url": (
+                                "/static/products/life-extension-two-per-day.svg"
+                            ),
+                            "purchase_date": "2026-08-10",
+                            "intake_start_date": "2026-08-12",
+                            "total_quantity": "60",
+                            "quantity_unit": "CAPSULE",
+                            "dose_per_intake": "1",
+                            "intakes_per_day": 2,
+                            "created_at": "2026-08-13T09:00:00Z",
+                        }
+                    ],
+                    "page": 1,
+                    "page_size": 20,
+                    "total": 1,
+                    "has_next": False,
+                }
+            ]
+        }
+    )
+
+    items: list[CareItemListItemResponse]
+    page: int
+    page_size: int
+    total: int
+    has_next: bool

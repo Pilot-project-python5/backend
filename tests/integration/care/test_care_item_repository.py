@@ -147,8 +147,12 @@ def test_care_item_schema_matches_model_and_erd_contract() -> None:
         "intakes_per_day",
         "created_at",
         "updated_at",
+        "deleted_at",
     }
-    assert all(not item["nullable"] for item in columns.values())
+    assert columns["deleted_at"]["nullable"] is True
+    assert all(
+        not item["nullable"] for name, item in columns.items() if name != "deleted_at"
+    )
     assert checks >= {
         "ck_care_items_date_order",
         "ck_care_items_total_quantity",
@@ -157,6 +161,7 @@ def test_care_item_schema_matches_model_and_erd_contract() -> None:
         "ck_care_items_dose_within_total",
         "ck_care_items_intakes_per_day",
         "ck_care_items_updated_at",
+        "ck_care_items_deleted_at",
     }
     assert foreign_keys["fk_care_items_user_id_users"]["options"]["ondelete"] == (
         "CASCADE"
@@ -170,3 +175,8 @@ def test_care_item_schema_matches_model_and_erd_contract() -> None:
         "id",
     )
     assert indexes["ix_care_items_product_id"] == ("product_id",)
+    assert indexes["ix_care_items_active_user_created_at"] == (
+        "user_id",
+        "created_at",
+        "id",
+    )
