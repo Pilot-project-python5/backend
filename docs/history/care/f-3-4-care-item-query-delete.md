@@ -6,8 +6,8 @@ domain: "care"
 status: "implemented"
 completed_on: "2026-08-13"
 feature_packet: "docs/features/care/f-3-4-care-item-query-delete"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/17"
+commit: "88fd8c5"
 ---
 
 # F-3.4 복용 제품 조회·삭제 구현 이력
