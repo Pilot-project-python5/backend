@@ -28,6 +28,13 @@ from allyakkkuk.care.care_item_service import (
     CareItemRegistrationCommand,
     CareItemService,
 )
+from allyakkkuk.care.daily_intake_repository import SQLAlchemyDailyIntakeRepository
+from allyakkkuk.care.daily_intake_schemas import (
+    DailyIntakeNutrientResponse,
+    DailyIntakeResponse,
+    NutrientUnit,
+)
+from allyakkkuk.care.daily_intake_service import DailyIntakeService
 from allyakkkuk.core.config import get_settings
 from allyakkkuk.db.session import get_db_session
 from allyakkkuk.ports.clock import SystemClock
@@ -55,6 +62,12 @@ def get_care_item_management_service(
         SQLAlchemyCareItemRepository(session),
         _clock,
     )
+
+
+def get_daily_intake_service(
+    session: Annotated[Session, Depends(get_db_session)],
+) -> DailyIntakeService:
+    return DailyIntakeService(SQLAlchemyDailyIntakeRepository(session))
 
 
 def _error_response(
@@ -86,6 +99,49 @@ _PRIVATE_RESPONSE_HEADERS = {
         "schema": {"type": "string", "example": "no-store"},
     }
 }
+
+
+@router.get(
+    "/daily-intake",
+    response_model=DailyIntakeResponse,
+    responses={
+        200: {
+            "description": "활성 영양제 복용 계획의 성분별 일일 예정 섭취량",
+            "headers": _PRIVATE_RESPONSE_HEADERS,
+        },
+        401: _error_response(
+            "access 인증 실패",
+            "AUTH_REQUIRED",
+            "인증이 필요합니다.",
+        ),
+        503: _error_response(
+            "PostgreSQL 조회 또는 단위 변환 실패",
+            "SERVICE_UNAVAILABLE",
+            "서비스가 아직 준비되지 않았습니다.",
+        ),
+    },
+    summary="내 일일 예정 섭취량 조회",
+    operation_id="care_get_daily_intake",
+)
+def get_daily_intake(
+    response: Response,
+    current: Annotated[AuthenticatedUser, Depends(require_current_user)],
+    service: Annotated[DailyIntakeService, Depends(get_daily_intake_service)],
+) -> DailyIntakeResponse:
+    result = service.get_daily_intake(user_id=current.user_id)
+    set_no_store_headers(response)
+    return DailyIntakeResponse(
+        nutrients=[
+            DailyIntakeNutrientResponse(
+                nutrient_id=item.nutrient_id,
+                nutrient_code=item.nutrient_code,
+                nutrient_name=item.nutrient_name,
+                daily_amount=decimal_string(item.daily_amount),
+                unit=cast(NutrientUnit, item.unit),
+            )
+            for item in result
+        ]
+    )
 
 
 @router.get(

@@ -429,6 +429,76 @@
         "title": "CurrentUserView",
         "type": "object"
       },
+      "DailyIntakeNutrientResponse": {
+        "properties": {
+          "daily_amount": {
+            "pattern": "^(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "title": "Daily Amount",
+            "type": "string"
+          },
+          "nutrient_code": {
+            "title": "Nutrient Code",
+            "type": "string"
+          },
+          "nutrient_id": {
+            "format": "uuid",
+            "title": "Nutrient Id",
+            "type": "string"
+          },
+          "nutrient_name": {
+            "title": "Nutrient Name",
+            "type": "string"
+          },
+          "unit": {
+            "enum": [
+              "MG",
+              "G",
+              "MCG",
+              "IU"
+            ],
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nutrient_id",
+          "nutrient_code",
+          "nutrient_name",
+          "daily_amount",
+          "unit"
+        ],
+        "title": "DailyIntakeNutrientResponse",
+        "type": "object"
+      },
+      "DailyIntakeResponse": {
+        "examples": [
+          {
+            "nutrients": [
+              {
+                "daily_amount": "470",
+                "nutrient_code": "VITAMIN_C",
+                "nutrient_id": "23000000-0000-4000-8000-000000000001",
+                "nutrient_name": "비타민 C",
+                "unit": "MG"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "nutrients": {
+            "items": {
+              "$ref": "#/components/schemas/DailyIntakeNutrientResponse"
+            },
+            "title": "Nutrients",
+            "type": "array"
+          }
+        },
+        "required": [
+          "nutrients"
+        ],
+        "title": "DailyIntakeResponse",
+        "type": "object"
+      },
       "EmailVerificationConfirmRequest": {
         "examples": [
           {
@@ -2582,6 +2652,77 @@
         "summary": "가입 정보 사전 검증",
         "tags": [
           "인증"
+        ]
+      }
+    },
+    "/api/v1/care/daily-intake": {
+      "get": {
+        "operationId": "care_get_daily_intake",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyIntakeResponse"
+                }
+              }
+            },
+            "description": "활성 영양제 복용 계획의 성분별 일일 예정 섭취량",
+            "headers": {
+              "Cache-Control": {
+                "description": "개인 건강 관련 응답 캐시 금지",
+                "schema": {
+                  "example": "no-store",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "AUTH_REQUIRED",
+                    "fields": [],
+                    "message": "인증이 필요합니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "access 인증 실패"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 조회 또는 단위 변환 실패"
+          }
+        },
+        "security": [
+          {
+            "AccessCookieAuth": []
+          }
+        ],
+        "summary": "내 일일 예정 섭취량 조회",
+        "tags": [
+          "마이케어"
         ]
       }
     },

@@ -4,6 +4,7 @@
 
 | 날짜 | 기능 ID | 변경 | 호환성 | 마이그레이션 참고 사항 |
 | --- | --- | --- | --- | --- |
+| 2026-08-13 | F-3.5 | GET /api/v1/care/daily-intake 성분별 일일 예정 섭취량 계약 추가 | 신규 보호 읽기 API이며 기존 care API 계약은 유지 | 기존 care_items·care_nutrient_snapshots·nutrients 읽기 전용, 마이그레이션 없음 |
 | 2026-08-13 | F-3.4 | GET /api/v1/care/items 페이지 목록과 DELETE /api/v1/care/items/{care_item_id} 소프트 삭제 계약 추가 | 신규 보호 API이며 기존 POST 계약은 유지 | care_items.deleted_at·시간 CHECK·활성 부분 인덱스 20260813_0014 추가, 기존 행은 활성 유지 |
 | 2026-08-12 | F-3.3 | POST /api/v1/care/items 201 응답에 서버 결정 quantity_unit 추가 | 기존 요청·응답 필드를 유지하는 additive 응답 확장 | care_items.quantity_unit 마이그레이션 20260812_0013과 기존 행 Product 단위 백필 필요 |
 | 2026-08-12 | F-3.1 | POST /api/v1/care/items 보호 생성 API와 201/401/404/422/503 계약 추가 | 신규 API로 기존 호출과 호환, 응답에 사용자 ID를 노출하지 않음 | care_items 마이그레이션 20260812_0011 필요, 사용자 데이터 시드 없음 |
