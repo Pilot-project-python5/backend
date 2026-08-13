@@ -130,3 +130,41 @@
 
 - 예상 소진일·상태·알림은 F-3.7 이후에 추가한다.
 - 유통기한은 F-3.11에서 추가하며 F-3.1 요청에는 포함하지 않는다.
+
+## F-3.5 일일 예정 섭취량
+
+- `GET /api/v1/care/daily-intake`
+- HttpOnly access JWT 쿠키가 필요한 보호 API이며 현재 사용자 소유의 삭제되지 않은
+  영양제 CareItem과 등록 시점 성분 스냅샷만 계산한다.
+- 각 스냅샷의 `amount_per_unit × dose_per_intake × intakes_per_day`를 계산하고 같은
+  nutrient_id를 Nutrient의 canonical_unit으로 환산해 합산한다.
+- G·MG·MCG는 정확한 10진 비율로 상호 변환한다. IU는 IU끼리만 합산하고 질량 단위와
+  서로 변환하지 않는다.
+- 미래 intake_start_date를 포함한 활성 복용 계획 전체의 하루 총량이다. 실제 복용
+  여부·총수량·소진 상태·현재 잔량은 사용하지 않는다.
+- 응답 항목은 nutrient_id·nutrient_code·nutrient_name·daily_amount·unit이며
+  nutrient_code·nutrient_id 순으로 정렬한다. daily_amount는 Decimal 정밀도를 보존하고
+  불필요한 후행 0을 제거한 문자열이다.
+- 성분 대상이 없으면 200과 빈 nutrients 배열을 반환한다.
+- 성공은 200과 `Cache-Control: no-store`, 인증 실패는 401 `AUTH_REQUIRED`, DB 장애나
+  변환 불가능한 저장 단위는 503 `SERVICE_UNAVAILABLE`다.
+- 계산 결과를 저장하지 않으며 신규 마이그레이션과 시드 변경이 없다.
+
+~~~json
+{
+  "nutrients": [
+    {
+      "nutrient_id": "23000000-0000-4000-8000-000000000001",
+      "nutrient_code": "VITAMIN_C",
+      "nutrient_name": "비타민 C",
+      "daily_amount": "470",
+      "unit": "MG"
+    }
+  ]
+}
+~~~
+
+### 후속 기능 경계
+
+- 나이·성별 기준량과 달성 비율은 F-3.6에서 이 결과를 사용해 확장한다.
+- 예상 소진일·D-day·잔량·재구매 상태는 F-3.7 이후에 계산한다.

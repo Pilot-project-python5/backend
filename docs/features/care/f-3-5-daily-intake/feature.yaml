@@ -1,0 +1,23 @@
+id: "F-3.5"
+title: "일일 섭취량 계산"
+domain: "care"
+requirement: "FR-3"
+phase: "1"
+priority: "P0"
+status: "implemented"
+owner: "backend"
+history_path: "docs/history/care/f-3-5-daily-intake.md"
+source:
+  requirement_path: "docs/product/requirements.md"
+  external_url: "https://app.notion.com/p/3b82779e926281a2b7bcd9b52223647a"
+  reviewed_on: "2026-08-13"
+dependencies:
+  - "F-1.4"
+  - "F-3.1"
+  - "F-3.2"
+  - "F-3.3"
+  - "F-3.4"
+api_changes:
+  - "GET /api/v1/care/daily-intake 사용자 소유 활성 영양제의 성분별 일일 예정 섭취량 조회"
+data_changes: []
+open_questions: []
