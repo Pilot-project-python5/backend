@@ -6,8 +6,8 @@ domain: "notification"
 status: "implemented"
 completed_on: "2026-08-14"
 feature_packet: "docs/features/notification/f-3-9-reminders"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/24"
+commit: "56461f3"
 ---
 
 # F-3.9 리마인더 조회·확인 구현 이력
