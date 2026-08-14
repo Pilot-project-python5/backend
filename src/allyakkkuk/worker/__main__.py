@@ -6,6 +6,7 @@ import signal
 import threading
 from zoneinfo import ZoneInfo
 
+from allyakkkuk.adapters.email import SmtpEmailSender
 from allyakkkuk.core.config import get_settings
 from allyakkkuk.core.logging import configure_logging
 from allyakkkuk.db.session import SessionFactory
@@ -29,6 +30,12 @@ def main() -> None:
             SessionFactory,
             SystemClock(),
             ZoneInfo(settings.app_timezone),
+            SmtpEmailSender(
+                host=settings.mail_host,
+                port=settings.mail_port,
+                from_address=settings.mail_from_address,
+                from_name=settings.mail_from_name,
+            ),
         ),
         interval_seconds=settings.worker_poll_seconds,
         stop_event=stop_event,

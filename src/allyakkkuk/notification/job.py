@@ -8,6 +8,10 @@ from zoneinfo import ZoneInfo
 
 from sqlalchemy.orm import Session
 
+from allyakkkuk.notification.email_repository import (
+    SQLAlchemyEmailDeliveryRepository,
+)
+from allyakkkuk.notification.email_service import EmailReminderService
 from allyakkkuk.notification.repository import (
     SQLAlchemyExpirationNotificationRepository,
     SQLAlchemyRepurchaseNotificationRepository,
@@ -17,6 +21,7 @@ from allyakkkuk.notification.service import (
     RepurchaseNotificationService,
 )
 from allyakkkuk.ports.clock import Clock
+from allyakkkuk.ports.email import EmailSender
 
 logger = logging.getLogger(__name__)
 
@@ -52,10 +57,12 @@ class NotificationJob:
         session_factory: SessionFactory,
         clock: Clock,
         time_zone: ZoneInfo,
+        email_sender: EmailSender | None = None,
     ) -> None:
         self._session_factory = session_factory
         self._clock = clock
         self._time_zone = time_zone
+        self._email_sender = email_sender
 
     def run(self) -> None:
         with self._session_factory() as session:
@@ -69,8 +76,26 @@ class NotificationJob:
                 self._clock,
                 self._time_zone,
             ).run()
+            email_summary = (
+                EmailReminderService(
+                    SQLAlchemyEmailDeliveryRepository(session),
+                    self._email_sender,
+                    self._clock,
+                    self._time_zone,
+                ).run()
+                if self._email_sender is not None
+                else None
+            )
         logger.info(
             "논리 알림 작업 완료 repurchase_created=%d expiration_created=%d",
             repurchase_created,
             expiration_created,
         )
+        if email_summary is not None:
+            logger.info(
+                "이메일 리마인더 작업 완료 enqueued=%d sent=%d retry=%d failed=%d",
+                email_summary.enqueued,
+                email_summary.sent,
+                email_summary.retry_scheduled,
+                email_summary.failed,
+            )

@@ -396,7 +396,7 @@ erDiagram
 erDiagram
     USERS ||--o{ NOTIFICATIONS : receives
     CARE_ITEMS ||--o{ NOTIFICATIONS : triggers
-    NOTIFICATIONS ||--|| EMAIL_DELIVERIES : sends
+    NOTIFICATIONS ||--o| EMAIL_DELIVERIES : sends
 
     USERS {
         uuid id PK
@@ -426,7 +426,9 @@ erDiagram
         smallint attempt_count
         timestamptz next_retry_at
         timestamptz sent_at
-        text last_error
+        varchar last_error
+        timestamptz created_at
+        timestamptz updated_at
     }
 ```
 
@@ -446,9 +448,19 @@ erDiagram
   이력에 보존하되 새 알림 후보에서 제외한다. 1차 MVP는 보관 기간과 삭제 API가 없다.
 - `(user_id, read_at, created_at DESC, id)`는 사용자 화면 목록 조회에 사용한다. API의
   안정 정렬은 `created_at DESC, id DESC`이며 현재 Product 이름을 조인한다.
-- email_deliveries.notification_id를 고유하게 관리해 이메일 중복 발송을 막는다.
-- recipient_email은 발송 시점 주소를 보존하는 스냅샷이다.
-- 재시도는 같은 email_deliveries 행의 상태와 시도 횟수를 갱신한다.
+- F-3.12에서 email_deliveries를 실제 구현한다. Notification 한 건은 전달이 없거나 한
+  건만 가지며 notification_id UNIQUE와 CASCADE FK로 이 관계를 강제한다.
+- recipient_email은 전달 등록 시점 주소를 보존하는 스냅샷이다. 당일 09시 일정의
+  Notification 중 ACTIVE·이메일 인증 사용자만 등록하며 과거 날짜를 소급하지 않는다.
+- 상태는 PENDING·SENDING·RETRY·SENT·FAILED, attempt_count는 0~3이다. 최초 포함 최대
+  3회이며 1·2회 SMTP 실패는 5분 뒤 RETRY, 3회는 FAILED다. 오류 원문 대신 허용된
+  안전 코드만 보존한다.
+- SENDING의 next_retry_at은 5분 claim lease다. due 조회는 `(next_retry_at, id)`의
+  PENDING·SENDING·RETRY 부분 인덱스와 `FOR UPDATE SKIP LOCKED`를 사용한다. 오래된
+  attempt 번호의 성공·실패 결과는 현재 상태를 덮어쓰지 못한다.
+- SENT는 sent_at이 있고 재시도 시각·오류가 없다. 3번째 SENDING lease가 만료되면
+  DELIVERY_RESULT_UNKNOWN FAILED로 종료해 무한 중복을 피한다. created_at·updated_at과
+  상태별 시간·오류 일관성은 DB CHECK로 강제한다.
 
 ## 저장값과 계산값
 

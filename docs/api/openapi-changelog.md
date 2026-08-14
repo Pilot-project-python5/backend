@@ -4,6 +4,7 @@
 
 | 날짜 | 기능 ID | 변경 | 호환성 | 마이그레이션 참고 사항 |
 | --- | --- | --- | --- | --- |
+| 2026-08-14 | F-3.12 | 공개 HTTP API 변경 없음, worker가 Notification 기반 로컬 이메일 전달 추가 | 기존 API·OpenAPI 계약 유지 | email_deliveries 20260814_0020 필요, 과거 전체 알림 백필 없음 |
 | 2026-08-14 | F-3.9 | GET /api/v1/notifications 사용자별 페이지와 PUT /api/v1/notifications/{notification_id}/read 멱등 확인 API 추가 | 신규 보호 API이며 기존 care·Notification 내부 계약은 유지 | 기존 notifications와 조회 인덱스 재사용, 신규 마이그레이션 없음 |
 | 2026-08-14 | F-3.8 | GET /api/v1/care/items 항목에 inventory_status 추가 | 기존 요청을 유지하는 additive 응답 확장 | notifications 20260814_0019 필요, 기존 CareItem 변경·알림 백필 없음 |
 | 2026-08-14 | F-3.11 | POST·GET care items에 nullable 유통기한·D-day·상태를 추가하고 PUT 구매분별 유통기한 갱신 API 추가 | 기존 요청은 선택 필드, 기존 응답은 additive 확장이고 신규 PUT은 멱등 보호 API | care_items.expiration_date nullable·조회 인덱스 20260814_0018 필요, 기존 행은 null 유지 |

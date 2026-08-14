@@ -25,11 +25,12 @@ from allyakkkuk.curation.models import (
     PurchaseLink,
 )
 from allyakkkuk.medication.models import MedicationDetail
-from allyakkkuk.notification.models import Notification
+from allyakkkuk.notification.models import EmailDelivery, Notification
 
 __all__ = [
     "CareItem",
     "CareNutrientSnapshot",
+    "EmailDelivery",
     "EmailVerification",
     "ExpertComment",
     "HealthProfile",
