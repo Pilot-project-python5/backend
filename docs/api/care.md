@@ -168,3 +168,43 @@
 
 - 나이·성별 기준량과 달성 비율은 F-3.6에서 이 결과를 사용해 확장한다.
 - 예상 소진일·D-day·잔량·재구매 상태는 F-3.7 이후에 계산한다.
+
+## F-3.6 영양성분 현황
+
+- `GET /api/v1/care/nutrient-status`
+- 현재 사용자의 삭제되지 않은 영양제 계획을 F-3.5와 동일하게 계산하고, 서버 시각을
+  `APP_TIMEZONE`으로 변환한 날짜의 만 나이·성별에 맞는 2025 한국인 영양소 섭취기준과
+  비교한다. RNI를 우선하고 RNI가 없는 항목은 AI를 사용한다.
+- 비율은 보충제 계획의 일일 예정량이 총 식이 기준량에서 차지하는 값이며 음식 섭취나
+  임상적 결핍·과잉 판정이 아니다. `현재량 / 기준량 × 100`을 소수 첫째 자리로
+  반올림하고 100%를 초과해도 자르지 않는다.
+- 일반 OMEGA_3처럼 공식 기준 항목과 동일성을 보장할 수 없는 성분은 현재량과
+  `reference_available=false`를 반환하고 기준량·유형·비율은 null이다.
+- 응답은 계산 기준일·만 나이·성별·기준 버전·출처와 성분 배열을 제공한다. 성분은
+  nutrient_code·nutrient_id 순으로 정렬되며 Decimal 값은 후행 0을 제거한 문자열이다.
+- 성공은 200과 `Cache-Control: no-store`, 인증 실패는 401 `AUTH_REQUIRED`, 기준 버전
+  없음·DB 장애·단위 불일치는 부분 결과 없는 503 `SERVICE_UNAVAILABLE`다.
+
+~~~json
+{
+  "as_of_date": "2026-08-14",
+  "age": 36,
+  "gender": "FEMALE",
+  "reference_version": "KDRI-2025-20260316",
+  "reference_source_name": "보건복지부·한국영양학회 2025 한국인 영양소 섭취기준",
+  "reference_source_url": "https://www.kns.or.kr/fileroom/FileRoom_view.asp?BoardID=Kdr&idx=167",
+  "nutrients": [
+    {
+      "nutrient_id": "23000000-0000-4000-8000-000000000001",
+      "nutrient_code": "VITAMIN_C",
+      "nutrient_name": "비타민 C",
+      "daily_amount": "150",
+      "unit": "MG",
+      "reference_available": true,
+      "reference_amount": "100",
+      "reference_type": "RNI",
+      "achievement_rate_percent": "150"
+    }
+  ]
+}
+~~~

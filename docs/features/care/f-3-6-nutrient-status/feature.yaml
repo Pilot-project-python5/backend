@@ -1,0 +1,24 @@
+id: "F-3.6"
+title: "영양성분 현황"
+domain: "care"
+requirement: "FR-3"
+phase: "1"
+priority: "P0"
+status: "implemented"
+owner: "backend"
+history_path: "docs/history/care/f-3-6-nutrient-status.md"
+source:
+  requirement_path: "docs/product/requirements.md"
+  external_url: "https://www.kns.or.kr/fileroom/FileRoom_view.asp?BoardID=Kdr&idx=167"
+  reviewed_on: "2026-08-14"
+dependencies:
+  - "F-1.4"
+  - "F-2.4"
+  - "F-3.5"
+api_changes:
+  - "GET /api/v1/care/nutrient-status 추가"
+data_changes:
+  - "nutrient_reference_versions 테이블 추가"
+  - "nutrient_reference_values 테이블 추가"
+  - "2025 한국인 영양소 섭취기준 CSV와 멱등 적재 추가"
+open_questions: []

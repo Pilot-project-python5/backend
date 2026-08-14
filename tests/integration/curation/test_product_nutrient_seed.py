@@ -5,6 +5,7 @@ from collections.abc import Iterator
 import pytest
 from sqlalchemy import delete, select, update
 
+from allyakkkuk.care.nutrient_reference_models import NutrientReferenceVersion
 from allyakkkuk.curation.models import (
     Nutrient,
     Product,
@@ -27,6 +28,7 @@ pytestmark = [pytest.mark.integration, pytest.mark.feature("F-2.4")]
 @pytest.fixture(autouse=True)
 def clean_catalog() -> Iterator[None]:
     with SessionFactory.begin() as session:
+        session.execute(delete(NutrientReferenceVersion))
         session.execute(delete(ProductNutrient))
         session.execute(delete(Nutrient))
         session.execute(delete(ProductCategoryMapping))
@@ -34,6 +36,7 @@ def clean_catalog() -> Iterator[None]:
         session.execute(delete(ProductCategory))
     yield
     with SessionFactory.begin() as session:
+        session.execute(delete(NutrientReferenceVersion))
         session.execute(delete(ProductNutrient))
         session.execute(delete(Nutrient))
         session.execute(delete(ProductCategoryMapping))

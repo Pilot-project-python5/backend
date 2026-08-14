@@ -11,6 +11,10 @@ from allyakkkuk.auth.models import (
     User,
 )
 from allyakkkuk.care.models import CareItem, CareNutrientSnapshot
+from allyakkkuk.care.nutrient_reference_models import (
+    NutrientReferenceValue,
+    NutrientReferenceVersion,
+)
 from allyakkkuk.curation.models import (
     ExpertComment,
     Nutrient,
@@ -28,6 +32,8 @@ __all__ = [
     "ExpertComment",
     "HealthProfile",
     "Nutrient",
+    "NutrientReferenceValue",
+    "NutrientReferenceVersion",
     "Product",
     "ProductCategory",
     "ProductCategoryMapping",

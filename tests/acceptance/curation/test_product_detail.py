@@ -7,6 +7,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import delete
 
+from allyakkkuk.care.nutrient_reference_models import NutrientReferenceVersion
 from allyakkkuk.curation.models import (
     Nutrient,
     Product,
@@ -28,6 +29,7 @@ PRODUCT_ID = UUID("22000000-0000-4000-8000-000000000001")
 @pytest.fixture(autouse=True)
 def seeded_product_detail() -> Iterator[None]:
     with SessionFactory.begin() as session:
+        session.execute(delete(NutrientReferenceVersion))
         session.execute(delete(ProductNutrient))
         session.execute(delete(Nutrient))
         session.execute(delete(ProductCategoryMapping))
@@ -39,6 +41,7 @@ def seeded_product_detail() -> Iterator[None]:
         ProductNutrientSeedSet().apply(connection)
     yield
     with SessionFactory.begin() as session:
+        session.execute(delete(NutrientReferenceVersion))
         session.execute(delete(ProductNutrient))
         session.execute(delete(Nutrient))
         session.execute(delete(ProductCategoryMapping))
