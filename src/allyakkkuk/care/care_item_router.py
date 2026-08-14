@@ -16,6 +16,8 @@ from allyakkkuk.auth.current_user_service import AuthenticatedUser
 from allyakkkuk.care.care_item_repository import SQLAlchemyCareItemRepository
 from allyakkkuk.care.care_item_schemas import (
     CareItemCreateRequest,
+    CareItemExpirationResponse,
+    CareItemExpirationUpdateRequest,
     CareItemListItemResponse,
     CareItemListResponse,
     CareItemResponse,
@@ -283,6 +285,9 @@ def list_care_items(
                 intakes_per_day=item.intakes_per_day,
                 days_until_depletion=item.days_until_depletion,
                 created_at=item.created_at,
+                expiration_date=item.expiration_date,
+                days_until_expiration=item.days_until_expiration,
+                expiration_status=item.expiration_status,
             )
             for item in result.items
         ],
@@ -290,6 +295,51 @@ def list_care_items(
         page_size=result.page_size,
         total=result.total,
         has_next=result.has_next,
+    )
+
+
+@router.put(
+    "/items/{care_item_id}/expiration",
+    response_model=CareItemExpirationResponse,
+    responses={
+        200: {
+            "description": "현재 사용자의 활성 복용 항목 유통기한 갱신",
+            "headers": _PRIVATE_RESPONSE_HEADERS,
+        },
+        401: _error_response("access 인증 실패", "AUTH_REQUIRED", "인증이 필요합니다."),
+        404: _error_response(
+            "현재 사용자의 활성 복용 항목 없음",
+            "CARE_ITEM_NOT_FOUND",
+            "복용 항목을 찾을 수 없습니다.",
+        ),
+        503: _error_response(
+            "PostgreSQL 처리 실패",
+            "SERVICE_UNAVAILABLE",
+            "서비스가 아직 준비되지 않았습니다.",
+        ),
+    },
+    summary="내 복용 제품 유통기한 추가·교정",
+    operation_id="care_update_item_expiration",
+)
+def update_care_item_expiration(
+    care_item_id: UUID,
+    payload: CareItemExpirationUpdateRequest,
+    response: Response,
+    current: Annotated[AuthenticatedUser, Depends(require_current_user)],
+    service: Annotated[
+        CareItemManagementService,
+        Depends(get_care_item_management_service),
+    ],
+) -> CareItemExpirationResponse:
+    service.update_expiration(
+        user_id=current.user_id,
+        care_item_id=care_item_id,
+        expiration_date=payload.expiration_date,
+    )
+    set_no_store_headers(response)
+    return CareItemExpirationResponse(
+        care_item_id=care_item_id,
+        expiration_date=payload.expiration_date,
     )
 
 
@@ -389,6 +439,7 @@ def register_care_item(
             total_quantity=payload.total_quantity,
             dose_per_intake=payload.dose_per_intake,
             intakes_per_day=payload.intakes_per_day,
+            expiration_date=payload.expiration_date,
         ),
     )
     set_no_store_headers(response)
@@ -403,4 +454,5 @@ def register_care_item(
         dose_per_intake=result.dose_per_intake,
         intakes_per_day=result.intakes_per_day,
         created_at=result.created_at,
+        expiration_date=result.expiration_date,
     )

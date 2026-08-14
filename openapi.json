@@ -27,6 +27,18 @@
             ],
             "title": "Dose Per Intake"
           },
+          "expiration_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expiration Date"
+          },
           "intake_start_date": {
             "format": "date",
             "title": "Intake Start Date",
@@ -74,6 +86,40 @@
         "title": "CareItemCreateRequest",
         "type": "object"
       },
+      "CareItemExpirationResponse": {
+        "properties": {
+          "care_item_id": {
+            "format": "uuid",
+            "title": "Care Item Id",
+            "type": "string"
+          },
+          "expiration_date": {
+            "format": "date",
+            "title": "Expiration Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "care_item_id",
+          "expiration_date"
+        ],
+        "title": "CareItemExpirationResponse",
+        "type": "object"
+      },
+      "CareItemExpirationUpdateRequest": {
+        "properties": {
+          "expiration_date": {
+            "format": "date",
+            "title": "Expiration Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expiration_date"
+        ],
+        "title": "CareItemExpirationUpdateRequest",
+        "type": "object"
+      },
       "CareItemListItemResponse": {
         "properties": {
           "brand": {
@@ -89,6 +135,17 @@
             "title": "Days Until Depletion",
             "type": "integer"
           },
+          "days_until_expiration": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Days Until Expiration"
+          },
           "dose_per_intake": {
             "pattern": "^(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "title": "Dose Per Intake",
@@ -98,6 +155,34 @@
             "format": "date",
             "title": "Expected Depletion Date",
             "type": "string"
+          },
+          "expiration_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expiration Date"
+          },
+          "expiration_status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "NORMAL",
+                  "EXPIRING_SOON",
+                  "EXPIRED"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expiration Status"
           },
           "id": {
             "format": "uuid",
@@ -170,7 +255,10 @@
           "dose_per_intake",
           "intakes_per_day",
           "days_until_depletion",
-          "created_at"
+          "created_at",
+          "expiration_date",
+          "days_until_expiration",
+          "expiration_status"
         ],
         "title": "CareItemListItemResponse",
         "type": "object"
@@ -269,6 +357,18 @@
             "title": "Expected Depletion Date",
             "type": "string"
           },
+          "expiration_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expiration Date"
+          },
           "id": {
             "format": "uuid",
             "title": "Id",
@@ -319,7 +419,8 @@
           "quantity_unit",
           "dose_per_intake",
           "intakes_per_day",
-          "created_at"
+          "created_at",
+          "expiration_date"
         ],
         "title": "CareItemResponse",
         "type": "object"
@@ -3453,6 +3554,127 @@
           }
         ],
         "summary": "내 복용 제품 삭제",
+        "tags": [
+          "마이케어"
+        ]
+      }
+    },
+    "/api/v1/care/items/{care_item_id}/expiration": {
+      "put": {
+        "operationId": "care_update_item_expiration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "care_item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Care Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CareItemExpirationUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CareItemExpirationResponse"
+                }
+              }
+            },
+            "description": "현재 사용자의 활성 복용 항목 유통기한 갱신",
+            "headers": {
+              "Cache-Control": {
+                "description": "개인 건강 관련 응답 캐시 금지",
+                "schema": {
+                  "example": "no-store",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "AUTH_REQUIRED",
+                    "fields": [],
+                    "message": "인증이 필요합니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "access 인증 실패"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "CARE_ITEM_NOT_FOUND",
+                    "fields": [],
+                    "message": "복용 항목을 찾을 수 없습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "현재 사용자의 활성 복용 항목 없음"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 처리 실패"
+          }
+        },
+        "security": [
+          {
+            "AccessCookieAuth": []
+          }
+        ],
+        "summary": "내 복용 제품 유통기한 추가·교정",
         "tags": [
           "마이케어"
         ]

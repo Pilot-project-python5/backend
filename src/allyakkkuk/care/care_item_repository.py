@@ -31,6 +31,7 @@ class CareItemCreateData:
     dose_per_intake: Decimal
     intakes_per_day: int
     created_at: datetime
+    expiration_date: date | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,6 +47,7 @@ class CareItemRecord:
     dose_per_intake: Decimal
     intakes_per_day: int
     created_at: datetime
+    expiration_date: date | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,6 +66,7 @@ class CareItemListRecord:
     dose_per_intake: Decimal
     intakes_per_day: int
     created_at: datetime
+    expiration_date: date | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -120,6 +123,15 @@ class CareItemManagementRepository(Protocol):
         deleted_at: datetime,
     ) -> bool: ...
 
+    def update_expiration(
+        self,
+        *,
+        user_id: UUID,
+        care_item_id: UUID,
+        expiration_date: date,
+        updated_at: datetime,
+    ) -> bool: ...
+
 
 class SQLAlchemyCareItemRepository:
     def __init__(self, session: Session) -> None:
@@ -172,6 +184,7 @@ class SQLAlchemyCareItemRepository:
                 purchase_date=data.purchase_date,
                 intake_start_date=data.intake_start_date,
                 expected_depletion_date=data.expected_depletion_date,
+                expiration_date=data.expiration_date,
                 total_quantity=data.total_quantity,
                 quantity_unit=product.unit_form,
                 dose_per_intake=data.dose_per_intake,
@@ -198,6 +211,7 @@ class SQLAlchemyCareItemRepository:
             dose_per_intake=item.dose_per_intake,
             intakes_per_day=item.intakes_per_day,
             created_at=item.created_at,
+            expiration_date=item.expiration_date,
         )
 
     def list_active(
@@ -239,6 +253,7 @@ class SQLAlchemyCareItemRepository:
                     purchase_date=item.purchase_date,
                     intake_start_date=item.intake_start_date,
                     expected_depletion_date=item.expected_depletion_date,
+                    expiration_date=item.expiration_date,
                     total_quantity=item.total_quantity,
                     quantity_unit=item.quantity_unit,
                     dose_per_intake=item.dose_per_intake,
@@ -251,6 +266,34 @@ class SQLAlchemyCareItemRepository:
             raise CareItemPersistenceError from exc
 
         return CareItemPageRecord(items=items, total=resolved_total)
+
+    def update_expiration(
+        self,
+        *,
+        user_id: UUID,
+        care_item_id: UUID,
+        expiration_date: date,
+        updated_at: datetime,
+    ) -> bool:
+        try:
+            updated_id = self._session.scalar(
+                update(CareItem)
+                .where(
+                    CareItem.id == care_item_id,
+                    CareItem.user_id == user_id,
+                    CareItem.deleted_at.is_(None),
+                )
+                .values(
+                    expiration_date=expiration_date,
+                    updated_at=updated_at,
+                )
+                .returning(CareItem.id)
+            )
+            self._session.commit()
+        except SQLAlchemyError as exc:
+            self._session.rollback()
+            raise CareItemPersistenceError from exc
+        return updated_id is not None
 
     def soft_delete(
         self,

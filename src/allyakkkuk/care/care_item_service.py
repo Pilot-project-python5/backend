@@ -19,6 +19,7 @@ from allyakkkuk.care.depletion import (
     calculate_days_until_depletion,
     calculate_expected_depletion_date,
 )
+from allyakkkuk.care.expiration import ExpirationStatus, expiration_state
 from allyakkkuk.core.errors import AppError, ErrorFieldData
 from allyakkkuk.ports.clock import Clock
 
@@ -31,6 +32,7 @@ class CareItemRegistrationCommand:
     total_quantity: Decimal
     dose_per_intake: Decimal
     intakes_per_day: int
+    expiration_date: date | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -45,6 +47,7 @@ class CareItemRegistrationResult:
     dose_per_intake: Decimal
     intakes_per_day: int
     created_at: datetime
+    expiration_date: date | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,6 +67,9 @@ class CareItemListItem:
     intakes_per_day: int
     days_until_depletion: int
     created_at: datetime
+    expiration_date: date | None = None
+    days_until_expiration: int | None = None
+    expiration_status: ExpirationStatus | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -138,6 +144,7 @@ class CareItemService:
                     dose_per_intake=command.dose_per_intake,
                     intakes_per_day=command.intakes_per_day,
                     created_at=now,
+                    expiration_date=command.expiration_date,
                 )
             )
         except CareItemPersistenceError as exc:
@@ -165,6 +172,7 @@ class CareItemService:
             dose_per_intake=result.dose_per_intake,
             intakes_per_day=result.intakes_per_day,
             created_at=result.created_at,
+            expiration_date=result.expiration_date,
         )
 
 
@@ -221,8 +229,35 @@ class CareItemManagementService:
                 message="복용 항목을 찾을 수 없습니다.",
             )
 
+    def update_expiration(
+        self,
+        *,
+        user_id: UUID,
+        care_item_id: UUID,
+        expiration_date: date,
+    ) -> None:
+        try:
+            updated = self._repository.update_expiration(
+                user_id=user_id,
+                care_item_id=care_item_id,
+                expiration_date=expiration_date,
+                updated_at=self._clock.now(),
+            )
+        except CareItemPersistenceError as exc:
+            raise _service_unavailable() from exc
+        if not updated:
+            raise AppError(
+                status_code=404,
+                code="CARE_ITEM_NOT_FOUND",
+                message="복용 항목을 찾을 수 없습니다.",
+            )
+
 
 def _list_item(item: CareItemListRecord, *, today: date) -> CareItemListItem:
+    expiration = expiration_state(
+        expiration_date=item.expiration_date,
+        today=today,
+    )
     return CareItemListItem(
         id=item.id,
         product_id=item.product_id,
@@ -242,6 +277,9 @@ def _list_item(item: CareItemListRecord, *, today: date) -> CareItemListItem:
             today=today,
         ),
         created_at=item.created_at,
+        expiration_date=item.expiration_date,
+        days_until_expiration=expiration.days_until_expiration,
+        expiration_status=expiration.status,
     )
 
 

@@ -25,6 +25,7 @@ pytestmark = [
     pytest.mark.contract,
     pytest.mark.feature("F-3.4"),
     pytest.mark.feature("F-3.7"),
+    pytest.mark.feature("F-3.11"),
 ]
 
 NOW = datetime(2026, 8, 13, 9, 0, tzinfo=UTC)
@@ -55,6 +56,7 @@ class StubManagementService:
         self.error = error
         self.list_calls: list[tuple[UUID, int, int]] = []
         self.delete_calls: list[tuple[UUID, UUID]] = []
+        self.expiration_calls: list[tuple[UUID, UUID, date]] = []
 
     def list_items(
         self,
@@ -84,6 +86,9 @@ class StubManagementService:
                     intakes_per_day=2,
                     days_until_depletion=29,
                     created_at=NOW,
+                    expiration_date=date(2026, 8, 18),
+                    days_until_expiration=5,
+                    expiration_status="EXPIRING_SOON",
                 ),
             ),
             page=page,
@@ -94,6 +99,17 @@ class StubManagementService:
 
     def delete_item(self, *, user_id: UUID, care_item_id: UUID) -> None:
         self.delete_calls.append((user_id, care_item_id))
+        if self.error is not None:
+            raise self.error
+
+    def update_expiration(
+        self,
+        *,
+        user_id: UUID,
+        care_item_id: UUID,
+        expiration_date: date,
+    ) -> None:
+        self.expiration_calls.append((user_id, care_item_id, expiration_date))
         if self.error is not None:
             raise self.error
 
@@ -138,6 +154,9 @@ def test_list_contract_returns_private_page_without_internal_fields() -> None:
                 "intakes_per_day": 2,
                 "days_until_depletion": 29,
                 "created_at": "2026-08-13T09:00:00Z",
+                "expiration_date": "2026-08-18",
+                "days_until_expiration": 5,
+                "expiration_status": "EXPIRING_SOON",
             }
         ],
         "page": 1,
@@ -163,14 +182,48 @@ def test_list_rejects_invalid_page_contract(params: dict[str, int]) -> None:
     assert response.json()["error"]["code"] == "VALIDATION_FAILED"
 
 
-def test_list_and_delete_require_authentication() -> None:
+def test_list_delete_and_expiration_update_require_authentication() -> None:
     with contract_client(StubManagementService(), authenticated=False) as client:
         listed = client.get("/api/v1/care/items")
         deleted = client.delete(f"/api/v1/care/items/{ITEM_ID}")
+        updated = client.put(
+            f"/api/v1/care/items/{ITEM_ID}/expiration",
+            json={"expiration_date": "2027-01-31"},
+        )
 
-    assert listed.status_code == deleted.status_code == 401
+    assert listed.status_code == deleted.status_code == updated.status_code == 401
     assert listed.json()["error"]["code"] == "AUTH_REQUIRED"
     assert deleted.json()["error"]["code"] == "AUTH_REQUIRED"
+    assert updated.json()["error"]["code"] == "AUTH_REQUIRED"
+
+
+def test_expiration_update_contract_returns_updated_date() -> None:
+    service = StubManagementService()
+
+    with contract_client(service) as client:
+        response = client.put(
+            f"/api/v1/care/items/{ITEM_ID}/expiration",
+            json={"expiration_date": "2027-01-31"},
+        )
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "no-store"
+    assert response.json() == {
+        "care_item_id": str(ITEM_ID),
+        "expiration_date": "2027-01-31",
+    }
+    assert service.expiration_calls == [(USER_ID, ITEM_ID, date(2027, 1, 31))]
+
+
+def test_expiration_update_rejects_invalid_date_contract() -> None:
+    with contract_client(StubManagementService()) as client:
+        response = client.put(
+            f"/api/v1/care/items/{ITEM_ID}/expiration",
+            json={"expiration_date": "not-a-date"},
+        )
+
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "VALIDATION_FAILED"
 
 
 def test_delete_contract_returns_no_content_and_no_store() -> None:
@@ -220,10 +273,28 @@ def test_delete_uses_common_error_contract(
     assert response.json()["error"]["code"] == code
 
 
+def test_expiration_update_uses_common_error_contract() -> None:
+    error = AppError(
+        status_code=404,
+        code="CARE_ITEM_NOT_FOUND",
+        message="복용 항목을 찾을 수 없습니다.",
+    )
+
+    with contract_client(StubManagementService(error)) as client:
+        response = client.put(
+            f"/api/v1/care/items/{ITEM_ID}/expiration",
+            json={"expiration_date": "2027-01-31"},
+        )
+
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "CARE_ITEM_NOT_FOUND"
+
+
 def test_openapi_documents_protected_list_and_soft_delete() -> None:
     schema = create_app(Settings(app_env="test")).openapi()
     path = schema["paths"]["/api/v1/care/items"]
     delete_path = schema["paths"]["/api/v1/care/items/{care_item_id}"]
+    expiration_path = schema["paths"]["/api/v1/care/items/{care_item_id}/expiration"]
 
     assert path["get"]["operationId"] == "care_list_items"
     assert path["get"]["security"] == [{"AccessCookieAuth": []}]
@@ -243,10 +314,24 @@ def test_openapi_documents_protected_list_and_soft_delete() -> None:
         "503",
     }
 
+    assert expiration_path["put"]["operationId"] == ("care_update_item_expiration")
+    assert expiration_path["put"]["security"] == [{"AccessCookieAuth": []}]
+    assert set(expiration_path["put"]["responses"]) >= {
+        "200",
+        "401",
+        "404",
+        "422",
+        "503",
+    }
+
     item_schema = schema["components"]["schemas"]["CareItemListItemResponse"]
     assert "user_id" not in item_schema["properties"]
     assert "deleted_at" not in item_schema["properties"]
     assert "nutrients" not in item_schema["properties"]
-    assert {"expected_depletion_date", "days_until_depletion"} <= set(
-        item_schema["required"]
-    )
+    assert {
+        "expected_depletion_date",
+        "days_until_depletion",
+        "expiration_date",
+        "days_until_expiration",
+        "expiration_status",
+    } <= set(item_schema["required"])

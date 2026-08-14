@@ -25,6 +25,7 @@ pytestmark = [
     pytest.mark.unit,
     pytest.mark.feature("F-3.1"),
     pytest.mark.feature("F-3.7"),
+    pytest.mark.feature("F-3.11"),
 ]
 
 NOW = datetime(2026, 8, 12, 9, 0, tzinfo=UTC)
@@ -60,6 +61,7 @@ def command() -> CareItemRegistrationCommand:
         total_quantity=Decimal("60"),
         dose_per_intake=Decimal("1.5"),
         intakes_per_day=2,
+        expiration_date=date(2027, 1, 31),
     )
 
 
@@ -77,6 +79,7 @@ def record() -> CareItemRecord:
         dose_per_intake=value.dose_per_intake,
         intakes_per_day=value.intakes_per_day,
         created_at=NOW,
+        expiration_date=value.expiration_date,
     )
 
 
@@ -92,6 +95,7 @@ def test_register_creates_user_owned_care_item_with_server_time() -> None:
     assert result.total_quantity == Decimal("60")
     assert result.quantity_unit == "CAPSULE"
     assert result.expected_depletion_date == date(2026, 8, 31)
+    assert result.expiration_date == date(2027, 1, 31)
     assert repository.calls == [
         CareItemCreateData(
             user_id=USER_ID,
@@ -103,6 +107,7 @@ def test_register_creates_user_owned_care_item_with_server_time() -> None:
             dose_per_intake=Decimal("1.5"),
             intakes_per_day=2,
             created_at=NOW,
+            expiration_date=date(2027, 1, 31),
         )
     ]
 

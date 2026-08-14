@@ -76,6 +76,11 @@ class CareItem(Base):
             "user_id",
         ),
         Index(
+            "ix_care_items_expiration_user",
+            "expiration_date",
+            "user_id",
+        ),
+        Index(
             "ix_care_items_active_user_created_at",
             "user_id",
             "created_at",
@@ -98,6 +103,9 @@ class CareItem(Base):
     purchase_date: Mapped[date] = mapped_column(Date, nullable=False)
     intake_start_date: Mapped[date] = mapped_column(Date, nullable=False)
     expected_depletion_date: Mapped[date] = mapped_column(Date, nullable=False)
+    expiration_date: Mapped[date | None] = mapped_column(
+        Date, nullable=True, default=None
+    )
     total_quantity: Mapped[Decimal] = mapped_column(Numeric(12, 3), nullable=False)
     quantity_unit: Mapped[str] = mapped_column(String(20), nullable=False)
     dose_per_intake: Mapped[Decimal] = mapped_column(Numeric(12, 3), nullable=False)

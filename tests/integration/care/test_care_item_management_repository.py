@@ -14,7 +14,11 @@ from allyakkkuk.care.models import CareItem, CareNutrientSnapshot
 from allyakkkuk.curation.models import Nutrient, Product
 from allyakkkuk.db.session import SessionFactory
 
-pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.4")]
+pytestmark = [
+    pytest.mark.integration,
+    pytest.mark.feature("F-3.4"),
+    pytest.mark.feature("F-3.11"),
+]
 
 NOW = datetime(2026, 8, 13, 9, 0, tzinfo=UTC)
 USER_ID = UUID("11000000-0000-4000-8000-000000000216")
@@ -192,3 +196,36 @@ def test_repository_soft_delete_preserves_item_and_snapshot_and_hides_ownership(
     assert stored.deleted_at == NOW + timedelta(minutes=1)
     assert stored.updated_at == NOW + timedelta(minutes=1)
     assert snapshot_count == 1
+
+
+def test_repository_updates_only_owned_active_item_expiration() -> None:
+    expiration_date = date(2027, 1, 31)
+    updated_at = NOW + timedelta(minutes=1)
+    with SessionFactory() as session:
+        repository = SQLAlchemyCareItemRepository(session)
+        updated = repository.update_expiration(
+            user_id=USER_ID,
+            care_item_id=LATEST_ID,
+            expiration_date=expiration_date,
+            updated_at=updated_at,
+        )
+        other_owned = repository.update_expiration(
+            user_id=USER_ID,
+            care_item_id=OTHER_ID,
+            expiration_date=expiration_date,
+            updated_at=updated_at,
+        )
+        deleted = repository.update_expiration(
+            user_id=USER_ID,
+            care_item_id=DELETED_ID,
+            expiration_date=expiration_date,
+            updated_at=updated_at,
+        )
+
+    assert updated is True
+    assert other_owned is deleted is False
+    with SessionFactory() as session:
+        stored = session.get(CareItem, LATEST_ID)
+    assert stored is not None
+    assert stored.expiration_date == expiration_date
+    assert stored.updated_at == updated_at
