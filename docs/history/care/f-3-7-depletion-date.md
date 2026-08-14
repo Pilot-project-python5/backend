@@ -6,8 +6,8 @@ domain: "care"
 status: "implemented"
 completed_on: "2026-08-14"
 feature_packet: "docs/features/care/f-3-7-depletion-date"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/20"
+commit: "65db07b"
 ---
 
 # F-3.7 예상 소진일 구현 이력
