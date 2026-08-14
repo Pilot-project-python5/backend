@@ -311,6 +311,7 @@ erDiagram
         date purchase_date
         date intake_start_date
         date expected_depletion_date
+        date expiration_date
         numeric total_quantity
         varchar quantity_unit
         numeric dose_per_intake
@@ -370,7 +371,12 @@ erDiagram
   이며 시작일보다 빠를 수 없다. 기존 활성·삭제 행을 모두 같은 공식으로 백필한다.
 - 예상 소진일 기반 작업 조회에는 `(expected_depletion_date, user_id)` 인덱스를 사용한다.
   D-day는 APP_TIMEZONE 오늘과의 날짜 차이로 읽을 때 계산하고 저장하지 않는다.
-- 소진 상태는 F-3.8, 유통기한과 만료 상태는 F-3.11에서 확장한다.
+- F-3.11에서 구매분별 nullable expiration_date를 실제 컬럼으로 추가한다. 날짜를
+  모르는 기존·신규 항목은 null이고 만료 알림 대상에서 제외한다. 과거 날짜와 구매일
+  이전 날짜도 기록 목적으로 허용하며 `(expiration_date, user_id)` 인덱스를 사용한다.
+- 유통기한 D-day는 APP_TIMEZONE 오늘과의 날짜 차이로 읽을 때 계산한다. D-6 이상은
+  NORMAL, D-5부터 D0은 EXPIRING_SOON, 이후는 EXPIRED이며 상태는 저장하지 않는다.
+  예상 소진일·재고 상태와 독립적으로 관리한다.
 - F-3.2에서 care_nutrient_snapshots를 실제 테이블로 구현한다. SUPPLEMENT 등록 시
   활성 성분의 nutrient_id·당시 이름·단위당 함량·단위를 복사하며 MEDICATION과
   활성 성분이 없는 영양제는 스냅샷을 만들지 않는다.
@@ -447,8 +453,8 @@ erDiagram
 - 예상 소진일: F-3.7에서 등록 시 계산해 care_items에 저장하고 알림 기준일로 사용한다.
 - D-day: expected_depletion_date와 APP_TIMEZONE 조회일의 부호 있는 일수 차이이며
   날짜 경과에 따라 바뀌므로 저장하지 않는다.
-- 재고·유통기한 상태: 후속 기능에서 도메인 규칙으로 계산하고 검색·작업자 처리를
-  위해 추가한다.
+- 유통기한 상태: F-3.11에서 nullable expiration_date로부터 조회 시 계산하며 저장하지
+  않는다. 재고 상태는 F-3.8에서 예상 소진일로부터 별도로 계산한다.
 
 ## 권장 고유 제약과 인덱스
 
@@ -462,7 +468,7 @@ erDiagram
 - care_items(expected_depletion_date, user_id) — F-3.7 구현
 - medication_details(permit_code) UNIQUE — F-3.10 구현
 - medication_details(classification, product_id) — F-3.10 구현
-- care_items(expiration_date, expiration_status) — F-3.11 예정
+- care_items(expiration_date, user_id) — F-3.11 구현
 - care_nutrient_snapshots(care_item_id, nutrient_id) UNIQUE
 - notifications(care_item_id, notification_type, reference_date, trigger_days_before) UNIQUE
 - notifications(user_id, read_at, created_at DESC)
@@ -481,7 +487,6 @@ erDiagram
 
 ## 미확정 설계 항목
 
-- 유통기한 필수 여부
 - 복용 계획과 수량 수정 API 제공 여부
 - 삭제된 복용 항목의 복원·물리 정리와 이력 보존 기간
 - 나누어떨어지지 않는 수량의 마지막 복용일 계산

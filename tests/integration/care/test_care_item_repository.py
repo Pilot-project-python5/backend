@@ -17,7 +17,11 @@ from allyakkkuk.care.models import CareItem
 from allyakkkuk.curation.models import Product
 from allyakkkuk.db.session import SessionFactory, engine
 
-pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.1")]
+pytestmark = [
+    pytest.mark.integration,
+    pytest.mark.feature("F-3.1"),
+    pytest.mark.feature("F-3.11"),
+]
 
 NOW = datetime(2026, 8, 12, 9, 0, tzinfo=UTC)
 USER_ID = UUID("11000000-0000-4000-8000-000000000032")
@@ -84,6 +88,7 @@ def create_data(product_id: UUID = PRODUCT_ID) -> CareItemCreateData:
         dose_per_intake=Decimal("1"),
         intakes_per_day=3,
         created_at=NOW,
+        expiration_date=date(2027, 1, 31),
     )
 
 
@@ -100,6 +105,7 @@ def test_repository_registers_unpublished_catalog_item_as_distinct_history() -> 
     assert first.id != second.id
     assert first.user_id == second.user_id == USER_ID
     assert first.quantity_unit == second.quantity_unit == "TABLET"
+    assert first.expiration_date == second.expiration_date == date(2027, 1, 31)
     with SessionFactory() as session:
         count = session.scalar(
             select(func.count())
@@ -125,6 +131,7 @@ def test_repository_rejects_product_outside_database_catalog_without_write() -> 
 
 
 @pytest.mark.feature("F-3.7")
+@pytest.mark.feature("F-3.11")
 def test_care_item_schema_matches_model_and_erd_contract() -> None:
     inspector = inspect(engine)
     columns = {item["name"]: item for item in inspector.get_columns("care_items")}
@@ -144,6 +151,7 @@ def test_care_item_schema_matches_model_and_erd_contract() -> None:
         "purchase_date",
         "intake_start_date",
         "expected_depletion_date",
+        "expiration_date",
         "total_quantity",
         "quantity_unit",
         "dose_per_intake",
@@ -153,8 +161,11 @@ def test_care_item_schema_matches_model_and_erd_contract() -> None:
         "deleted_at",
     }
     assert columns["deleted_at"]["nullable"] is True
+    assert columns["expiration_date"]["nullable"] is True
     assert all(
-        not item["nullable"] for name, item in columns.items() if name != "deleted_at"
+        not item["nullable"]
+        for name, item in columns.items()
+        if name not in {"deleted_at", "expiration_date"}
     )
     assert checks >= {
         "ck_care_items_date_order",
@@ -181,6 +192,10 @@ def test_care_item_schema_matches_model_and_erd_contract() -> None:
     assert indexes["ix_care_items_product_id"] == ("product_id",)
     assert indexes["ix_care_items_depletion_user"] == (
         "expected_depletion_date",
+        "user_id",
+    )
+    assert indexes["ix_care_items_expiration_user"] == (
+        "expiration_date",
         "user_id",
     )
     assert indexes["ix_care_items_active_user_created_at"] == (

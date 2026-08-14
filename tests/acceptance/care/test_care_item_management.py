@@ -29,6 +29,7 @@ pytestmark = [
     pytest.mark.integration,
     pytest.mark.feature("F-3.4"),
     pytest.mark.feature("F-3.7"),
+    pytest.mark.feature("F-3.11"),
 ]
 
 NOW = datetime(2026, 8, 13, 9, 0, tzinfo=UTC)
@@ -142,7 +143,13 @@ def _seed_data() -> None:
         session.add_all(
             [
                 _item(FIRST_ID, USER_ID, NOW, Decimal("30")),
-                _item(LATEST_ID, USER_ID, NOW, Decimal("60")),
+                _item(
+                    LATEST_ID,
+                    USER_ID,
+                    NOW,
+                    Decimal("60"),
+                    expiration_date=date(2026, 8, 18),
+                ),
                 _item(
                     DELETED_ID,
                     USER_ID,
@@ -173,6 +180,7 @@ def _item(
     quantity: Decimal,
     *,
     deleted_at: datetime | None = None,
+    expiration_date: date | None = None,
 ) -> CareItem:
     return CareItem(
         id=item_id,
@@ -181,6 +189,7 @@ def _item(
         purchase_date=date(2026, 8, 10),
         intake_start_date=date(2026, 8, 13),
         expected_depletion_date=date(2026, 9, 11),
+        expiration_date=expiration_date,
         total_quantity=quantity,
         quantity_unit="PACKET",
         dose_per_intake=Decimal("1"),
@@ -214,6 +223,12 @@ def test_user_lists_independent_active_purchases_and_soft_deletes_one() -> None:
     assert first_page.json()["items"][0]["quantity_unit"] == "PACKET"
     assert first_page.json()["items"][0]["expected_depletion_date"] == "2026-09-11"
     assert first_page.json()["items"][0]["days_until_depletion"] == 29
+    assert first_page.json()["items"][0]["expiration_date"] == "2026-08-18"
+    assert first_page.json()["items"][0]["days_until_expiration"] == 5
+    assert first_page.json()["items"][0]["expiration_status"] == "EXPIRING_SOON"
+    assert second_page.json()["items"][0]["expiration_date"] is None
+    assert second_page.json()["items"][0]["days_until_expiration"] is None
+    assert second_page.json()["items"][0]["expiration_status"] is None
 
     assert deleted.status_code == 204
     assert deleted.headers["cache-control"] == "no-store"
@@ -244,3 +259,41 @@ def test_delete_hides_other_missing_and_already_deleted_items(item_id: UUID) -> 
         "fields": [],
         "request_id": response.json()["error"]["request_id"],
     }
+
+
+def test_user_updates_expiration_and_list_derives_expired_status() -> None:
+    with TestClient(app) as client:
+        updated = client.put(
+            f"/api/v1/care/items/{FIRST_ID}/expiration",
+            json={"expiration_date": "2026-08-12"},
+        )
+        listed = client.get("/api/v1/care/items")
+
+    assert updated.status_code == 200
+    assert updated.json() == {
+        "care_item_id": str(FIRST_ID),
+        "expiration_date": "2026-08-12",
+    }
+    item = next(item for item in listed.json()["items"] if item["id"] == str(FIRST_ID))
+    assert item["days_until_expiration"] == -1
+    assert item["expiration_status"] == "EXPIRED"
+
+    with SessionFactory() as session:
+        stored = session.get(CareItem, FIRST_ID)
+    assert stored is not None
+    assert stored.expiration_date == date(2026, 8, 12)
+    assert stored.updated_at == NOW
+
+
+@pytest.mark.parametrize("item_id", [OTHER_ID, DELETED_ID, MISSING_ID])
+def test_expiration_update_hides_other_deleted_and_missing_items(
+    item_id: UUID,
+) -> None:
+    with TestClient(app) as client:
+        response = client.put(
+            f"/api/v1/care/items/{item_id}/expiration",
+            json={"expiration_date": "2027-01-31"},
+        )
+
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "CARE_ITEM_NOT_FOUND"

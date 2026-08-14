@@ -25,7 +25,8 @@
   "intake_start_date": "2026-08-12",
   "total_quantity": "60",
   "dose_per_intake": "1",
-  "intakes_per_day": 2
+  "intakes_per_day": 2,
+  "expiration_date": "2027-01-31"
 }
 ~~~
 
@@ -40,7 +41,8 @@
   "quantity_unit": "CAPSULE",
   "dose_per_intake": "1",
   "intakes_per_day": 2,
-  "created_at": "2026-08-12T09:00:00Z"
+  "created_at": "2026-08-12T09:00:00Z",
+  "expiration_date": "2027-01-31"
 }
 ~~~
 
@@ -57,6 +59,33 @@
 - days_until_depletion은 `expected_depletion_date - APP_TIMEZONE 오늘`의 정수 일수다.
   소진일은 0, 지난 날은 음수, 미래는 양수이며 DB에 저장하지 않는다.
 - 기존 인증·소유권·소프트 삭제·페이지·no-store·오류 계약은 유지한다.
+
+## F-3.11 유통기한 관리
+
+- `POST /api/v1/care/items` 요청에 선택 `expiration_date`를 추가한다. 사용자가 날짜를
+  모르면 생략할 수 있고 기존 행과 생략 등록은 null로 보존한다. 응답에는 저장된 날짜
+  또는 null을 항상 포함한다.
+- `GET /api/v1/care/items` 각 항목에 `expiration_date`,
+  `days_until_expiration`, `expiration_status`를 추가한다. 날짜가 없으면 세 값이 모두
+  null이고 후속 만료 알림 대상에서 제외한다.
+- D-day는 `expiration_date - APP_TIMEZONE 오늘`로 조회할 때 계산한다. D-6 이상은
+  `NORMAL`, D-5부터 D0은 `EXPIRING_SOON`, 다음 날부터는 `EXPIRED`다. 과거 날짜도 이미
+  만료된 구매분 기록을 위해 허용한다.
+- `PUT /api/v1/care/items/{care_item_id}/expiration`은 필수 ISO 날짜 하나를 받아 현재
+  사용자 소유의 활성 구매분 날짜를 추가·교체한다. 같은 날짜를 다시 보내도 200인
+  멱등 갱신이다.
+- 다른 사용자·삭제·없는 항목은 404 `CARE_ITEM_NOT_FOUND`로 통일한다. 인증 없음은
+  401 `AUTH_REQUIRED`, 형식 오류는 422 `VALIDATION_FAILED`, DB 실패는 503
+  `SERVICE_UNAVAILABLE`이며 모든 성공 응답은 `Cache-Control: no-store`다.
+- 유통기한은 구매분별 값이며 예상 소진일·재고 상태와 독립이다. 제거 API, 제조일,
+  개봉일과 개봉 후 사용기한은 1차 범위에서 제외한다.
+
+~~~json
+{
+  "care_item_id": "31000000-0000-4000-8000-000000000001",
+  "expiration_date": "2027-01-31"
+}
+~~~
 
 ## F-3.2 영양제 성분 스냅샷
 
@@ -114,11 +143,16 @@
       "image_url": "/static/products/life-extension-two-per-day.svg",
       "purchase_date": "2026-08-10",
       "intake_start_date": "2026-08-12",
+      "expected_depletion_date": "2026-09-10",
       "total_quantity": "60",
       "quantity_unit": "CAPSULE",
       "dose_per_intake": "1",
       "intakes_per_day": 2,
-      "created_at": "2026-08-13T09:00:00Z"
+      "days_until_depletion": 28,
+      "created_at": "2026-08-13T09:00:00Z",
+      "expiration_date": "2027-01-31",
+      "days_until_expiration": 170,
+      "expiration_status": "NORMAL"
     }
   ],
   "page": 1,
@@ -144,7 +178,8 @@
 ### 후속 기능 경계
 
 - 예상 소진일·D-day는 F-3.7에서 응답에 추가했고 상태·알림은 F-3.8 이후에 추가한다.
-- 유통기한은 F-3.11에서 추가하며 F-3.1 요청에는 포함하지 않는다.
+- 유통기한 날짜·D-day·상태와 갱신은 F-3.11에서 추가했다. 만료 알림 생성·전송은
+  F-3.9·F-3.12에서 추가한다.
 
 ## F-3.5 일일 예정 섭취량
 

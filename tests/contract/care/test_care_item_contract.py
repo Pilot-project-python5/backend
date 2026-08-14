@@ -25,6 +25,7 @@ pytestmark = [
     pytest.mark.contract,
     pytest.mark.feature("F-3.1"),
     pytest.mark.feature("F-3.7"),
+    pytest.mark.feature("F-3.11"),
 ]
 
 NOW = datetime(2026, 8, 12, 9, 0, tzinfo=UTC)
@@ -75,6 +76,7 @@ class StubCareItemService:
             dose_per_intake=command.dose_per_intake,
             intakes_per_day=command.intakes_per_day,
             created_at=NOW,
+            expiration_date=command.expiration_date,
         )
 
 
@@ -100,6 +102,7 @@ def valid_payload() -> dict[str, object]:
         "total_quantity": "60",
         "dose_per_intake": "1.5",
         "intakes_per_day": 2,
+        "expiration_date": "2027-01-31",
     }
 
 
@@ -122,6 +125,7 @@ def test_register_contract_returns_created_item_without_user_id() -> None:
         "dose_per_intake": "1.5",
         "intakes_per_day": 2,
         "created_at": "2026-08-12T09:00:00Z",
+        "expiration_date": "2027-01-31",
     }
     assert service.calls[0][0] == USER_ID
 
@@ -207,3 +211,6 @@ def test_openapi_documents_protected_care_item_registration() -> None:
         "expected_depletion_date"
         in schema["components"]["schemas"]["CareItemResponse"]["required"]
     )
+    request_schema = schema["components"]["schemas"]["CareItemCreateRequest"]
+    assert "expiration_date" in request_schema["properties"]
+    assert "expiration_date" not in request_schema["required"]

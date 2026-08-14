@@ -1,0 +1,24 @@
+id: "F-3.11"
+title: "유통기한 관리"
+domain: "notification"
+requirement: "FR-3"
+phase: "1"
+priority: "P0"
+status: "implemented"
+owner: "backend"
+history_path: "docs/history/notification/f-3-11-expiration-management.md"
+source:
+  requirement_path: "docs/product/requirements.md"
+  external_url: null
+  reviewed_on: "2026-08-14"
+dependencies:
+  - "F-3.1"
+  - "F-3.4"
+  - "F-3.7"
+api_changes:
+  - "POST /api/v1/care/items 선택 expiration_date 요청·응답 추가"
+  - "GET /api/v1/care/items 항목에 유통기한 날짜·D-day·상태 추가"
+  - "PUT /api/v1/care/items/{care_item_id}/expiration 추가"
+data_changes:
+  - "care_items.expiration_date nullable과 조회 인덱스 추가"
+open_questions: []
