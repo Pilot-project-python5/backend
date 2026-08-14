@@ -1,5 +1,5 @@
 version: 1
-synced_on: "2026-08-10"
+synced_on: "2026-08-14"
 sources:
   requirements: "docs/product/requirements.md"
   phase_scope: "docs/product/scope.md"
@@ -30,12 +30,12 @@ features:
   - { id: "F-3.3", title: "구매 및 보유 수량", slug: "inventory-quantity", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-3.4", title: "복용 제품 조회·삭제", slug: "care-item-query-delete", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-3.5", title: "일일 섭취량 계산", slug: "daily-intake", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
-  - { id: "F-3.6", title: "영양성분 현황", slug: "nutrient-status", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "planned" }
-  - { id: "F-3.7", title: "예상 소진일", slug: "depletion-date", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "planned" }
-  - { id: "F-3.8", title: "재구매 상태·알림", slug: "repurchase-notification", requirement: "FR-3", domain: "notification", phase: 1, priority: "P0", owner: "backend", status: "planned" }
+  - { id: "F-3.6", title: "영양성분 현황", slug: "nutrient-status", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
+  - { id: "F-3.7", title: "예상 소진일", slug: "depletion-date", requirement: "FR-3", domain: "care", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
+  - { id: "F-3.8", title: "재구매 상태·알림", slug: "repurchase-notification", requirement: "FR-3", domain: "notification", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-3.9", title: "리마인더 조회·확인", slug: "reminders", requirement: "FR-3", domain: "notification", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
-  - { id: "F-3.10", title: "의약품 관리", slug: "medication-management", requirement: "FR-3", domain: "medication", phase: 1, priority: "P0", owner: "backend", status: "planned" }
-  - { id: "F-3.11", title: "유통기한 관리", slug: "expiration-management", requirement: "FR-3", domain: "notification", phase: 1, priority: "P0", owner: "backend", status: "planned" }
+  - { id: "F-3.10", title: "의약품 관리", slug: "medication-management", requirement: "FR-3", domain: "medication", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
+  - { id: "F-3.11", title: "유통기한 관리", slug: "expiration-management", requirement: "FR-3", domain: "notification", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-3.12", title: "이메일 리마인더", slug: "email-reminders", requirement: "FR-3", domain: "notification", phase: 1, priority: "P0", owner: "backend", status: "implemented" }
   - { id: "F-4.1", title: "코칭 시작", slug: "coaching-start", requirement: "FR-4", domain: "coaching", phase: 2, priority: "P0", owner: "ai-developer", status: "deferred" }
   - { id: "F-4.2", title: "추천 질문", slug: "suggested-questions", requirement: "FR-4", domain: "coaching", phase: 2, priority: "P0", owner: "ai-developer", status: "deferred" }
