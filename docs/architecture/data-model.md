@@ -82,8 +82,12 @@ DailyIntake·NutrientStatus 계산에서 계속 제외한다.
 
 ## 알림
 
-- Notification(알림): 사용자, CareItem, 종류, 기준일, 예약 시각, 화면 읽음 상태
-- EmailDelivery(이메일 발송): Notification, 수신 주소, 상태, 시도 횟수, 마지막 오류
+- Notification(알림): F-3.8에서 실제 구현한 사용자·CareItem별 논리 이벤트다. 종류,
+  기준일, 5·3·1 트리거, APP_TIMEZONE 오전 9시 예약 시각, 생성·화면 읽음 시각을
+  보존한다. 같은 CareItem·종류·기준일·트리거는 한 건이며 F-3.8은 예상 소진일의
+  REPURCHASE 이벤트만 생성한다. F-3.9 화면과 F-3.12 이메일이 이 이벤트를 공유한다.
+- EmailDelivery(이메일 발송): F-3.12에서 Notification, 수신 주소, 상태, 시도 횟수,
+  마지막 오류를 추가할 예정이다.
 
 ## 기준 데이터
 

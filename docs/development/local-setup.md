@@ -48,6 +48,11 @@ make verify
 - mail
 - worker
 
+worker는 `WORKER_POLL_SECONDS` 간격으로 재구매 논리 알림 작업을 실행한다. APP_TIMEZONE
+기준 오전 9시 전에는 쓰지 않고, 오전 9시 이후 당일 D-5·D-3·D-1 항목만 PostgreSQL
+고유 제약으로 멱등 생성한다. 작업 실패는 기록한 뒤 다음 poll에서 다시 시도하며
+과거 날짜 알림을 소급 생성하지 않는다.
+
 ## 제약
 
 - AWS 자격증명을 요구하지 않는다.

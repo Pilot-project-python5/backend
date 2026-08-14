@@ -414,6 +414,7 @@ erDiagram
         date reference_date
         smallint trigger_days_before
         timestamptz scheduled_at
+        timestamptz created_at
         timestamptz read_at
     }
 
@@ -431,11 +432,18 @@ erDiagram
 
 ### 책임과 제약
 
-- notifications는 화면 내부 알림이자 논리 알림 이벤트다.
+- F-3.8에서 notifications를 실제 구현한다. 화면과 이메일이 공유하는 논리 알림
+  이벤트이며 이번 기능은 REPURCHASE 생성까지만 담당한다.
 - notification_type은 1차에서 REPURCHASE 또는 EXPIRATION이다.
 - trigger_days_before는 5, 3, 1 중 하나다.
 - reference_date는 예상 소진일 또는 유통기한이다.
-- care_item_id, notification_type, reference_date, trigger_days_before 조합을 고유하게 관리한다.
+- care_item_id, notification_type, reference_date, trigger_days_before 조합을 고유하게
+  관리하고 작업자 반복·동시 실행은 충돌을 무시한다.
+- scheduled_at은 APP_TIMEZONE 트리거 날짜 오전 9시를 UTC로 저장하고 created_at보다
+  늦을 수 없다. read_at은 null이거나 created_at 이상이다.
+- User·CareItem 물리 삭제 시 CASCADE한다. CareItem 소프트 삭제는 기존 알림을 보존하되
+  새 알림 후보에서 제외한다.
+- `(user_id, read_at, created_at DESC, id)`는 F-3.9 화면 목록을 위한 인덱스다.
 - email_deliveries.notification_id를 고유하게 관리해 이메일 중복 발송을 막는다.
 - recipient_email은 발송 시점 주소를 보존하는 스냅샷이다.
 - 재시도는 같은 email_deliveries 행의 상태와 시도 횟수를 갱신한다.
@@ -453,6 +461,8 @@ erDiagram
 - 예상 소진일: F-3.7에서 등록 시 계산해 care_items에 저장하고 알림 기준일로 사용한다.
 - D-day: expected_depletion_date와 APP_TIMEZONE 조회일의 부호 있는 일수 차이이며
   날짜 경과에 따라 바뀌므로 저장하지 않는다.
+- 재고 상태: F-3.8에서 D-6 이상 NORMAL, D-5부터 D0 LOW_STOCK, 다음 날부터
+  DEPLETED로 조회 시 계산하며 저장하지 않는다.
 - 유통기한 상태: F-3.11에서 nullable expiration_date로부터 조회 시 계산하며 저장하지
   않는다. 재고 상태는 F-3.8에서 예상 소진일로부터 별도로 계산한다.
 
@@ -471,7 +481,7 @@ erDiagram
 - care_items(expiration_date, user_id) — F-3.11 구현
 - care_nutrient_snapshots(care_item_id, nutrient_id) UNIQUE
 - notifications(care_item_id, notification_type, reference_date, trigger_days_before) UNIQUE
-- notifications(user_id, read_at, created_at DESC)
+- notifications(user_id, read_at, created_at DESC, id) — F-3.8 구현
 - email_deliveries(status, next_retry_at)
 
 ## ERD 변경 규칙
@@ -490,7 +500,6 @@ erDiagram
 - 복용 계획과 수량 수정 API 제공 여부
 - 삭제된 복용 항목의 복원·물리 정리와 이력 보존 기간
 - 나누어떨어지지 않는 수량의 마지막 복용일 계산
-- 오전 9시의 IANA 기준 시간대
 - 이메일 재시도와 최종 실패 정책
 - 제품과 카테고리의 다대다 관계 유지 여부
 
