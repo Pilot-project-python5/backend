@@ -147,6 +147,7 @@ def create_data(product_id: UUID) -> CareItemCreateData:
         product_id=product_id,
         purchase_date=date(2026, 8, 10),
         intake_start_date=date(2026, 8, 12),
+        expected_depletion_date=date(2026, 9, 10),
         total_quantity=Decimal("60"),
         dose_per_intake=Decimal("1"),
         intakes_per_day=2,

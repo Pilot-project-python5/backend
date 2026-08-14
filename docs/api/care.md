@@ -35,6 +35,7 @@
   "product_id": "22000000-0000-4000-8000-000000000001",
   "purchase_date": "2026-08-10",
   "intake_start_date": "2026-08-12",
+  "expected_depletion_date": "2026-09-10",
   "total_quantity": "60",
   "quantity_unit": "CAPSULE",
   "dose_per_intake": "1",
@@ -42,6 +43,20 @@
   "created_at": "2026-08-12T09:00:00Z"
 }
 ~~~
+
+## F-3.7 예상 소진일·D-day
+
+- 기존 `POST /api/v1/care/items` 요청은 바뀌지 않는다. 서버가
+  `intake_start_date + ceil(total_quantity / (dose_per_intake × intakes_per_day)) - 1일`
+  공식으로 `expected_depletion_date`를 계산해 저장하고 201 응답에 추가한다.
+- 나누어떨어지지 않는 잔여량도 마지막 부분 복용일 하루로 계산하고 복용 시작일을
+  첫날로 포함한다. 지원 가능한 날짜 범위를 넘는 계획은 422
+  `depletion_date_out_of_range`로 거부한다.
+- 기존 `GET /api/v1/care/items` 각 항목에 expected_depletion_date와
+  days_until_depletion을 추가한다.
+- days_until_depletion은 `expected_depletion_date - APP_TIMEZONE 오늘`의 정수 일수다.
+  소진일은 0, 지난 날은 음수, 미래는 양수이며 DB에 저장하지 않는다.
+- 기존 인증·소유권·소프트 삭제·페이지·no-store·오류 계약은 유지한다.
 
 ## F-3.2 영양제 성분 스냅샷
 
@@ -128,7 +143,7 @@
 
 ### 후속 기능 경계
 
-- 예상 소진일·상태·알림은 F-3.7 이후에 추가한다.
+- 예상 소진일·D-day는 F-3.7에서 응답에 추가했고 상태·알림은 F-3.8 이후에 추가한다.
 - 유통기한은 F-3.11에서 추가하며 F-3.1 요청에는 포함하지 않는다.
 
 ## F-3.5 일일 예정 섭취량
@@ -167,7 +182,7 @@
 ### 후속 기능 경계
 
 - 나이·성별 기준량과 달성 비율은 F-3.6에서 이 결과를 사용해 확장한다.
-- 예상 소진일·D-day·잔량·재구매 상태는 F-3.7 이후에 계산한다.
+- 예상 소진일·D-day는 F-3.7에서 계산하며 잔량·재구매 상태는 F-3.8 이후에 계산한다.
 
 ## F-3.6 영양성분 현황
 

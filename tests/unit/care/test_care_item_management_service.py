@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import UTC, date, datetime
 from decimal import Decimal
 from uuid import UUID
+from zoneinfo import ZoneInfo
 
 import pytest
 
@@ -34,6 +35,7 @@ def item_record() -> CareItemListRecord:
         image_url="/static/products/care-list-unit-214.svg",
         purchase_date=date(2026, 8, 10),
         intake_start_date=date(2026, 8, 13),
+        expected_depletion_date=date(2026, 9, 11),
         total_quantity=Decimal("60"),
         quantity_unit="CAPSULE",
         dose_per_intake=Decimal("1"),
@@ -79,7 +81,9 @@ class StubManagementRepository(CareItemManagementRepository):
 def test_list_items_maps_active_page_and_has_next() -> None:
     repository = StubManagementRepository()
 
-    result = CareItemManagementService(repository, FakeClock(NOW)).list_items(
+    result = CareItemManagementService(
+        repository, FakeClock(NOW), ZoneInfo("Asia/Seoul")
+    ).list_items(
         user_id=USER_ID,
         page=1,
         page_size=20,
@@ -87,6 +91,7 @@ def test_list_items_maps_active_page_and_has_next() -> None:
 
     assert result.items[0].id == ITEM_ID
     assert result.items[0].quantity_unit == "CAPSULE"
+    assert result.items[0].days_until_depletion == 29
     assert result.page == 1
     assert result.page_size == 20
     assert result.total == 21
@@ -96,7 +101,9 @@ def test_list_items_maps_active_page_and_has_next() -> None:
 
 def test_delete_item_uses_server_time_and_hides_missing_ownership() -> None:
     repository = StubManagementRepository()
-    service = CareItemManagementService(repository, FakeClock(NOW))
+    service = CareItemManagementService(
+        repository, FakeClock(NOW), ZoneInfo("Asia/Seoul")
+    )
 
     service.delete_item(user_id=USER_ID, care_item_id=ITEM_ID)
 
@@ -117,7 +124,9 @@ def test_management_persistence_failure_becomes_service_unavailable(
     repository = StubManagementRepository()
     repository.list_error = operation == "list"
     repository.delete_error = operation == "delete"
-    service = CareItemManagementService(repository, FakeClock(NOW))
+    service = CareItemManagementService(
+        repository, FakeClock(NOW), ZoneInfo("Asia/Seoul")
+    )
 
     with pytest.raises(AppError) as captured:
         if operation == "list":

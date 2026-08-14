@@ -295,6 +295,7 @@ erDiagram
         uuid product_id FK
         date purchase_date
         date intake_start_date
+        date expected_depletion_date
         numeric total_quantity
         varchar quantity_unit
         numeric dose_per_intake
@@ -349,8 +350,12 @@ erDiagram
 - 사용자별 최신 이력은 `(user_id, created_at, id)`, 제품 참조는 `product_id`
   인덱스를 사용한다. 활성 목록은 같은 열의 `deleted_at IS NULL` 부분 인덱스를 사용하고
   B-tree 역방향 스캔으로 최신순 조회를 지원한다.
-- expected_depletion_date와 소진 상태는 F-3.7·F-3.8, 유통기한과 만료 상태는
-  F-3.11에서 별도 마이그레이션으로 추가한다.
+- F-3.7에서 expected_depletion_date를 실제 NOT NULL 컬럼으로 추가한다. 값은
+  `intake_start_date + ceil(total_quantity / (dose_per_intake × intakes_per_day)) - 1일`
+  이며 시작일보다 빠를 수 없다. 기존 활성·삭제 행을 모두 같은 공식으로 백필한다.
+- 예상 소진일 기반 작업 조회에는 `(expected_depletion_date, user_id)` 인덱스를 사용한다.
+  D-day는 APP_TIMEZONE 오늘과의 날짜 차이로 읽을 때 계산하고 저장하지 않는다.
+- 소진 상태는 F-3.8, 유통기한과 만료 상태는 F-3.11에서 확장한다.
 - F-3.2에서 care_nutrient_snapshots를 실제 테이블로 구현한다. SUPPLEMENT 등록 시
   활성 성분의 nutrient_id·당시 이름·단위당 함량·단위를 복사하며 MEDICATION과
   활성 성분이 없는 영양제는 스냅샷을 만들지 않는다.
@@ -424,8 +429,9 @@ erDiagram
 - F-3.6 기준량 달성 비율은 저장하지 않고 `일일 예정량 / RNI 또는 AI × 100`으로
   요청마다 Decimal 계산한다. 일반 OMEGA_3처럼 정확히 매핑할 공식 기준이 없으면
   현재량만 반환하고 기준 필드는 비워 둔다.
-- 예상 소진일: F-3.7에서 계산 후 care_items에 추가해 알림 예약과 목록 조회에 사용한다.
-- D-day: expected_depletion_date와 조회 기준일의 차이로 계산한다.
+- 예상 소진일: F-3.7에서 등록 시 계산해 care_items에 저장하고 알림 기준일로 사용한다.
+- D-day: expected_depletion_date와 APP_TIMEZONE 조회일의 부호 있는 일수 차이이며
+  날짜 경과에 따라 바뀌므로 저장하지 않는다.
 - 재고·유통기한 상태: 후속 기능에서 도메인 규칙으로 계산하고 검색·작업자 처리를
   위해 추가한다.
 
@@ -438,7 +444,7 @@ erDiagram
 - nutrient_reference_values(version_id, nutrient_id, gender, age_min, age_max)
 - care_items(user_id, created_at, id)
 - care_items(product_id)
-- care_items(expected_depletion_date, inventory_status) — F-3.7·F-3.8 예정
+- care_items(expected_depletion_date, user_id) — F-3.7 구현
 - care_items(expiration_date, expiration_status) — F-3.11 예정
 - care_nutrient_snapshots(care_item_id, nutrient_id) UNIQUE
 - notifications(care_item_id, notification_type, reference_date, trigger_days_before) UNIQUE

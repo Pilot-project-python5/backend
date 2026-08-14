@@ -21,7 +21,11 @@ from allyakkkuk.care.care_item_service import (
 from allyakkkuk.core.errors import AppError
 from allyakkkuk.ports.clock import FakeClock
 
-pytestmark = [pytest.mark.unit, pytest.mark.feature("F-3.1")]
+pytestmark = [
+    pytest.mark.unit,
+    pytest.mark.feature("F-3.1"),
+    pytest.mark.feature("F-3.7"),
+]
 
 NOW = datetime(2026, 8, 12, 9, 0, tzinfo=UTC)
 USER_ID = UUID("11000000-0000-4000-8000-000000000031")
@@ -67,6 +71,7 @@ def record() -> CareItemRecord:
         product_id=value.product_id,
         purchase_date=value.purchase_date,
         intake_start_date=value.intake_start_date,
+        expected_depletion_date=date(2026, 8, 31),
         total_quantity=value.total_quantity,
         quantity_unit="CAPSULE",
         dose_per_intake=value.dose_per_intake,
@@ -86,12 +91,14 @@ def test_register_creates_user_owned_care_item_with_server_time() -> None:
     assert result.id == ITEM_ID
     assert result.total_quantity == Decimal("60")
     assert result.quantity_unit == "CAPSULE"
+    assert result.expected_depletion_date == date(2026, 8, 31)
     assert repository.calls == [
         CareItemCreateData(
             user_id=USER_ID,
             product_id=PRODUCT_ID,
             purchase_date=date(2026, 8, 10),
             intake_start_date=date(2026, 8, 12),
+            expected_depletion_date=date(2026, 8, 31),
             total_quantity=Decimal("60"),
             dose_per_intake=Decimal("1.5"),
             intakes_per_day=2,
@@ -179,3 +186,23 @@ def test_purchase_date_uses_configured_local_date_near_utc_midnight() -> None:
     )
 
     assert repository.calls[0].purchase_date == date(2026, 8, 12)
+
+
+def test_register_rejects_plan_beyond_supported_date_range() -> None:
+    invalid = replace(
+        command(),
+        total_quantity=Decimal("999999999.999"),
+        dose_per_intake=Decimal("0.001"),
+        intakes_per_day=1,
+    )
+    repository = FakeCareItemRepository(record())
+
+    with pytest.raises(AppError) as captured:
+        CareItemService(repository, FakeClock(NOW), SEOUL).register(
+            user_id=USER_ID,
+            command=invalid,
+        )
+
+    assert captured.value.status_code == 422
+    assert captured.value.fields[0].code == "depletion_date_out_of_range"
+    assert repository.calls == []

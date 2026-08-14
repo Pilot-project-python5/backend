@@ -21,7 +21,11 @@ from allyakkkuk.core.config import Settings
 from allyakkkuk.core.errors import AppError
 from allyakkkuk.main import create_app
 
-pytestmark = [pytest.mark.contract, pytest.mark.feature("F-3.4")]
+pytestmark = [
+    pytest.mark.contract,
+    pytest.mark.feature("F-3.4"),
+    pytest.mark.feature("F-3.7"),
+]
 
 NOW = datetime(2026, 8, 13, 9, 0, tzinfo=UTC)
 USER_ID = UUID("11000000-0000-4000-8000-000000000215")
@@ -73,10 +77,12 @@ class StubManagementService:
                     image_url="/static/products/care-manage-215.svg",
                     purchase_date=date(2026, 8, 10),
                     intake_start_date=date(2026, 8, 13),
+                    expected_depletion_date=date(2026, 9, 11),
                     total_quantity=Decimal("60"),
                     quantity_unit="CAPSULE",
                     dose_per_intake=Decimal("1"),
                     intakes_per_day=2,
+                    days_until_depletion=29,
                     created_at=NOW,
                 ),
             ),
@@ -125,10 +131,12 @@ def test_list_contract_returns_private_page_without_internal_fields() -> None:
                 "image_url": "/static/products/care-manage-215.svg",
                 "purchase_date": "2026-08-10",
                 "intake_start_date": "2026-08-13",
+                "expected_depletion_date": "2026-09-11",
                 "total_quantity": "60",
                 "quantity_unit": "CAPSULE",
                 "dose_per_intake": "1",
                 "intakes_per_day": 2,
+                "days_until_depletion": 29,
                 "created_at": "2026-08-13T09:00:00Z",
             }
         ],
@@ -239,3 +247,6 @@ def test_openapi_documents_protected_list_and_soft_delete() -> None:
     assert "user_id" not in item_schema["properties"]
     assert "deleted_at" not in item_schema["properties"]
     assert "nutrients" not in item_schema["properties"]
+    assert {"expected_depletion_date", "days_until_depletion"} <= set(
+        item_schema["required"]
+    )

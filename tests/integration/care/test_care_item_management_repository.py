@@ -132,6 +132,7 @@ def _item(
         product_id=PRODUCT_ID,
         purchase_date=date(2026, 8, 10),
         intake_start_date=date(2026, 8, 13),
+        expected_depletion_date=date(2026, 9, 11),
         total_quantity=quantity,
         quantity_unit="CAPSULE",
         dose_per_intake=Decimal("1"),

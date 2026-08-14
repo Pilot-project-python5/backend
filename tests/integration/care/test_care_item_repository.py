@@ -79,6 +79,7 @@ def create_data(product_id: UUID = PRODUCT_ID) -> CareItemCreateData:
         product_id=product_id,
         purchase_date=date(2026, 8, 10),
         intake_start_date=date(2026, 8, 12),
+        expected_depletion_date=date(2026, 8, 21),
         total_quantity=Decimal("30"),
         dose_per_intake=Decimal("1"),
         intakes_per_day=3,
@@ -123,6 +124,7 @@ def test_repository_rejects_product_outside_database_catalog_without_write() -> 
     assert count == 0
 
 
+@pytest.mark.feature("F-3.7")
 def test_care_item_schema_matches_model_and_erd_contract() -> None:
     inspector = inspect(engine)
     columns = {item["name"]: item for item in inspector.get_columns("care_items")}
@@ -141,6 +143,7 @@ def test_care_item_schema_matches_model_and_erd_contract() -> None:
         "product_id",
         "purchase_date",
         "intake_start_date",
+        "expected_depletion_date",
         "total_quantity",
         "quantity_unit",
         "dose_per_intake",
@@ -155,6 +158,7 @@ def test_care_item_schema_matches_model_and_erd_contract() -> None:
     )
     assert checks >= {
         "ck_care_items_date_order",
+        "ck_care_items_depletion_date_order",
         "ck_care_items_total_quantity",
         "ck_care_items_quantity_unit",
         "ck_care_items_dose_per_intake",
@@ -175,6 +179,10 @@ def test_care_item_schema_matches_model_and_erd_contract() -> None:
         "id",
     )
     assert indexes["ix_care_items_product_id"] == ("product_id",)
+    assert indexes["ix_care_items_depletion_user"] == (
+        "expected_depletion_date",
+        "user_id",
+    )
     assert indexes["ix_care_items_active_user_created_at"] == (
         "user_id",
         "created_at",

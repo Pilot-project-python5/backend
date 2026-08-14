@@ -26,6 +26,7 @@ class CareItemCreateData:
     product_id: UUID
     purchase_date: date
     intake_start_date: date
+    expected_depletion_date: date
     total_quantity: Decimal
     dose_per_intake: Decimal
     intakes_per_day: int
@@ -39,6 +40,7 @@ class CareItemRecord:
     product_id: UUID
     purchase_date: date
     intake_start_date: date
+    expected_depletion_date: date
     total_quantity: Decimal
     quantity_unit: str
     dose_per_intake: Decimal
@@ -56,6 +58,7 @@ class CareItemListRecord:
     image_url: str
     purchase_date: date
     intake_start_date: date
+    expected_depletion_date: date
     total_quantity: Decimal
     quantity_unit: str
     dose_per_intake: Decimal
@@ -168,6 +171,7 @@ class SQLAlchemyCareItemRepository:
                 product_id=data.product_id,
                 purchase_date=data.purchase_date,
                 intake_start_date=data.intake_start_date,
+                expected_depletion_date=data.expected_depletion_date,
                 total_quantity=data.total_quantity,
                 quantity_unit=product.unit_form,
                 dose_per_intake=data.dose_per_intake,
@@ -188,6 +192,7 @@ class SQLAlchemyCareItemRepository:
             product_id=item.product_id,
             purchase_date=item.purchase_date,
             intake_start_date=item.intake_start_date,
+            expected_depletion_date=item.expected_depletion_date,
             total_quantity=item.total_quantity,
             quantity_unit=item.quantity_unit,
             dose_per_intake=item.dose_per_intake,
@@ -233,6 +238,7 @@ class SQLAlchemyCareItemRepository:
                     image_url=product.image_url,
                     purchase_date=item.purchase_date,
                     intake_start_date=item.intake_start_date,
+                    expected_depletion_date=item.expected_depletion_date,
                     total_quantity=item.total_quantity,
                     quantity_unit=item.quantity_unit,
                     dose_per_intake=item.dose_per_intake,
