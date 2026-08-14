@@ -1232,6 +1232,163 @@
         "title": "MedicationSourceResponse",
         "type": "object"
       },
+      "NotificationListItemResponse": {
+        "properties": {
+          "care_item_id": {
+            "format": "uuid",
+            "title": "Care Item Id",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_read": {
+            "title": "Is Read",
+            "type": "boolean"
+          },
+          "notification_type": {
+            "enum": [
+              "REPURCHASE",
+              "EXPIRATION"
+            ],
+            "title": "Notification Type",
+            "type": "string"
+          },
+          "product_name": {
+            "title": "Product Name",
+            "type": "string"
+          },
+          "read_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Read At"
+          },
+          "reference_date": {
+            "format": "date",
+            "title": "Reference Date",
+            "type": "string"
+          },
+          "scheduled_at": {
+            "format": "date-time",
+            "title": "Scheduled At",
+            "type": "string"
+          },
+          "trigger_days_before": {
+            "enum": [
+              5,
+              3,
+              1
+            ],
+            "title": "Trigger Days Before",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "care_item_id",
+          "product_name",
+          "notification_type",
+          "reference_date",
+          "trigger_days_before",
+          "scheduled_at",
+          "created_at",
+          "read_at",
+          "is_read"
+        ],
+        "title": "NotificationListItemResponse",
+        "type": "object"
+      },
+      "NotificationListResponse": {
+        "examples": [
+          {
+            "has_next": false,
+            "items": [
+              {
+                "care_item_id": "31000000-0000-4000-8000-000000000001",
+                "created_at": "2026-08-14T00:01:00Z",
+                "id": "41000000-0000-4000-8000-000000000001",
+                "is_read": false,
+                "notification_type": "REPURCHASE",
+                "product_name": "라이프익스텐션 투퍼데이",
+                "reference_date": "2026-08-19",
+                "scheduled_at": "2026-08-14T00:00:00Z",
+                "trigger_days_before": 5
+              }
+            ],
+            "page": 1,
+            "page_size": 20,
+            "total": 1
+          }
+        ],
+        "properties": {
+          "has_next": {
+            "title": "Has Next",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/NotificationListItemResponse"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "page": {
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "page",
+          "page_size",
+          "total",
+          "has_next"
+        ],
+        "title": "NotificationListResponse",
+        "type": "object"
+      },
+      "NotificationReadResponse": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "read_at": {
+            "format": "date-time",
+            "title": "Read At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "read_at"
+        ],
+        "title": "NotificationReadResponse",
+        "type": "object"
+      },
       "NutrientStatusItemResponse": {
         "properties": {
           "achievement_rate_percent": {
@@ -4356,6 +4513,223 @@
         "summary": "의약품 카탈로그 상세 조회",
         "tags": [
           "의약품"
+        ]
+      }
+    },
+    "/api/v1/notifications": {
+      "get": {
+        "operationId": "notification_list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Page Size",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationListResponse"
+                }
+              }
+            },
+            "description": "현재 사용자의 화면 알림 페이지",
+            "headers": {
+              "Cache-Control": {
+                "description": "개인 알림 응답 캐시 금지",
+                "schema": {
+                  "example": "no-store",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "AUTH_REQUIRED",
+                    "fields": [],
+                    "message": "인증이 필요합니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "access 인증 실패"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 조회 실패"
+          }
+        },
+        "security": [
+          {
+            "AccessCookieAuth": []
+          }
+        ],
+        "summary": "내 화면 알림 목록 조회",
+        "tags": [
+          "알림"
+        ]
+      }
+    },
+    "/api/v1/notifications/{notification_id}/read": {
+      "put": {
+        "operationId": "notification_mark_read",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "notification_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Notification Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationReadResponse"
+                }
+              }
+            },
+            "description": "현재 사용자의 알림 읽음 처리",
+            "headers": {
+              "Cache-Control": {
+                "description": "개인 알림 응답 캐시 금지",
+                "schema": {
+                  "example": "no-store",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "AUTH_REQUIRED",
+                    "fields": [],
+                    "message": "인증이 필요합니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "access 인증 실패"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "NOTIFICATION_NOT_FOUND",
+                    "fields": [],
+                    "message": "알림을 찾을 수 없습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "현재 사용자의 알림 없음"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "SERVICE_UNAVAILABLE",
+                    "fields": [],
+                    "message": "서비스가 아직 준비되지 않았습니다.",
+                    "request_id": "opaque-request-id"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "PostgreSQL 갱신 실패"
+          }
+        },
+        "security": [
+          {
+            "AccessCookieAuth": []
+          }
+        ],
+        "summary": "내 화면 알림 읽음 처리",
+        "tags": [
+          "알림"
         ]
       }
     }

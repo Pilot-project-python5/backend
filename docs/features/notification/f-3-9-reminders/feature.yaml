@@ -1,0 +1,22 @@
+id: "F-3.9"
+title: "리마인더 조회·확인"
+domain: "notification"
+requirement: "FR-3"
+phase: "1"
+priority: "P0"
+status: "implemented"
+owner: "backend"
+history_path: "docs/history/notification/f-3-9-reminders.md"
+source:
+  requirement_path: "docs/product/requirements.md"
+  external_url: null
+  reviewed_on: "2026-08-14"
+dependencies:
+  - "F-3.8"
+  - "F-3.11"
+api_changes:
+  - "GET /api/v1/notifications 사용자별 화면 알림 페이지 조회"
+  - "PUT /api/v1/notifications/{notification_id}/read 개별 읽음 처리"
+data_changes:
+  - "없음: F-3.8 notifications와 기존 조회 인덱스를 재사용"
+open_questions: []
