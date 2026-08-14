@@ -88,8 +88,11 @@ DailyIntake·NutrientStatus 계산에서 계속 제외한다.
   생성과 사용자별 최신순 페이지·멱등 읽음 처리를 구현했으며 F-3.12 이메일이 같은
   이벤트를 소비한다. 목록의 제품명은 현재 Product 값을 조회하고 알림은 1차 MVP에서
   기간 제한 없이 보존한다.
-- EmailDelivery(이메일 발송): F-3.12에서 Notification, 수신 주소, 상태, 시도 횟수,
-  마지막 오류를 추가할 예정이다.
+- EmailDelivery(이메일 발송): F-3.12에서 실제 구현한 Notification 1:0..1 전달 이력이다.
+  등록 시점 수신 주소, PENDING·SENDING·RETRY·SENT·FAILED 상태, 실제 시도 횟수 0~3,
+  5분 재시도·claim lease 시각, 성공 시각, 안전 오류 코드와 생성·갱신 시각을 보존한다.
+  당일 09시 일정의 ACTIVE·인증 사용자만 등록하며 notification_id UNIQUE와 due 부분
+  인덱스로 정상 반복·동시 worker의 중복을 막는다.
 
 ## 기준 데이터
 

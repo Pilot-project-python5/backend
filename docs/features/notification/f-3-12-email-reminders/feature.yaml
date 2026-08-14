@@ -1,0 +1,21 @@
+id: "F-3.12"
+title: "이메일 리마인더"
+domain: "notification"
+requirement: "FR-3"
+phase: "1"
+priority: "P0"
+status: "implemented"
+owner: "backend"
+history_path: "docs/history/notification/f-3-12-email-reminders.md"
+source:
+  requirement_path: "docs/product/requirements.md"
+  external_url: null
+  reviewed_on: "2026-08-14"
+dependencies:
+  - "F-3.8"
+  - "F-3.9"
+api_changes:
+  - "없음: worker 내부 이메일 전달 기능"
+data_changes:
+  - "Notification 1:1 email_deliveries 전달·재시도 상태 테이블 추가"
+open_questions: []
