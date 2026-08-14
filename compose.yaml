@@ -4,6 +4,7 @@ x-app-environment: &app-environment
   APP_ENV: ${APP_ENV:-local}
   APP_DEBUG: ${APP_DEBUG:-true}
   APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Seoul}
+  NUTRIENT_REFERENCE_VERSION: ${NUTRIENT_REFERENCE_VERSION:-KDRI-2025-20260316}
   CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
   DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://allyakkkuk:allyakkkuk-local@postgres-dev:5432/allyakkkuk_dev}
   MAIL_HOST: ${MAIL_HOST:-mail}

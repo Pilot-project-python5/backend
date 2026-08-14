@@ -192,6 +192,7 @@ erDiagram
         varchar version UK
         varchar source_name
         text source_url
+        date published_on
         varchar checksum UK
         timestamptz loaded_at
     }
@@ -203,6 +204,7 @@ erDiagram
         varchar gender
         smallint age_min
         smallint age_max
+        varchar reference_type
         numeric reference_amount
         varchar unit
     }
@@ -254,8 +256,16 @@ erDiagram
   추가하지 않는다.
 - 의약품의 효능, 복용법, 주의와 보관 정보는 medication_details에 저장한다.
 - 전문가 소개는 프론트엔드 정적 콘텐츠이므로 1차에는 experts 테이블을 만들지 않는다.
-- 영양소 기준 원본은 CSV이며 버전과 checksum을 보존한다.
-- 동일 기준 버전에서 성분·성별·나이 구간이 중복되거나 겹치면 적재를 거부한다.
+- F-3.6에서 두 기준 엔티티를 실제 테이블로 구현한다. 기준 버전은 고유 version·
+  checksum, 출처명·HTTPS URL·발행일·적재 시각을 보존한다.
+- 기준값은 버전과 Nutrient를 참조하고 성별 MALE/FEMALE, 0~120세 나이 구간,
+  RNI/AI 유형, 양수 Decimal 기준량과 MG·G·MCG·IU 단위를 가진다. 버전 삭제 시 값은
+  CASCADE하고 성분 삭제는 RESTRICT한다.
+- 동일 버전·성분·성별·나이 구간·유형은 UNIQUE이며
+  `(version_id, gender, age_min, age_max, nutrient_id)`로 조회한다. 겹치는 구간,
+  중복 키, 성분 기준 단위 불일치와 메타데이터 불일치는 전체 적재 전에 거부한다.
+- 기준 원본은 `data/reference/nutrient_reference_kdri_2025.csv`이고 파일 전체 SHA-256을
+  보존한다. 같은 버전 재적재는 결정적 UUID로 원자 교체해 같은 상태로 수렴한다.
 
 ## 마이케어
 
@@ -411,6 +421,9 @@ erDiagram
   복용량 × 하루 횟수로 요청마다 계산한다. G·MG·MCG는 Nutrient 기준 단위로 환산해
   합산하고 IU는 IU끼리만 합산하며 별도 행으로 저장하지 않는다.
 - 기준량 달성 비율: 예정 섭취량과 나이·성별 기준량으로 계산한다.
+- F-3.6 기준량 달성 비율은 저장하지 않고 `일일 예정량 / RNI 또는 AI × 100`으로
+  요청마다 Decimal 계산한다. 일반 OMEGA_3처럼 정확히 매핑할 공식 기준이 없으면
+  현재량만 반환하고 기준 필드는 비워 둔다.
 - 예상 소진일: F-3.7에서 계산 후 care_items에 추가해 알림 예약과 목록 조회에 사용한다.
 - D-day: expected_depletion_date와 조회 기준일의 차이로 계산한다.
 - 재고·유통기한 상태: 후속 기능에서 도메인 규칙으로 계산하고 검색·작업자 처리를
@@ -449,7 +462,6 @@ erDiagram
 - 복용 계획과 수량 수정 API 제공 여부
 - 삭제된 복용 항목의 복원·물리 정리와 이력 보존 기간
 - 나누어떨어지지 않는 수량의 마지막 복용일 계산
-- 영양소 CSV 열, 단위 변환, 출처와 버전 규칙
 - 오전 9시의 IANA 기준 시간대
 - 이메일 재시도와 최종 실패 정책
 - 의약품 시드 필수 필드와 분류 체계

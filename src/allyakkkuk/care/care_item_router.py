@@ -35,6 +35,14 @@ from allyakkkuk.care.daily_intake_schemas import (
     NutrientUnit,
 )
 from allyakkkuk.care.daily_intake_service import DailyIntakeService
+from allyakkkuk.care.nutrient_status_repository import (
+    SQLAlchemyNutrientStatusRepository,
+)
+from allyakkkuk.care.nutrient_status_schemas import (
+    NutrientStatusItemResponse,
+    NutrientStatusResponse,
+)
+from allyakkkuk.care.nutrient_status_service import NutrientStatusService
 from allyakkkuk.core.config import get_settings
 from allyakkkuk.db.session import get_db_session
 from allyakkkuk.ports.clock import SystemClock
@@ -70,6 +78,20 @@ def get_daily_intake_service(
     return DailyIntakeService(SQLAlchemyDailyIntakeRepository(session))
 
 
+def get_nutrient_status_service(
+    session: Annotated[Session, Depends(get_db_session)],
+) -> NutrientStatusService:
+    return NutrientStatusService(
+        repository=SQLAlchemyNutrientStatusRepository(session),
+        daily_intake_service=DailyIntakeService(
+            SQLAlchemyDailyIntakeRepository(session)
+        ),
+        clock=_clock,
+        time_zone=_time_zone,
+        reference_version=_settings.nutrient_reference_version,
+    )
+
+
 def _error_response(
     description: str,
     code: str,
@@ -99,6 +121,66 @@ _PRIVATE_RESPONSE_HEADERS = {
         "schema": {"type": "string", "example": "no-store"},
     }
 }
+
+
+@router.get(
+    "/nutrient-status",
+    response_model=NutrientStatusResponse,
+    responses={
+        200: {
+            "description": (
+                "등록된 보충제 복용 계획이 총 식이 기준량에서 차지하는 비율. "
+                "실제 음식 섭취량이나 임상적 결핍·과잉 판정이 아닙니다."
+            ),
+            "headers": _PRIVATE_RESPONSE_HEADERS,
+        },
+        401: _error_response("access 인증 실패", "AUTH_REQUIRED", "인증이 필요합니다."),
+        503: _error_response(
+            "기준 버전 또는 PostgreSQL 조회·단위 검증 실패",
+            "SERVICE_UNAVAILABLE",
+            "서비스가 아직 준비되지 않았습니다.",
+        ),
+    },
+    summary="내 영양성분 현황 조회",
+    operation_id="care_get_nutrient_status",
+)
+def get_nutrient_status(
+    response: Response,
+    current: Annotated[AuthenticatedUser, Depends(require_current_user)],
+    service: Annotated[NutrientStatusService, Depends(get_nutrient_status_service)],
+) -> NutrientStatusResponse:
+    result = service.get_status(user_id=current.user_id)
+    set_no_store_headers(response)
+    return NutrientStatusResponse(
+        as_of_date=result.as_of_date,
+        age=result.age,
+        gender=cast(Any, result.gender),
+        reference_version=result.reference_version,
+        reference_source_name=result.reference_source_name,
+        reference_source_url=result.reference_source_url,
+        nutrients=[
+            NutrientStatusItemResponse(
+                nutrient_id=item.nutrient_id,
+                nutrient_code=item.nutrient_code,
+                nutrient_name=item.nutrient_name,
+                daily_amount=decimal_string(item.daily_amount),
+                unit=cast(NutrientUnit, item.unit),
+                reference_available=item.reference_available,
+                reference_amount=(
+                    decimal_string(item.reference_amount)
+                    if item.reference_amount is not None
+                    else None
+                ),
+                reference_type=cast(Any, item.reference_type),
+                achievement_rate_percent=(
+                    decimal_string(item.achievement_rate_percent)
+                    if item.achievement_rate_percent is not None
+                    else None
+                ),
+            )
+            for item in result.nutrients
+        ],
+    )
 
 
 @router.get(
