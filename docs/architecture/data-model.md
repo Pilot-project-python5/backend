@@ -31,6 +31,11 @@
   활성 항목을 제공한다.
 - PurchaseLink(구매 링크): 제품별 판매처 표시·HTTPS 절대 URL, 활성 여부와 편집 순서.
   F-2.4.2에서 실제 테이블·결정적 개발 시드를 추가하고 제품 삭제 시 함께 삭제한다.
+- MedicationDetail(의약품 상세): F-3.10에서 실제 구현한 Product 1:0..1 확장 정보다.
+  고유 품목 추적 코드, OTC/PRESCRIPTION 분류, 유효성분 요약, 효능·용법·주의·보관,
+  출처명·HTTPS URL·검토일을 보존한다. 게시 MEDICATION Product와 상세가 모두 있어야
+  보호 목록·상세 API에 노출하며 Product 삭제 시 함께 삭제한다. 1차 로컬 시드는
+  API·UI 검증용 실사용 금지 예시이고 운영 전 품목별 공식 데이터로 교체해야 한다.
 - NutrientReferenceVersion(영양소 기준 버전): F-3.6에서 실제 구현한 공인 기준의 버전,
   출처명·URL·발행일, CSV 전체 checksum과 결정적 적재 시각. version과 checksum은 각각
   고유하며 설정한 버전을 조회한다.
@@ -67,6 +72,10 @@ care_nutrient_snapshots를 함께 저장한다. F-3.3은 구매 총량·단위�
 CareItem·성분 스냅샷·Nutrient를 사용하는 읽기 전용 파생 계산을 구현한다. 상태·소진
 예정일은 F-3.7에서 저장·조회하고 재구매 상태는 F-3.8, 유통기한은 F-3.11의
 Feature Packet에서 확장한다.
+
+F-3.10 의약품 Product도 기존 CareItem 등록·목록·소진 흐름을 사용한다. 의약품 상세는
+카탈로그 원본이고 사용자별 복용 행에 복제하지 않으며, 의약품은 성분 스냅샷과
+DailyIntake·NutrientStatus 계산에서 계속 제외한다.
 
 ## 알림
 

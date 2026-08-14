@@ -1,0 +1,24 @@
+id: "F-3.10"
+title: "의약품 관리"
+domain: "medication"
+requirement: "FR-3"
+phase: "1"
+priority: "P0"
+status: "implemented"
+owner: "backend"
+history_path: "docs/history/medication/f-3-10-medication-management.md"
+source:
+  requirement_path: "docs/product/requirements.md"
+  external_url: null
+  reviewed_on: "2026-08-14"
+dependencies:
+  - "F-2.3"
+  - "F-3.1"
+  - "F-3.4"
+api_changes:
+  - "GET /api/v1/medications 추가"
+  - "GET /api/v1/medications/{product_id} 추가"
+data_changes:
+  - "products에 로컬 의약품 제품 시드 추가"
+  - "medication_details 1:1 의약품 상세 테이블·결정적 시드 추가"
+open_questions: []

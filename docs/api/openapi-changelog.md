@@ -4,6 +4,7 @@
 
 | 날짜 | 기능 ID | 변경 | 호환성 | 마이그레이션 참고 사항 |
 | --- | --- | --- | --- | --- |
+| 2026-08-14 | F-3.10 | GET /api/v1/medications 보호 목록·상세와 의약품 복약정보·출처 계약 추가 | 신규 보호 읽기 API이며 기존 Product·CareItem 계약은 유지 | medication_details 20260814_0017과 로컬 실사용 금지 의약품 시드 필요 |
 | 2026-08-14 | F-3.7 | POST·GET /api/v1/care/items 응답에 expected_depletion_date, GET 항목에 days_until_depletion 추가 | 기존 요청을 유지하는 additive 응답 확장 | care_items 예상 소진일 백필·CHECK·NOT NULL·인덱스 20260814_0016 필요 |
 | 2026-08-14 | F-3.6 | GET /api/v1/care/nutrient-status 나이·성별 기준량 비교 계약 추가 | 신규 보호 읽기 API이며 기존 care API 계약은 유지 | nutrient_reference_versions·values 20260814_0015와 KDRI CSV 시드 필요 |
 | 2026-08-13 | F-3.5 | GET /api/v1/care/daily-intake 성분별 일일 예정 섭취량 계약 추가 | 신규 보호 읽기 API이며 기존 care API 계약은 유지 | 기존 care_items·care_nutrient_snapshots·nutrients 읽기 전용, 마이그레이션 없음 |
