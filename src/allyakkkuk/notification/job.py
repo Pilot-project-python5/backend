@@ -1,4 +1,4 @@
-"""로컬 worker가 호출하는 재구매 알림 작업."""
+"""로컬 worker가 호출하는 논리 알림 작업."""
 
 from __future__ import annotations
 
@@ -9,9 +9,13 @@ from zoneinfo import ZoneInfo
 from sqlalchemy.orm import Session
 
 from allyakkkuk.notification.repository import (
+    SQLAlchemyExpirationNotificationRepository,
     SQLAlchemyRepurchaseNotificationRepository,
 )
-from allyakkkuk.notification.service import RepurchaseNotificationService
+from allyakkkuk.notification.service import (
+    ExpirationNotificationService,
+    RepurchaseNotificationService,
+)
 from allyakkkuk.ports.clock import Clock
 
 logger = logging.getLogger(__name__)
@@ -40,3 +44,33 @@ class RepurchaseNotificationJob:
                 self._time_zone,
             ).run()
         logger.info("재구매 논리 알림 작업 완료 created=%d", created)
+
+
+class NotificationJob:
+    def __init__(
+        self,
+        session_factory: SessionFactory,
+        clock: Clock,
+        time_zone: ZoneInfo,
+    ) -> None:
+        self._session_factory = session_factory
+        self._clock = clock
+        self._time_zone = time_zone
+
+    def run(self) -> None:
+        with self._session_factory() as session:
+            repurchase_created = RepurchaseNotificationService(
+                SQLAlchemyRepurchaseNotificationRepository(session),
+                self._clock,
+                self._time_zone,
+            ).run()
+            expiration_created = ExpirationNotificationService(
+                SQLAlchemyExpirationNotificationRepository(session),
+                self._clock,
+                self._time_zone,
+            ).run()
+        logger.info(
+            "논리 알림 작업 완료 repurchase_created=%d expiration_created=%d",
+            repurchase_created,
+            expiration_created,
+        )

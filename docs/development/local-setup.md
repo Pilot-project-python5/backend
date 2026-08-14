@@ -48,10 +48,12 @@ make verify
 - mail
 - worker
 
-worker는 `WORKER_POLL_SECONDS` 간격으로 재구매 논리 알림 작업을 실행한다. APP_TIMEZONE
-기준 오전 9시 전에는 쓰지 않고, 오전 9시 이후 당일 D-5·D-3·D-1 항목만 PostgreSQL
-고유 제약으로 멱등 생성한다. 작업 실패는 기록한 뒤 다음 poll에서 다시 시도하며
-과거 날짜 알림을 소급 생성하지 않는다.
+worker는 `WORKER_POLL_SECONDS` 간격으로 재구매·유통기한 논리 알림 작업을 실행한다.
+APP_TIMEZONE 기준 오전 9시 전에는 쓰지 않고, 오전 9시 이후 예상 소진일 또는
+유통기한이 당일 D-5·D-3·D-1인 활성 항목만 PostgreSQL 고유 제약으로 멱등 생성한다.
+작업 실패는 기록한 뒤 다음 poll에서 다시 시도하며 과거 날짜 알림을 소급 생성하지
+않는다. 생성 결과는 Swagger의 `/api/v1/notifications`에서 로그인 사용자 기준으로
+조회·읽음 처리할 수 있다.
 
 ## 제약
 

@@ -432,8 +432,9 @@ erDiagram
 
 ### 책임과 제약
 
-- F-3.8에서 notifications를 실제 구현한다. 화면과 이메일이 공유하는 논리 알림
-  이벤트이며 이번 기능은 REPURCHASE 생성까지만 담당한다.
+- F-3.8에서 notifications와 REPURCHASE 생성을 구현하고 F-3.9에서 EXPIRATION 생성,
+  사용자별 최신순 페이지와 개별 멱등 읽음 처리를 구현한다. 화면과 이메일은 같은 논리
+  이벤트를 공유한다.
 - notification_type은 1차에서 REPURCHASE 또는 EXPIRATION이다.
 - trigger_days_before는 5, 3, 1 중 하나다.
 - reference_date는 예상 소진일 또는 유통기한이다.
@@ -441,9 +442,10 @@ erDiagram
   관리하고 작업자 반복·동시 실행은 충돌을 무시한다.
 - scheduled_at은 APP_TIMEZONE 트리거 날짜 오전 9시를 UTC로 저장하고 created_at보다
   늦을 수 없다. read_at은 null이거나 created_at 이상이다.
-- User·CareItem 물리 삭제 시 CASCADE한다. CareItem 소프트 삭제는 기존 알림을 보존하되
-  새 알림 후보에서 제외한다.
-- `(user_id, read_at, created_at DESC, id)`는 F-3.9 화면 목록을 위한 인덱스다.
+- User·CareItem 물리 삭제 시 CASCADE한다. CareItem 소프트 삭제는 기존 알림을 화면
+  이력에 보존하되 새 알림 후보에서 제외한다. 1차 MVP는 보관 기간과 삭제 API가 없다.
+- `(user_id, read_at, created_at DESC, id)`는 사용자 화면 목록 조회에 사용한다. API의
+  안정 정렬은 `created_at DESC, id DESC`이며 현재 Product 이름을 조인한다.
 - email_deliveries.notification_id를 고유하게 관리해 이메일 중복 발송을 막는다.
 - recipient_email은 발송 시점 주소를 보존하는 스냅샷이다.
 - 재시도는 같은 email_deliveries 행의 상태와 시도 횟수를 갱신한다.

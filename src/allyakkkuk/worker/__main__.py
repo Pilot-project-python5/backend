@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 from allyakkkuk.core.config import get_settings
 from allyakkkuk.core.logging import configure_logging
 from allyakkkuk.db.session import SessionFactory
-from allyakkkuk.notification.job import RepurchaseNotificationJob
+from allyakkkuk.notification.job import NotificationJob
 from allyakkkuk.ports.clock import SystemClock
 from allyakkkuk.worker.runtime import run_forever
 
@@ -25,7 +25,7 @@ def main() -> None:
     signal.signal(signal.SIGTERM, request_stop)
     signal.signal(signal.SIGINT, request_stop)
     run_forever(
-        RepurchaseNotificationJob(
+        NotificationJob(
             SessionFactory,
             SystemClock(),
             ZoneInfo(settings.app_timezone),
