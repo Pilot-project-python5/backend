@@ -6,8 +6,8 @@ domain: "notification"
 status: "implemented"
 completed_on: "2026-08-14"
 feature_packet: "docs/features/notification/f-3-12-email-reminders"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/25"
+commit: "320c7c0"
 ---
 
 # F-3.12 이메일 리마인더 구현 이력
