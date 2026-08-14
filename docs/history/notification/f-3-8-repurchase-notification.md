@@ -6,8 +6,8 @@ domain: "notification"
 status: "implemented"
 completed_on: "2026-08-14"
 feature_packet: "docs/features/notification/f-3-8-repurchase-notification"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/23"
+commit: "25c9e93"
 ---
 
 # F-3.8 재구매 상태·알림 구현 이력
