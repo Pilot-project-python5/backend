@@ -6,8 +6,8 @@ domain: "notification"
 status: "implemented"
 completed_on: "2026-08-14"
 feature_packet: "docs/features/notification/f-3-11-expiration-management"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/22"
+commit: "e737262"
 ---
 
 # F-3.11 유통기한 관리 구현 이력
