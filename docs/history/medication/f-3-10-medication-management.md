@@ -6,8 +6,8 @@ domain: "medication"
 status: "implemented"
 completed_on: "2026-08-14"
 feature_packet: "docs/features/medication/f-3-10-medication-management"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/21"
+commit: "3566f9d"
 ---
 
 # F-3.10 의약품 관리 구현 이력
