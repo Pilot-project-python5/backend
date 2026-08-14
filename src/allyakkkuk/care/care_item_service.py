@@ -20,6 +20,7 @@ from allyakkkuk.care.depletion import (
     calculate_expected_depletion_date,
 )
 from allyakkkuk.care.expiration import ExpirationStatus, expiration_state
+from allyakkkuk.care.inventory import InventoryStatus, inventory_status
 from allyakkkuk.core.errors import AppError, ErrorFieldData
 from allyakkkuk.ports.clock import Clock
 
@@ -67,6 +68,7 @@ class CareItemListItem:
     intakes_per_day: int
     days_until_depletion: int
     created_at: datetime
+    inventory_status: InventoryStatus = "NORMAL"
     expiration_date: date | None = None
     days_until_expiration: int | None = None
     expiration_status: ExpirationStatus | None = None
@@ -258,6 +260,10 @@ def _list_item(item: CareItemListRecord, *, today: date) -> CareItemListItem:
         expiration_date=item.expiration_date,
         today=today,
     )
+    days_until_depletion = calculate_days_until_depletion(
+        expected_depletion_date=item.expected_depletion_date,
+        today=today,
+    )
     return CareItemListItem(
         id=item.id,
         product_id=item.product_id,
@@ -272,11 +278,9 @@ def _list_item(item: CareItemListRecord, *, today: date) -> CareItemListItem:
         quantity_unit=item.quantity_unit,
         dose_per_intake=item.dose_per_intake,
         intakes_per_day=item.intakes_per_day,
-        days_until_depletion=calculate_days_until_depletion(
-            expected_depletion_date=item.expected_depletion_date,
-            today=today,
-        ),
+        days_until_depletion=days_until_depletion,
         created_at=item.created_at,
+        inventory_status=inventory_status(days_until_depletion),
         expiration_date=item.expiration_date,
         days_until_expiration=expiration.days_until_expiration,
         expiration_status=expiration.status,

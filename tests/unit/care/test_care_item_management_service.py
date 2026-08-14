@@ -21,6 +21,7 @@ pytestmark = [
     pytest.mark.unit,
     pytest.mark.feature("F-3.4"),
     pytest.mark.feature("F-3.11"),
+    pytest.mark.feature("F-3.8"),
 ]
 
 NOW = datetime(2026, 8, 13, 9, 0, tzinfo=UTC)
@@ -114,6 +115,7 @@ def test_list_items_maps_active_page_and_has_next() -> None:
     assert result.items[0].id == ITEM_ID
     assert result.items[0].quantity_unit == "CAPSULE"
     assert result.items[0].days_until_depletion == 29
+    assert result.items[0].inventory_status == "NORMAL"
     assert result.items[0].days_until_expiration == 5
     assert result.items[0].expiration_status == "EXPIRING_SOON"
     assert result.page == 1

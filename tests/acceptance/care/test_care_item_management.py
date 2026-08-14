@@ -30,6 +30,7 @@ pytestmark = [
     pytest.mark.feature("F-3.4"),
     pytest.mark.feature("F-3.7"),
     pytest.mark.feature("F-3.11"),
+    pytest.mark.feature("F-3.8"),
 ]
 
 NOW = datetime(2026, 8, 13, 9, 0, tzinfo=UTC)
@@ -223,6 +224,7 @@ def test_user_lists_independent_active_purchases_and_soft_deletes_one() -> None:
     assert first_page.json()["items"][0]["quantity_unit"] == "PACKET"
     assert first_page.json()["items"][0]["expected_depletion_date"] == "2026-09-11"
     assert first_page.json()["items"][0]["days_until_depletion"] == 29
+    assert first_page.json()["items"][0]["inventory_status"] == "NORMAL"
     assert first_page.json()["items"][0]["expiration_date"] == "2026-08-18"
     assert first_page.json()["items"][0]["days_until_expiration"] == 5
     assert first_page.json()["items"][0]["expiration_status"] == "EXPIRING_SOON"
@@ -297,3 +299,23 @@ def test_expiration_update_hides_other_deleted_and_missing_items(
 
     assert response.status_code == 404
     assert response.json()["error"]["code"] == "CARE_ITEM_NOT_FOUND"
+
+
+def test_list_derives_low_stock_and_depleted_inventory_status() -> None:
+    with SessionFactory.begin() as session:
+        latest = session.get(CareItem, LATEST_ID)
+        first = session.get(CareItem, FIRST_ID)
+        assert latest is not None and first is not None
+        latest.expected_depletion_date = date(2026, 8, 18)
+        first.intake_start_date = date(2026, 8, 10)
+        first.expected_depletion_date = date(2026, 8, 12)
+
+    with TestClient(app) as client:
+        response = client.get("/api/v1/care/items")
+
+    assert response.status_code == 200
+    items = {item["id"]: item for item in response.json()["items"]}
+    assert items[str(LATEST_ID)]["days_until_depletion"] == 5
+    assert items[str(LATEST_ID)]["inventory_status"] == "LOW_STOCK"
+    assert items[str(FIRST_ID)]["days_until_depletion"] == -1
+    assert items[str(FIRST_ID)]["inventory_status"] == "DEPLETED"

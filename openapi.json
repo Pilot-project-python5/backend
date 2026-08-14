@@ -202,6 +202,15 @@
             "title": "Intakes Per Day",
             "type": "integer"
           },
+          "inventory_status": {
+            "enum": [
+              "NORMAL",
+              "LOW_STOCK",
+              "DEPLETED"
+            ],
+            "title": "Inventory Status",
+            "type": "string"
+          },
           "name": {
             "title": "Name",
             "type": "string"
@@ -255,6 +264,7 @@
           "dose_per_intake",
           "intakes_per_day",
           "days_until_depletion",
+          "inventory_status",
           "created_at",
           "expiration_date",
           "days_until_expiration",

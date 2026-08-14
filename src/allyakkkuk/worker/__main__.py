@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import signal
 import threading
+from zoneinfo import ZoneInfo
 
 from allyakkkuk.core.config import get_settings
 from allyakkkuk.core.logging import configure_logging
-from allyakkkuk.db.probe import SQLAlchemyDatabaseProbe
-from allyakkkuk.db.session import engine
-from allyakkkuk.worker.runtime import BootstrapWorkerJob, run_forever
+from allyakkkuk.db.session import SessionFactory
+from allyakkkuk.notification.job import RepurchaseNotificationJob
+from allyakkkuk.ports.clock import SystemClock
+from allyakkkuk.worker.runtime import run_forever
 
 
 def main() -> None:
@@ -23,7 +25,11 @@ def main() -> None:
     signal.signal(signal.SIGTERM, request_stop)
     signal.signal(signal.SIGINT, request_stop)
     run_forever(
-        BootstrapWorkerJob(SQLAlchemyDatabaseProbe(engine)),
+        RepurchaseNotificationJob(
+            SessionFactory,
+            SystemClock(),
+            ZoneInfo(settings.app_timezone),
+        ),
         interval_seconds=settings.worker_poll_seconds,
         stop_event=stop_event,
     )

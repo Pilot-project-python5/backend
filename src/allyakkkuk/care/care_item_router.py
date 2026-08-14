@@ -284,6 +284,7 @@ def list_care_items(
                 dose_per_intake=decimal_string(item.dose_per_intake),
                 intakes_per_day=item.intakes_per_day,
                 days_until_depletion=item.days_until_depletion,
+                inventory_status=item.inventory_status,
                 created_at=item.created_at,
                 expiration_date=item.expiration_date,
                 days_until_expiration=item.days_until_expiration,

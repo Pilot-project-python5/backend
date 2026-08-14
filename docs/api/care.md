@@ -87,6 +87,19 @@
 }
 ~~~
 
+## F-3.8 재구매 상태·논리 알림
+
+- `GET /api/v1/care/items` 각 항목에 필수 `inventory_status`를 추가한다.
+- 상태는 저장하지 않고 기존 `days_until_depletion`으로 계산한다. D-6 이상은
+  `NORMAL`, D-5부터 D0은 `LOW_STOCK`, 다음 날부터는 `DEPLETED`다.
+- 로컬 worker는 APP_TIMEZONE의 당일 오전 9시 이후에 정확히 D-5·D-3·D-1인 활성
+  CareItem만 조회해 `REPURCHASE` 논리 알림을 만든다. 오전 9시 이전과 다른 D-day,
+  삭제 항목, 전날 놓친 트리거는 생성하지 않는다.
+- 같은 CareItem·종류·기준일·트리거 일수는 DB 고유 제약으로 한 건만 유지한다. 반복·
+  동시 실행은 충돌을 무시하고 이미 생성된 알림을 덮어쓰지 않는다.
+- Notification은 화면과 이메일이 공유하는 내부 논리 이벤트다. F-3.8에는 알림 공개
+  API가 없으며 F-3.9가 목록·읽음과 유통기한 이벤트, F-3.12가 이메일 전달을 추가한다.
+
 ## F-3.2 영양제 성분 스냅샷
 
 - API 경로·요청·응답·상태 코드는 F-3.1과 동일하다.
@@ -149,6 +162,7 @@
       "dose_per_intake": "1",
       "intakes_per_day": 2,
       "days_until_depletion": 28,
+      "inventory_status": "NORMAL",
       "created_at": "2026-08-13T09:00:00Z",
       "expiration_date": "2027-01-31",
       "days_until_expiration": 170,

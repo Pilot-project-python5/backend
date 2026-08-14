@@ -14,6 +14,7 @@ QuantityUnit = Literal["TABLET", "CAPSULE", "SCOOP", "PACKET"]
 ProductType = Literal["SUPPLEMENT", "MEDICATION"]
 DecimalString = Annotated[str, Field(pattern=r"^(?:0|[1-9]\d*)(?:\.\d+)?$")]
 ExpirationStatus = Literal["NORMAL", "EXPIRING_SOON", "EXPIRED"]
+InventoryStatus = Literal["NORMAL", "LOW_STOCK", "DEPLETED"]
 
 
 def decimal_string(value: Decimal) -> str:
@@ -106,6 +107,7 @@ class CareItemListItemResponse(BaseModel):
     dose_per_intake: DecimalString
     intakes_per_day: int
     days_until_depletion: int
+    inventory_status: InventoryStatus
     created_at: datetime
     expiration_date: date | None
     days_until_expiration: int | None

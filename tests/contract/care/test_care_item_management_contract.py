@@ -26,6 +26,7 @@ pytestmark = [
     pytest.mark.feature("F-3.4"),
     pytest.mark.feature("F-3.7"),
     pytest.mark.feature("F-3.11"),
+    pytest.mark.feature("F-3.8"),
 ]
 
 NOW = datetime(2026, 8, 13, 9, 0, tzinfo=UTC)
@@ -85,6 +86,7 @@ class StubManagementService:
                     dose_per_intake=Decimal("1"),
                     intakes_per_day=2,
                     days_until_depletion=29,
+                    inventory_status="NORMAL",
                     created_at=NOW,
                     expiration_date=date(2026, 8, 18),
                     days_until_expiration=5,
@@ -153,6 +155,7 @@ def test_list_contract_returns_private_page_without_internal_fields() -> None:
                 "dose_per_intake": "1",
                 "intakes_per_day": 2,
                 "days_until_depletion": 29,
+                "inventory_status": "NORMAL",
                 "created_at": "2026-08-13T09:00:00Z",
                 "expiration_date": "2026-08-18",
                 "days_until_expiration": 5,
@@ -331,6 +334,7 @@ def test_openapi_documents_protected_list_and_soft_delete() -> None:
     assert {
         "expected_depletion_date",
         "days_until_depletion",
+        "inventory_status",
         "expiration_date",
         "days_until_expiration",
         "expiration_status",
