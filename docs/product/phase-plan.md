@@ -13,7 +13,9 @@
 - Swagger와 OpenAPI
 - 자동 테스트와 하네스
 
-완료 조건은 docs/development/commands.md의 검증 인터페이스가 실제 명령으로 구현되고 make verify가 로컬에서 통과하는 것이다.
+완료 조건은 docs/development/commands.md의 검증 인터페이스가 실제 명령으로 구현되고
+`make verify`가 로컬에서 통과하는 것이다. 2026-08-14 완료 근거는
+docs/product/phase-1-mvp-readiness.md에 고정한다.
 
 ## 2차: 외부 연동
 
