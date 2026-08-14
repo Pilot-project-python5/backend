@@ -13,6 +13,7 @@ from allyakkkuk.curation.product_nutrient_seeds import ProductNutrientSeedSet
 from allyakkkuk.curation.product_seeds import ProductSeedSet
 from allyakkkuk.curation.purchase_link_seeds import PurchaseLinkSeedSet
 from allyakkkuk.curation.seeds import ProductCategorySeedSet
+from allyakkkuk.medication.seeds import MedicationSeedSet
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ REGISTERED_SEEDS: tuple[SeedSet, ...] = (
     NutrientReferenceSeedSet(),
     ExpertCommentSeedSet(),
     PurchaseLinkSeedSet(),
+    MedicationSeedSet(),
 )
 
 

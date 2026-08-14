@@ -161,12 +161,18 @@ erDiagram
 
     MEDICATION_DETAILS {
         uuid product_id PK,FK
-        varchar classification_code
+        varchar permit_code UK
+        varchar classification
         text active_ingredients
         text efficacy
-        text usage_instructions
+        text dosage_instructions
         text precautions
         text storage_instructions
+        varchar source_name
+        text source_url
+        date source_reviewed_on
+        timestamptz created_at
+        timestamptz updated_at
     }
 
     EXPERT_COMMENTS {
@@ -254,7 +260,16 @@ erDiagram
   정렬해 첫 항목을 선택한다. `(product_id, is_active, sort_order, id)` 인덱스를 사용한다.
 - 구매 이동은 클릭·사용자·구매 이력을 저장하지 않으므로 1차 ERD에 추적 엔티티를
   추가하지 않는다.
-- 의약품의 효능, 복용법, 주의와 보관 정보는 medication_details에 저장한다.
+- F-3.10에서 medication_details를 실제 구현한다. Product와 1:0..1 관계이며
+  Product 삭제 시 CASCADE하지만 CareItem이 참조하는 Product는 기존 RESTRICT 규칙으로
+  보호한다. permit_code는 형식 검증된 고유 품목 추적 코드, classification은 OTC 또는
+  PRESCRIPTION이다.
+- 유효성분 요약·효능·용법·주의·보관·출처명·HTTPS URL·출처 검토일은 모두 필수다.
+  출처 URL은 공백·fragment·authority userinfo를 허용하지 않고 상세의 수정 시각은 생성
+  시각보다 빠를 수 없다. `(classification, product_id)` 인덱스를 둔다.
+- 보호 의약품 목록·상세는 게시 MEDICATION Product와 상세가 모두 있는 행만 제공하고
+  기존 `(is_published, sort_order, sku)` 인덱스로 안정 정렬한다. 로컬 시드는 실사용
+  금지 예시로 명시하며 운영 전 품목별 공식 출처 검토가 필요하다.
 - 전문가 소개는 프론트엔드 정적 콘텐츠이므로 1차에는 experts 테이블을 만들지 않는다.
 - F-3.6에서 두 기준 엔티티를 실제 테이블로 구현한다. 기준 버전은 고유 version·
   checksum, 출처명·HTTPS URL·발행일·적재 시각을 보존한다.
@@ -445,6 +460,8 @@ erDiagram
 - care_items(user_id, created_at, id)
 - care_items(product_id)
 - care_items(expected_depletion_date, user_id) — F-3.7 구현
+- medication_details(permit_code) UNIQUE — F-3.10 구현
+- medication_details(classification, product_id) — F-3.10 구현
 - care_items(expiration_date, expiration_status) — F-3.11 예정
 - care_nutrient_snapshots(care_item_id, nutrient_id) UNIQUE
 - notifications(care_item_id, notification_type, reference_date, trigger_days_before) UNIQUE
@@ -470,7 +487,6 @@ erDiagram
 - 나누어떨어지지 않는 수량의 마지막 복용일 계산
 - 오전 9시의 IANA 기준 시간대
 - 이메일 재시도와 최종 실패 정책
-- 의약품 시드 필수 필드와 분류 체계
 - 제품과 카테고리의 다대다 관계 유지 여부
 
 ## 관련 문서

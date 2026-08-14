@@ -24,6 +24,7 @@ from allyakkkuk.curation.models import (
     ProductNutrient,
     PurchaseLink,
 )
+from allyakkkuk.medication.models import MedicationDetail
 
 __all__ = [
     "CareItem",
@@ -31,6 +32,7 @@ __all__ = [
     "EmailVerification",
     "ExpertComment",
     "HealthProfile",
+    "MedicationDetail",
     "Nutrient",
     "NutrientReferenceValue",
     "NutrientReferenceVersion",
