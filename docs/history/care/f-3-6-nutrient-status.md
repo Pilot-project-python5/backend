@@ -6,8 +6,8 @@ domain: "care"
 status: "implemented"
 completed_on: "2026-08-14"
 feature_packet: "docs/features/care/f-3-6-nutrient-status"
-pull_request: null
-commit: null
+pull_request: "https://github.com/Pilot-project-python5/backend/pull/19"
+commit: "54cf3a4"
 ---
 
 # F-3.6 영양성분 현황 구현 이력
