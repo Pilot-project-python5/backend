@@ -135,6 +135,7 @@ def _seed_user_plan() -> None:
                 product_id=product_id,
                 purchase_date=date(2026, 8, 10),
                 intake_start_date=date(2026, 8, 14),
+                expected_depletion_date=date(2026, 9, 12),
                 total_quantity=Decimal("60"),
                 quantity_unit="CAPSULE",
                 dose_per_intake=Decimal("1"),

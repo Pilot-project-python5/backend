@@ -104,6 +104,7 @@ def _create_data(total_quantity: Decimal) -> CareItemCreateData:
         product_id=PRODUCT_ID,
         purchase_date=date(2026, 8, 10),
         intake_start_date=date(2026, 8, 12),
+        expected_depletion_date=date(2026, 8, 26),
         total_quantity=total_quantity,
         dose_per_intake=Decimal("1"),
         intakes_per_day=2,

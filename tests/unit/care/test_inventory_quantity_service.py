@@ -44,6 +44,7 @@ def test_registration_returns_server_snapshotted_quantity_unit() -> None:
             product_id=PRODUCT_ID,
             purchase_date=date(2026, 8, 10),
             intake_start_date=date(2026, 8, 12),
+            expected_depletion_date=date(2026, 8, 23),
             total_quantity=Decimal("24"),
             quantity_unit="PACKET",
             dose_per_intake=Decimal("1"),

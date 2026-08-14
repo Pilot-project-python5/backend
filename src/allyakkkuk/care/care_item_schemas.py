@@ -65,6 +65,7 @@ class CareItemResponse(BaseModel):
                     "product_id": "22000000-0000-4000-8000-000000000001",
                     "purchase_date": "2026-08-10",
                     "intake_start_date": "2026-08-12",
+                    "expected_depletion_date": "2026-09-10",
                     "total_quantity": "60",
                     "quantity_unit": "CAPSULE",
                     "dose_per_intake": "1",
@@ -79,6 +80,7 @@ class CareItemResponse(BaseModel):
     product_id: UUID
     purchase_date: date
     intake_start_date: date
+    expected_depletion_date: date
     total_quantity: Decimal
     quantity_unit: QuantityUnit
     dose_per_intake: Decimal
@@ -95,10 +97,12 @@ class CareItemListItemResponse(BaseModel):
     image_url: str
     purchase_date: date
     intake_start_date: date
+    expected_depletion_date: date
     total_quantity: DecimalString
     quantity_unit: QuantityUnit
     dose_per_intake: DecimalString
     intakes_per_day: int
+    days_until_depletion: int
     created_at: datetime
 
 
@@ -119,10 +123,12 @@ class CareItemListResponse(BaseModel):
                             ),
                             "purchase_date": "2026-08-10",
                             "intake_start_date": "2026-08-12",
+                            "expected_depletion_date": "2026-09-10",
                             "total_quantity": "60",
                             "quantity_unit": "CAPSULE",
                             "dose_per_intake": "1",
                             "intakes_per_day": 2,
+                            "days_until_depletion": 28,
                             "created_at": "2026-08-13T09:00:00Z",
                         }
                     ],

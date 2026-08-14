@@ -15,6 +15,10 @@ from allyakkkuk.care.care_item_repository import (
     CareItemPersistenceError,
     CareItemRepository,
 )
+from allyakkkuk.care.depletion import (
+    calculate_days_until_depletion,
+    calculate_expected_depletion_date,
+)
 from allyakkkuk.core.errors import AppError, ErrorFieldData
 from allyakkkuk.ports.clock import Clock
 
@@ -35,6 +39,7 @@ class CareItemRegistrationResult:
     product_id: UUID
     purchase_date: date
     intake_start_date: date
+    expected_depletion_date: date
     total_quantity: Decimal
     quantity_unit: str
     dose_per_intake: Decimal
@@ -52,10 +57,12 @@ class CareItemListItem:
     image_url: str
     purchase_date: date
     intake_start_date: date
+    expected_depletion_date: date
     total_quantity: Decimal
     quantity_unit: str
     dose_per_intake: Decimal
     intakes_per_day: int
+    days_until_depletion: int
     created_at: datetime
 
 
@@ -106,12 +113,27 @@ class CareItemService:
             )
 
         try:
+            expected_depletion_date = calculate_expected_depletion_date(
+                intake_start_date=command.intake_start_date,
+                total_quantity=command.total_quantity,
+                dose_per_intake=command.dose_per_intake,
+                intakes_per_day=command.intakes_per_day,
+            )
+        except (OverflowError, ValueError) as exc:
+            raise _validation_error(
+                field="body.total_quantity",
+                code="depletion_date_out_of_range",
+                message="예상 소진일을 지원하는 날짜 범위에서 계산할 수 없습니다.",
+            ) from exc
+
+        try:
             result = self._repository.create(
                 CareItemCreateData(
                     user_id=user_id,
                     product_id=command.product_id,
                     purchase_date=command.purchase_date,
                     intake_start_date=command.intake_start_date,
+                    expected_depletion_date=expected_depletion_date,
                     total_quantity=command.total_quantity,
                     dose_per_intake=command.dose_per_intake,
                     intakes_per_day=command.intakes_per_day,
@@ -137,6 +159,7 @@ class CareItemService:
             product_id=result.product_id,
             purchase_date=result.purchase_date,
             intake_start_date=result.intake_start_date,
+            expected_depletion_date=result.expected_depletion_date,
             total_quantity=result.total_quantity,
             quantity_unit=result.quantity_unit,
             dose_per_intake=result.dose_per_intake,
@@ -150,9 +173,11 @@ class CareItemManagementService:
         self,
         repository: CareItemManagementRepository,
         clock: Clock,
+        time_zone: ZoneInfo,
     ) -> None:
         self._repository = repository
         self._clock = clock
+        self._time_zone = time_zone
 
     def list_items(
         self,
@@ -170,8 +195,9 @@ class CareItemManagementService:
         except CareItemPersistenceError as exc:
             raise _service_unavailable() from exc
 
+        today = self._clock.now().astimezone(self._time_zone).date()
         return CareItemListResult(
-            items=tuple(_list_item(item) for item in result.items),
+            items=tuple(_list_item(item, today=today) for item in result.items),
             page=page,
             page_size=page_size,
             total=result.total,
@@ -196,7 +222,7 @@ class CareItemManagementService:
             )
 
 
-def _list_item(item: CareItemListRecord) -> CareItemListItem:
+def _list_item(item: CareItemListRecord, *, today: date) -> CareItemListItem:
     return CareItemListItem(
         id=item.id,
         product_id=item.product_id,
@@ -206,10 +232,15 @@ def _list_item(item: CareItemListRecord) -> CareItemListItem:
         image_url=item.image_url,
         purchase_date=item.purchase_date,
         intake_start_date=item.intake_start_date,
+        expected_depletion_date=item.expected_depletion_date,
         total_quantity=item.total_quantity,
         quantity_unit=item.quantity_unit,
         dose_per_intake=item.dose_per_intake,
         intakes_per_day=item.intakes_per_day,
+        days_until_depletion=calculate_days_until_depletion(
+            expected_depletion_date=item.expected_depletion_date,
+            today=today,
+        ),
         created_at=item.created_at,
     )
 

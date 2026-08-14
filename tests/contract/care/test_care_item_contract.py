@@ -21,7 +21,11 @@ from allyakkkuk.core.config import Settings
 from allyakkkuk.core.errors import AppError
 from allyakkkuk.main import create_app
 
-pytestmark = [pytest.mark.contract, pytest.mark.feature("F-3.1")]
+pytestmark = [
+    pytest.mark.contract,
+    pytest.mark.feature("F-3.1"),
+    pytest.mark.feature("F-3.7"),
+]
 
 NOW = datetime(2026, 8, 12, 9, 0, tzinfo=UTC)
 USER_ID = UUID("11000000-0000-4000-8000-000000000031")
@@ -65,6 +69,7 @@ class StubCareItemService:
             product_id=command.product_id,
             purchase_date=command.purchase_date,
             intake_start_date=command.intake_start_date,
+            expected_depletion_date=date(2026, 8, 31),
             total_quantity=command.total_quantity,
             quantity_unit="CAPSULE",
             dose_per_intake=command.dose_per_intake,
@@ -111,6 +116,7 @@ def test_register_contract_returns_created_item_without_user_id() -> None:
         "product_id": str(PRODUCT_ID),
         "purchase_date": "2026-08-10",
         "intake_start_date": "2026-08-12",
+        "expected_depletion_date": "2026-08-31",
         "total_quantity": "60",
         "quantity_unit": "CAPSULE",
         "dose_per_intake": "1.5",
@@ -196,4 +202,8 @@ def test_openapi_documents_protected_care_item_registration() -> None:
     assert (
         "user_id"
         not in schema["components"]["schemas"]["CareItemCreateRequest"]["properties"]
+    )
+    assert (
+        "expected_depletion_date"
+        in schema["components"]["schemas"]["CareItemResponse"]["required"]
     )

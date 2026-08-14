@@ -1,0 +1,23 @@
+id: "F-3.7"
+title: "예상 소진일"
+domain: "care"
+requirement: "FR-3"
+phase: "1"
+priority: "P0"
+status: "implemented"
+owner: "backend"
+history_path: "docs/history/care/f-3-7-depletion-date.md"
+source:
+  requirement_path: "docs/product/requirements.md"
+  external_url: null
+  reviewed_on: "2026-08-14"
+dependencies:
+  - "F-3.1"
+  - "F-3.3"
+  - "F-3.4"
+api_changes:
+  - "POST /api/v1/care/items 응답에 expected_depletion_date 추가"
+  - "GET /api/v1/care/items 항목에 expected_depletion_date·days_until_depletion 추가"
+data_changes:
+  - "care_items.expected_depletion_date NOT NULL과 조회 인덱스 추가"
+open_questions: []

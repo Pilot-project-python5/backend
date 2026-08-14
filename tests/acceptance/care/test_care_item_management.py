@@ -5,6 +5,7 @@ from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from typing import Annotated
 from uuid import UUID
+from zoneinfo import ZoneInfo
 
 import pytest
 from fastapi import Depends
@@ -24,7 +25,11 @@ from allyakkkuk.db.session import SessionFactory, get_db_session
 from allyakkkuk.main import app
 from allyakkkuk.ports.clock import FakeClock
 
-pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.4")]
+pytestmark = [
+    pytest.mark.integration,
+    pytest.mark.feature("F-3.4"),
+    pytest.mark.feature("F-3.7"),
+]
 
 NOW = datetime(2026, 8, 13, 9, 0, tzinfo=UTC)
 USER_ID = UUID("11000000-0000-4000-8000-000000000219")
@@ -63,7 +68,11 @@ def care_management_environment() -> Iterator[None]:
     def management_service(
         session: Annotated[Session, Depends(get_db_session)],
     ) -> CareItemManagementService:
-        return CareItemManagementService(SQLAlchemyCareItemRepository(session), clock)
+        return CareItemManagementService(
+            SQLAlchemyCareItemRepository(session),
+            clock,
+            ZoneInfo("Asia/Seoul"),
+        )
 
     app.dependency_overrides[require_current_user] = current_user
     app.dependency_overrides[get_care_item_management_service] = management_service
@@ -171,6 +180,7 @@ def _item(
         product_id=PRODUCT_ID,
         purchase_date=date(2026, 8, 10),
         intake_start_date=date(2026, 8, 13),
+        expected_depletion_date=date(2026, 9, 11),
         total_quantity=quantity,
         quantity_unit="PACKET",
         dose_per_intake=Decimal("1"),
@@ -202,6 +212,8 @@ def test_user_lists_independent_active_purchases_and_soft_deletes_one() -> None:
     assert first_page.json()["items"][0]["name"] == "복용 관리 비게시 제품"
     assert first_page.json()["items"][0]["total_quantity"] == "60"
     assert first_page.json()["items"][0]["quantity_unit"] == "PACKET"
+    assert first_page.json()["items"][0]["expected_depletion_date"] == "2026-09-11"
+    assert first_page.json()["items"][0]["days_until_depletion"] == 29
 
     assert deleted.status_code == 204
     assert deleted.headers["cache-control"] == "no-store"

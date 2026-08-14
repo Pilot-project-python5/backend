@@ -32,6 +32,10 @@ class CareItem(Base):
             name="ck_care_items_date_order",
         ),
         CheckConstraint(
+            "expected_depletion_date >= intake_start_date",
+            name="ck_care_items_depletion_date_order",
+        ),
+        CheckConstraint(
             "total_quantity > 0 AND total_quantity <= 999999999.999",
             name="ck_care_items_total_quantity",
         ),
@@ -67,6 +71,11 @@ class CareItem(Base):
         ),
         Index("ix_care_items_product_id", "product_id"),
         Index(
+            "ix_care_items_depletion_user",
+            "expected_depletion_date",
+            "user_id",
+        ),
+        Index(
             "ix_care_items_active_user_created_at",
             "user_id",
             "created_at",
@@ -88,6 +97,7 @@ class CareItem(Base):
     )
     purchase_date: Mapped[date] = mapped_column(Date, nullable=False)
     intake_start_date: Mapped[date] = mapped_column(Date, nullable=False)
+    expected_depletion_date: Mapped[date] = mapped_column(Date, nullable=False)
     total_quantity: Mapped[Decimal] = mapped_column(Numeric(12, 3), nullable=False)
     quantity_unit: Mapped[str] = mapped_column(String(20), nullable=False)
     dose_per_intake: Mapped[Decimal] = mapped_column(Numeric(12, 3), nullable=False)

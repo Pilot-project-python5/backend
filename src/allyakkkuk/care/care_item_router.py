@@ -69,6 +69,7 @@ def get_care_item_management_service(
     return CareItemManagementService(
         SQLAlchemyCareItemRepository(session),
         _clock,
+        _time_zone,
     )
 
 
@@ -275,10 +276,12 @@ def list_care_items(
                 image_url=item.image_url,
                 purchase_date=item.purchase_date,
                 intake_start_date=item.intake_start_date,
+                expected_depletion_date=item.expected_depletion_date,
                 total_quantity=decimal_string(item.total_quantity),
                 quantity_unit=cast(QuantityUnit, item.quantity_unit),
                 dose_per_intake=decimal_string(item.dose_per_intake),
                 intakes_per_day=item.intakes_per_day,
+                days_until_depletion=item.days_until_depletion,
                 created_at=item.created_at,
             )
             for item in result.items
@@ -394,6 +397,7 @@ def register_care_item(
         product_id=result.product_id,
         purchase_date=result.purchase_date,
         intake_start_date=result.intake_start_date,
+        expected_depletion_date=result.expected_depletion_date,
         total_quantity=result.total_quantity,
         quantity_unit=cast(QuantityUnit, result.quantity_unit),
         dose_per_intake=result.dose_per_intake,
