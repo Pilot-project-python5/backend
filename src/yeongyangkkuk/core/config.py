@@ -24,8 +24,6 @@ class Settings(BaseSettings):
     app_version: str = "0.1.0"
     app_env: Literal["local", "test"] = "local"
     app_debug: bool = False
-    app_host: str = "0.0.0.0"
-    app_port: int = Field(default=8000, ge=1, le=65535)
     app_timezone: str = "Asia/Seoul"
     nutrient_reference_version: str = "KDRI-2025-20260316"
     api_prefix: str = "/api/v1"

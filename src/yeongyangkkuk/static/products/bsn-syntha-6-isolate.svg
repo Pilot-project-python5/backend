@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
-  <rect width="1200" height="720" fill="#e8edf5"/>
-  <circle cx="600" cy="320" r="220" fill="#cbd4e3"/>
-  <path d="M430 180h340l-35 340H465z" fill="#111827"/>
-  <rect x="485" y="245" width="230" height="165" rx="12" fill="#2457d6"/>
-  <text x="600" y="315" text-anchor="middle" font-family="sans-serif" font-size="44" font-weight="700" fill="#ffffff">SYNTHA-6</text>
-  <text x="600" y="365" text-anchor="middle" font-family="sans-serif" font-size="26" fill="#ffffff">ISOLATE</text>
-  <text x="600" y="625" text-anchor="middle" font-family="sans-serif" font-size="34" fill="#17233c">Protein Powder</text>
-</svg>

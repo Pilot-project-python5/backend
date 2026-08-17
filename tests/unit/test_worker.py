@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 import pytest
 
-from yeongyangkkuk.worker.runtime import BootstrapWorkerJob, run_forever, run_once
+from yeongyangkkuk.worker.runtime import run_forever, run_once
 
 pytestmark = pytest.mark.unit
 
@@ -24,22 +24,6 @@ def test_worker_runs_registered_job_once() -> None:
     run_once(job)
 
     assert job.calls == 1
-
-
-@dataclass
-class RecordingProbe:
-    calls: int = 0
-
-    def check(self) -> None:
-        self.calls += 1
-
-
-def test_bootstrap_worker_checks_database() -> None:
-    probe = RecordingProbe()
-
-    BootstrapWorkerJob(probe).run()
-
-    assert probe.calls == 1
 
 
 class StopAfterRunJob:

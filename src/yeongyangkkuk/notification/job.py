@@ -30,27 +30,6 @@ class SessionFactory(Protocol):
     def __call__(self) -> Session: ...
 
 
-class RepurchaseNotificationJob:
-    def __init__(
-        self,
-        session_factory: SessionFactory,
-        clock: Clock,
-        time_zone: ZoneInfo,
-    ) -> None:
-        self._session_factory = session_factory
-        self._clock = clock
-        self._time_zone = time_zone
-
-    def run(self) -> None:
-        with self._session_factory() as session:
-            created = RepurchaseNotificationService(
-                SQLAlchemyRepurchaseNotificationRepository(session),
-                self._clock,
-                self._time_zone,
-            ).run()
-        logger.info("재구매 논리 알림 작업 완료 created=%d", created)
-
-
 class NotificationJob:
     def __init__(
         self,

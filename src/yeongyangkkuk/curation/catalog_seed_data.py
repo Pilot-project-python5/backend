@@ -10,8 +10,6 @@ from dataclasses import dataclass
 from decimal import Decimal
 from uuid import UUID
 
-CATALOG_SOURCE_URL = "https://app.notion.com/p/3b62779e926280e287baccedfce27f9c"
-CATALOG_REVIEWED_ON = "2026-08-15"
 PLACEHOLDER_IMAGE_URL = "/static/products/catalog-placeholder.svg"
 
 

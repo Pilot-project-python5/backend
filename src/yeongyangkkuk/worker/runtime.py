@@ -6,24 +6,11 @@ import logging
 import threading
 from typing import Protocol
 
-from yeongyangkkuk.db.probe import DatabaseProbe
-
 logger = logging.getLogger(__name__)
 
 
 class WorkerJob(Protocol):
     def run(self) -> None: ...
-
-
-class BootstrapWorkerJob:
-    """기능 작업 등록 전 PostgreSQL 연결만 확인하는 부트스트랩 작업."""
-
-    def __init__(self, probe: DatabaseProbe) -> None:
-        self._probe = probe
-
-    def run(self) -> None:
-        self._probe.check()
-        logger.info("작업자 준비 확인 완료; 등록된 알림 작업 없음")
 
 
 def run_once(job: WorkerJob) -> None:
