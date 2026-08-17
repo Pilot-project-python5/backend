@@ -5,9 +5,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from uuid import UUID
 
-from sqlalchemy import Connection, select
+from sqlalchemy import Connection, select, update
 from sqlalchemy.dialects.postgresql import insert
 
+from allyakkkuk.curation.catalog_seed_data import (
+    PRODUCT_SEED_ROWS,
+    coach_comment_for,
+)
 from allyakkkuk.curation.models import ExpertComment, Product
 
 
@@ -20,37 +24,19 @@ class ExpertCommentSeedRow:
     sort_order: int
 
 
-EXPERT_COMMENT_SEED_ROWS = (
+LEGACY_EXPERT_COMMENT_IDS = tuple(
+    UUID(f"24000000-0000-4000-8000-{value:012d}") for value in range(1, 4)
+)
+
+EXPERT_COMMENT_SEED_ROWS = tuple(
     ExpertCommentSeedRow(
-        id=UUID("24000000-0000-4000-8000-000000000001"),
-        product_sku="LIFE-TWO-PER-DAY",
+        id=UUID(f"24000000-0000-4000-8000-{100 + position:012d}"),
+        product_sku=product.sku,
         author_label="MJ's COMMENT",
-        content=(
-            "비타민 B군의 함량 구성이 안정적인 개발용 추천 제품입니다. "
-            "개인별 건강 상태에 따라 선택 기준은 달라질 수 있습니다."
-        ),
+        content=coach_comment_for(product.category_slug),
         sort_order=10,
-    ),
-    ExpertCommentSeedRow(
-        id=UUID("24000000-0000-4000-8000-000000000002"),
-        product_sku="BSN-SYNTHA-6-ISOLATE-CHOCOLATE",
-        author_label="MJ's COMMENT",
-        content=(
-            "맛과 성분 구성을 함께 확인할 수 있는 개발용 단백질 제품입니다. "
-            "알레르기와 개인별 섭취 조건은 제품 표시를 확인해야 합니다."
-        ),
-        sort_order=10,
-    ),
-    ExpertCommentSeedRow(
-        id=UUID("24000000-0000-4000-8000-000000000003"),
-        product_sku="SPORTS-RESEARCH-OMEGA-3",
-        author_label="MJ's COMMENT",
-        content=(
-            "제품별 오메가3 함량과 섭취 단위를 비교하기 위한 개발용 추천 제품입니다. "
-            "의약품 복용 중이라면 전문가와 상의가 필요할 수 있습니다."
-        ),
-        sort_order=10,
-    ),
+    )
+    for position, product in enumerate(PRODUCT_SEED_ROWS, start=1)
 )
 
 
@@ -58,6 +44,11 @@ class ExpertCommentSeedSet:
     name = "expert_comments"
 
     def apply(self, connection: Connection) -> int:
+        connection.execute(
+            update(ExpertComment)
+            .where(ExpertComment.id.in_(LEGACY_EXPERT_COMMENT_IDS))
+            .values(is_active=False)
+        )
         product_skus = tuple(row.product_sku for row in EXPERT_COMMENT_SEED_ROWS)
         product_ids = {
             sku: product_id

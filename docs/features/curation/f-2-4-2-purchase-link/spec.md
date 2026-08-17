@@ -31,13 +31,13 @@ URL을 결정해 이동시킨다. 판매처 URL을 프론트엔드에 고정하�
 - purchase_links ORM·마이그레이션·ERD
 - 활성 링크 선택과 안정 정렬
 - 안전한 URL 검증과 보안 응답 헤더
-- UI 제품 3종의 example.com 개발용 결정적 시드
+- 민재코치 승인 제품 32종의 쿠팡 상품 URL 결정적 시드
 - 단위·통합·계약·인수 테스트와 Swagger·OpenAPI
 
 ## 제외 범위
 
 - 서비스 내부 결제·주문·배송
-- 실제 판매처·제휴·가격 API 연동
+- 판매처 실시간 가용성·제휴·가격 API 연동
 - 관리자 링크 CRUD
 - 클릭 분석, 사용자 추적과 클릭 이력 저장
 - AWS·AI 연결
@@ -68,8 +68,8 @@ URL을 결정해 이동시킨다. 판매처 URL을 프론트엔드에 고정하�
 - 요구사항: FR-2
 - 로컬 요구사항: docs/product/requirements.md
 - 관련 로컬 문서: docs/api/curation.md, docs/architecture/erd.md
-- 외부 출처 URL(선택): https://app.notion.com/p/3b82779e9262813bbc23f6cb6ae5b5c3
-- 마지막 검토일: 2026-08-12
+- 외부 출처 URL(선택): https://app.notion.com/p/3b62779e926280e287baccedfce27f9c
+- 마지막 검토일: 2026-08-15
 
 모호했던 URL 보안·클릭 기록·오류 분리 결정은 Notion의
 `F-2.4.1·F-2.4.2 구현 의사결정` 페이지에 기록했다.

@@ -39,23 +39,21 @@ class ProductListResponse(BaseModel):
                 {
                     "items": [
                         {
-                            "id": "22000000-0000-4000-8000-000000000001",
-                            "sku": "LIFE-TWO-PER-DAY",
+                            "id": "22000000-0000-4000-8000-000000000101",
+                            "sku": "KORYO-EUNDAN-MULTIVITAMIN-ALL-IN-ONE",
                             "product_type": "SUPPLEMENT",
-                            "brand": "Life Extension",
-                            "name": "라이프익스텐션 투퍼데이",
-                            "image_url": (
-                                "/static/products/life-extension-two-per-day.svg"
-                            ),
-                            "display_price": 28400,
+                            "brand": "고려은단",
+                            "name": "고려은단 멀티비타민 올인원",
+                            "image_url": "/static/products/catalog-placeholder.svg",
+                            "display_price": 0,
                             "currency": "KRW",
-                            "category_slugs": ["vitamin"],
+                            "category_slugs": ["multivitamin"],
                         }
                     ],
                     "page": 1,
                     "page_size": 20,
-                    "total": 3,
-                    "has_next": False,
+                    "total": 32,
+                    "has_next": True,
                 }
             ]
         }
@@ -91,32 +89,32 @@ class ProductDetailResponse(ProductListItemResponse):
         json_schema_extra={
             "examples": [
                 {
-                    "id": "22000000-0000-4000-8000-000000000001",
-                    "sku": "LIFE-TWO-PER-DAY",
+                    "id": "22000000-0000-4000-8000-000000000101",
+                    "sku": "KORYO-EUNDAN-MULTIVITAMIN-ALL-IN-ONE",
                     "product_type": "SUPPLEMENT",
-                    "brand": "Life Extension",
-                    "name": "라이프익스텐션 투퍼데이",
-                    "image_url": ("/static/products/life-extension-two-per-day.svg"),
-                    "display_price": 28400,
+                    "brand": "고려은단",
+                    "name": "고려은단 멀티비타민 올인원",
+                    "image_url": "/static/products/catalog-placeholder.svg",
+                    "display_price": 0,
                     "currency": "KRW",
-                    "category_slugs": ["vitamin"],
+                    "category_slugs": ["multivitamin"],
                     "package": {
                         "unit_form": "TABLET",
-                        "units_per_package": "120",
+                        "units_per_package": "60",
                     },
                     "nutrients": [
                         {
                             "code": "VITAMIN_C",
                             "name": "비타민 C",
-                            "amount_per_unit": "235",
+                            "amount_per_unit": "100",
                             "unit": "MG",
                         }
                     ],
                     "expert_comments": [
                         {
-                            "id": "24000000-0000-4000-8000-000000000001",
+                            "id": "24000000-0000-4000-8000-000000000101",
                             "author_label": "MJ's COMMENT",
-                            "content": "개발용 전문가 추천 코멘트",
+                            "content": "종합비타민 카테고리 안내와 섭취 주의사항",
                         }
                     ],
                 }

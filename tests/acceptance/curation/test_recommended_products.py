@@ -45,28 +45,33 @@ def test_public_product_list_filters_category_and_paginates_stably() -> None:
             "/api/v1/curation/products",
             params={"page": 2, "page_size": 2},
         )
-        vitamin = client.get(
+        multivitamin = client.get(
             "/api/v1/curation/products",
-            params={"category": "vitamin"},
+            params={"category": "multivitamin"},
         )
 
     assert first.status_code == 200
     assert [item["sku"] for item in first.json()["items"]] == [
-        "LIFE-TWO-PER-DAY",
-        "BSN-SYNTHA-6-ISOLATE-CHOCOLATE",
+        "KORYO-EUNDAN-MULTIVITAMIN-ALL-IN-ONE",
+        "ALIVE-ONCE-DAILY-MENS",
     ]
     assert first.json() | {"items": []} == {
         "items": [],
         "page": 1,
         "page_size": 2,
-        "total": 3,
+        "total": 32,
         "has_next": True,
     }
     assert [item["sku"] for item in second.json()["items"]] == [
-        "SPORTS-RESEARCH-OMEGA-3"
+        "ALIVE-ONCE-DAILY-WOMENS",
+        "KORYO-EUNDAN-MEGADOSE-B",
     ]
-    assert second.json()["has_next"] is False
-    assert [item["sku"] for item in vitamin.json()["items"]] == ["LIFE-TWO-PER-DAY"]
+    assert second.json()["has_next"] is True
+    assert [item["sku"] for item in multivitamin.json()["items"]] == [
+        "KORYO-EUNDAN-MULTIVITAMIN-ALL-IN-ONE",
+        "ALIVE-ONCE-DAILY-MENS",
+        "ALIVE-ONCE-DAILY-WOMENS",
+    ]
 
 
 def test_unknown_category_returns_not_found() -> None:

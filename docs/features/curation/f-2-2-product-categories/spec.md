@@ -7,7 +7,7 @@ slug와 표시 순서로 제공한다.
 
 ## 사용자 이야기
 
-방문자로서, 전체·비타민·단백질·오메가3 카테고리를 정해진 순서로 확인하고 이후 추천
+방문자로서, 전체와 민재코치가 승인한 11개 카테고리를 정해진 순서로 확인하고 이후 추천
 제품 목록을 원하는 분류로 필터링하고 싶다.
 
 ## 비즈니스 규칙
@@ -23,14 +23,15 @@ slug와 표시 순서로 제공한다.
 8. DB 조회 실패는 내부 상세를 숨기고 503 SERVICE_UNAVAILABLE로 응답한다.
 9. slug는 소문자 영문·숫자와 내부 하이픈만 허용하고 1~50자에서 고유하다.
 10. name은 좌우 공백을 제외한 1~50자, sort_order는 0 이상이다.
-11. 1차 개발 시드는 vitamin·비타민, protein·단백질, omega-3·오메가3를 고정 UUID와
-    slug 자연 키로 멱등 upsert하며 실행할 때마다 승인된 이름·활성·순서를 복원한다.
+11. 1차 개발 시드는 종합비타민부터 멜라토닌까지 11개 카테고리를 고정 UUID와 slug
+    자연 키로 멱등 upsert하며 실행할 때마다 승인된 이름·활성·순서를 복원한다.
+12. 이전 개발 시드의 vitamin·protein은 참조 보존을 위해 삭제하지 않고 비활성화한다.
 
 ## 포함 범위
 
 - product_categories SQLAlchemy 모델과 PostgreSQL 마이그레이션
 - slug·name·활성·정렬 DB 제약과 활성 정렬 인덱스
-- 비타민·단백질·오메가3 결정적 개발 시드
+- 민재코치 승인 카테고리 11개의 결정적 개발 시드
 - 가상 all을 포함한 공개 카테고리 조회 API
 - 단위·통합·계약·인수 테스트와 Swagger/OpenAPI 문서
 
@@ -71,5 +72,5 @@ slug와 표시 순서로 제공한다.
 - 로컬 요구사항: docs/product/requirements.md
 - 관련 로컬 문서: docs/api/curation.md, docs/architecture/erd.md,
   docs/architecture/data-model.md
-- 외부 출처 URL(선택): 없음
-- 마지막 검토일: 2026-08-12
+- 외부 출처 URL(선택): https://app.notion.com/p/3b62779e926280e287baccedfce27f9c
+- 마지막 검토일: 2026-08-15

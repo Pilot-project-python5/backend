@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420" role="img" aria-labelledby="title description">
+  <title id="title">알약꾹 제품 이미지 준비 중</title>
+  <desc id="description">파란 배경 위의 흰색 영양제 용기</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#edf4ff"/>
+      <stop offset="1" stop-color="#c9dcff"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="420" rx="32" fill="url(#background)"/>
+  <circle cx="510" cy="92" r="74" fill="#0b55e8" opacity=".08"/>
+  <rect x="250" y="78" width="140" height="54" rx="14" fill="#123f9c"/>
+  <rect x="218" y="120" width="204" height="228" rx="36" fill="#ffffff"/>
+  <rect x="238" y="184" width="164" height="108" rx="18" fill="#0b55e8"/>
+  <path d="M286 224h68a18 18 0 0 1 0 36h-68a18 18 0 0 1 0-36Z" fill="#fff"/>
+  <path d="M320 224v36" stroke="#0b55e8" stroke-width="5"/>
+  <text x="320" y="322" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#123f9c">ALLYAKKKUK</text>
+  <text x="320" y="382" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#38527e">제품 이미지 준비 중</text>
+</svg>

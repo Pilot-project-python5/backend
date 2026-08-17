@@ -2,49 +2,24 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from uuid import UUID
-
-from sqlalchemy import Connection
+from sqlalchemy import Connection, update
 from sqlalchemy.dialects.postgresql import insert
 
+from allyakkkuk.curation.catalog_seed_data import PRODUCT_CATEGORY_SEED_ROWS
 from allyakkkuk.curation.models import ProductCategory
 
-
-@dataclass(frozen=True, slots=True)
-class ProductCategorySeedRow:
-    id: UUID
-    slug: str
-    name: str
-    sort_order: int
-
-
-PRODUCT_CATEGORY_SEED_ROWS = (
-    ProductCategorySeedRow(
-        id=UUID("21000000-0000-4000-8000-000000000001"),
-        slug="vitamin",
-        name="비타민",
-        sort_order=10,
-    ),
-    ProductCategorySeedRow(
-        id=UUID("21000000-0000-4000-8000-000000000002"),
-        slug="protein",
-        name="단백질",
-        sort_order=20,
-    ),
-    ProductCategorySeedRow(
-        id=UUID("21000000-0000-4000-8000-000000000003"),
-        slug="omega-3",
-        name="오메가3",
-        sort_order=30,
-    ),
-)
+LEGACY_CATEGORY_SLUGS = ("vitamin", "protein")
 
 
 class ProductCategorySeedSet:
     name = "product_categories"
 
     def apply(self, connection: Connection) -> int:
+        connection.execute(
+            update(ProductCategory)
+            .where(ProductCategory.slug.in_(LEGACY_CATEGORY_SLUGS))
+            .values(is_active=False)
+        )
         values = [
             {
                 "id": row.id,

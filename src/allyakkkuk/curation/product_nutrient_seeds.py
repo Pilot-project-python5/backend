@@ -29,62 +29,208 @@ class ProductNutrientSeedRow:
     sort_order: int
 
 
+def _nutrient(value: int, code: str, name: str, unit: str) -> NutrientSeedRow:
+    return NutrientSeedRow(
+        id=UUID(f"23000000-0000-4000-8000-{value:012d}"),
+        code=code,
+        name=name,
+        canonical_unit=unit,
+    )
+
+
 NUTRIENT_SEED_ROWS = (
-    NutrientSeedRow(
-        id=UUID("23000000-0000-4000-8000-000000000001"),
-        code="VITAMIN_C",
-        name="비타민 C",
-        canonical_unit="MG",
-    ),
-    NutrientSeedRow(
-        id=UUID("23000000-0000-4000-8000-000000000002"),
-        code="VITAMIN_D",
-        name="비타민 D",
-        canonical_unit="MCG",
-    ),
-    NutrientSeedRow(
-        id=UUID("23000000-0000-4000-8000-000000000003"),
-        code="PROTEIN",
-        name="단백질",
-        canonical_unit="G",
-    ),
-    NutrientSeedRow(
-        id=UUID("23000000-0000-4000-8000-000000000004"),
-        code="OMEGA_3",
-        name="오메가3",
-        canonical_unit="MG",
-    ),
+    _nutrient(1, "VITAMIN_C", "비타민 C", "MG"),
+    _nutrient(2, "VITAMIN_D", "비타민 D", "MCG"),
+    _nutrient(3, "PROTEIN", "단백질", "G"),
+    _nutrient(4, "OMEGA_3", "오메가3(EPA+DHA)", "MG"),
+    _nutrient(101, "VITAMIN_A_RE", "비타민 A(레티놀 활성당량)", "MCG"),
+    _nutrient(102, "VITAMIN_E", "비타민 E", "MG"),
+    _nutrient(103, "VITAMIN_K", "비타민 K", "MCG"),
+    _nutrient(104, "VITAMIN_B1", "비타민 B1", "MG"),
+    _nutrient(105, "VITAMIN_B2", "비타민 B2", "MG"),
+    _nutrient(106, "VITAMIN_B6", "비타민 B6", "MG"),
+    _nutrient(107, "VITAMIN_B12", "비타민 B12", "MCG"),
+    _nutrient(108, "NIACIN", "나이아신", "MG"),
+    _nutrient(109, "PANTOTHENIC_ACID", "판토텐산", "MG"),
+    _nutrient(110, "FOLATE", "엽산", "MCG"),
+    _nutrient(111, "BIOTIN", "비오틴", "MCG"),
+    _nutrient(112, "CALCIUM", "칼슘", "MG"),
+    _nutrient(113, "MAGNESIUM", "마그네슘", "MG"),
+    _nutrient(114, "ZINC", "아연", "MG"),
+    _nutrient(115, "SELENIUM", "셀렌", "MCG"),
+    _nutrient(116, "BCAA", "BCAA", "G"),
+    _nutrient(117, "CARBOHYDRATE", "탄수화물", "G"),
+    _nutrient(118, "FAT", "지방", "G"),
+    _nutrient(119, "CREATINE", "크레아틴", "G"),
+    _nutrient(120, "BETA_ALANINE", "베타알라닌", "G"),
+    _nutrient(121, "BETAINE", "베타인", "G"),
+    _nutrient(122, "CAFFEINE", "카페인", "MG"),
+    _nutrient(123, "CREATINE_NITRATE", "크레아틴 나이트레이트", "G"),
+    _nutrient(124, "MELATONIN", "멜라토닌", "MG"),
 )
 
+
+def _mappings(
+    product_sku: str, values: tuple[tuple[str, str, str], ...]
+) -> tuple[ProductNutrientSeedRow, ...]:
+    return tuple(
+        ProductNutrientSeedRow(
+            product_sku=product_sku,
+            nutrient_code=code,
+            amount_per_unit=Decimal(amount),
+            unit=unit,
+            sort_order=position * 10,
+        )
+        for position, (code, amount, unit) in enumerate(values, start=1)
+    )
+
+
 PRODUCT_NUTRIENT_SEED_ROWS = (
-    ProductNutrientSeedRow(
-        product_sku="LIFE-TWO-PER-DAY",
-        nutrient_code="VITAMIN_C",
-        amount_per_unit=Decimal("235"),
-        unit="MG",
-        sort_order=10,
+    *_mappings(
+        "KORYO-EUNDAN-MULTIVITAMIN-ALL-IN-ONE",
+        (
+            ("VITAMIN_A_RE", "350", "MCG"),
+            ("VITAMIN_C", "100", "MG"),
+            ("VITAMIN_D", "10", "MCG"),
+            ("VITAMIN_E", "5.5", "MG"),
+            ("VITAMIN_K", "70", "MCG"),
+            ("CALCIUM", "230", "MG"),
+            ("MAGNESIUM", "104", "MG"),
+            ("ZINC", "8.5", "MG"),
+        ),
     ),
-    ProductNutrientSeedRow(
-        product_sku="LIFE-TWO-PER-DAY",
-        nutrient_code="VITAMIN_D",
-        amount_per_unit=Decimal("25"),
-        unit="MCG",
-        sort_order=20,
+    *_mappings(
+        "ALIVE-ONCE-DAILY-MENS",
+        (
+            ("VITAMIN_A_RE", "555", "MCG"),
+            ("VITAMIN_C", "200", "MG"),
+            ("VITAMIN_D", "10", "MCG"),
+            ("VITAMIN_B1", "35", "MG"),
+            ("VITAMIN_B2", "30", "MG"),
+            ("VITAMIN_B6", "45", "MG"),
+            ("VITAMIN_B12", "150", "MCG"),
+            ("ZINC", "20", "MG"),
+            ("SELENIUM", "135", "MCG"),
+        ),
     ),
-    ProductNutrientSeedRow(
-        product_sku="BSN-SYNTHA-6-ISOLATE-CHOCOLATE",
-        nutrient_code="PROTEIN",
-        amount_per_unit=Decimal("25"),
-        unit="G",
-        sort_order=10,
+    *_mappings(
+        "ALIVE-ONCE-DAILY-WOMENS",
+        (
+            ("VITAMIN_A_RE", "555", "MCG"),
+            ("VITAMIN_C", "200", "MG"),
+            ("VITAMIN_D", "10", "MCG"),
+            ("VITAMIN_B1", "30", "MG"),
+            ("VITAMIN_B2", "25", "MG"),
+            ("VITAMIN_B6", "40", "MG"),
+            ("VITAMIN_B12", "150", "MCG"),
+            ("CALCIUM", "210", "MG"),
+            ("MAGNESIUM", "100", "MG"),
+            ("ZINC", "15", "MG"),
+        ),
     ),
-    ProductNutrientSeedRow(
-        product_sku="SPORTS-RESEARCH-OMEGA-3",
-        nutrient_code="OMEGA_3",
-        amount_per_unit=Decimal("1040"),
-        unit="MG",
-        sort_order=10,
+    *_mappings(
+        "KORYO-EUNDAN-MEGADOSE-B",
+        (
+            ("VITAMIN_B1", "50", "MG"),
+            ("VITAMIN_B2", "60", "MG"),
+            ("VITAMIN_B6", "50", "MG"),
+            ("VITAMIN_B12", "50", "MCG"),
+            ("NIACIN", "65", "MG"),
+            ("PANTOTHENIC_ACID", "50", "MG"),
+            ("FOLATE", "500", "MCG"),
+            ("BIOTIN", "300", "MCG"),
+        ),
     ),
+    *_mappings(
+        "THORNE-BASIC-B-COMPLEX",
+        (
+            ("VITAMIN_B1", "110", "MG"),
+            ("VITAMIN_B2", "10", "MG"),
+            ("NIACIN", "140", "MG"),
+            ("PANTOTHENIC_ACID", "110", "MG"),
+            ("VITAMIN_B6", "10", "MG"),
+            ("FOLATE", "667", "MCG"),
+            ("VITAMIN_B12", "400", "MCG"),
+            ("BIOTIN", "400", "MCG"),
+        ),
+    ),
+    *_mappings(
+        "SOLGAR-B-COMPLEX-100",
+        (
+            ("VITAMIN_B1", "100", "MG"),
+            ("VITAMIN_B2", "100", "MG"),
+            ("NIACIN", "100", "MG"),
+            ("PANTOTHENIC_ACID", "100", "MG"),
+            ("VITAMIN_B6", "100", "MG"),
+            ("VITAMIN_B12", "100", "MCG"),
+            ("BIOTIN", "100", "MCG"),
+            ("FOLATE", "400", "MCG"),
+        ),
+    ),
+    *_mappings("KORYO-EUNDAN-VITAMIN-C-1000", (("VITAMIN_C", "1000", "MG"),)),
+    *_mappings("CHONGKUNDANG-PREMIUM-VITA-C-1000-PLUS", (("VITAMIN_C", "1000", "MG"),)),
+    *_mappings("SOLGAR-VITAMIN-C-1000", (("VITAMIN_C", "1000", "MG"),)),
+    *_mappings("CHONGKUNDANG-VITAMIN-D-2000-IU", (("VITAMIN_D", "50", "MCG"),)),
+    *_mappings("CHONGKUNDANG-VITAMIN-D-1000-IU", (("VITAMIN_D", "25", "MCG"),)),
+    *_mappings("SOLGAR-VITAMIN-D3-1000-IU", (("VITAMIN_D", "25", "MCG"),)),
+    *_mappings(
+        "OPTIMUM-NUTRITION-GOLD-STANDARD-WHEY",
+        (("PROTEIN", "24", "G"), ("BCAA", "5.5", "G")),
+    ),
+    *_mappings(
+        "BSN-SYNTHA-6-ISOLATE-CHOCOLATE",
+        (
+            ("PROTEIN", "22", "G"),
+            ("CARBOHYDRATE", "15", "G"),
+            ("FAT", "6", "G"),
+        ),
+    ),
+    *_mappings(
+        "SELEX-PROFIT-WPI",
+        (("PROTEIN", "20", "G"), ("BCAA", "4.8", "G")),
+    ),
+    *_mappings(
+        "EVL-ENGN-PRE-WORKOUT",
+        (
+            ("CREATINE", "3", "G"),
+            ("BETA_ALANINE", "1.6", "G"),
+            ("BETAINE", "1", "G"),
+            ("CAFFEINE", "300", "MG"),
+        ),
+    ),
+    *_mappings(
+        "CELLUCOR-C4-ORIGINAL",
+        (
+            ("BETA_ALANINE", "1.6", "G"),
+            ("CREATINE_NITRATE", "1", "G"),
+            ("CAFFEINE", "150", "MG"),
+        ),
+    ),
+    *_mappings("NOW-CREATINE-MONOHYDRATE", (("CREATINE", "5", "G"),)),
+    *_mappings("SAMDAEOBAEK-CREATINE-MONOHYDRATE", (("CREATINE", "3", "G"),)),
+    *_mappings("JAMBBAEK-JUST-CREATINE", (("CREATINE", "3", "G"),)),
+    *_mappings("CHONGKUNDANG-LACTO-FIT-GOLD", (("ZINC", "2.55", "MG"),)),
+    *_mappings(
+        "GQ-LAB-PROBIOTICS-GOLD",
+        (("ZINC", "12", "MG"), ("SELENIUM", "16.5", "MCG")),
+    ),
+    *_mappings(
+        "CHONGKUNDANG-PROMEGA-OMEGA-3-TRIPLE",
+        (("OMEGA_3", "450", "MG"), ("VITAMIN_E", "5.5", "MG")),
+    ),
+    *_mappings(
+        "DR-LIN-RTG-OMEGA-3-ALPHA",
+        (("OMEGA_3", "600", "MG"), ("VITAMIN_E", "11", "MG")),
+    ),
+    *_mappings("NUTRI-D-DAY-RTG-OMEGA-3-GOLD", (("OMEGA_3", "600", "MG"),)),
+    *_mappings(
+        "SOLGAR-MAGNESIUM-WITH-B6",
+        (("MAGNESIUM", "133.3333", "MG"), ("VITAMIN_B6", "8.3333", "MG")),
+    ),
+    *_mappings("DOCTORS-BEST-HIGH-ABSORPTION-MAGNESIUM", (("MAGNESIUM", "100", "MG"),)),
+    *_mappings("NOW-MAGNESIUM-GLYCINATE", (("MAGNESIUM", "100", "MG"),)),
+    *_mappings("NUTRIJEONG-PLANT-MELATONIN-2MG", (("MELATONIN", "1", "MG"),)),
+    *_mappings("NUTRIJEONG-PLANT-MELATONIN-5MG", (("MELATONIN", "2.5", "MG"),)),
 )
 
 

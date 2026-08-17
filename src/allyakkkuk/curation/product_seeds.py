@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from datetime import UTC, datetime
-from decimal import Decimal
-from uuid import UUID
 
-from sqlalchemy import Connection, delete, select
+from sqlalchemy import Connection, delete, select, update
 from sqlalchemy.dialects.postgresql import insert
 
+from allyakkkuk.curation.catalog_seed_data import PRODUCT_SEED_ROWS
 from allyakkkuk.curation.models import (
     Product,
     ProductCategory,
@@ -17,70 +15,18 @@ from allyakkkuk.curation.models import (
 )
 
 SEED_TIME = datetime(2026, 8, 12, tzinfo=UTC)
-
-
-@dataclass(frozen=True, slots=True)
-class ProductSeedRow:
-    id: UUID
-    sku: str
-    product_type: str
-    brand: str
-    name: str
-    image_url: str
-    unit_form: str
-    units_per_package: Decimal
-    display_price: int
-    sort_order: int
-    category_slug: str
-
-
-PRODUCT_SEED_ROWS = (
-    ProductSeedRow(
-        id=UUID("22000000-0000-4000-8000-000000000001"),
-        sku="LIFE-TWO-PER-DAY",
-        product_type="SUPPLEMENT",
-        brand="Life Extension",
-        name="라이프익스텐션 투퍼데이",
-        image_url="/static/products/life-extension-two-per-day.svg",
-        unit_form="TABLET",
-        units_per_package=Decimal("120"),
-        display_price=28400,
-        sort_order=10,
-        category_slug="vitamin",
-    ),
-    ProductSeedRow(
-        id=UUID("22000000-0000-4000-8000-000000000002"),
-        sku="BSN-SYNTHA-6-ISOLATE-CHOCOLATE",
-        product_type="SUPPLEMENT",
-        brand="BSN",
-        name="신타6 아이솔레이트 초코맛",
-        image_url="/static/products/bsn-syntha-6-isolate.svg",
-        unit_form="SCOOP",
-        units_per_package=Decimal("48"),
-        display_price=72150,
-        sort_order=20,
-        category_slug="protein",
-    ),
-    ProductSeedRow(
-        id=UUID("22000000-0000-4000-8000-000000000003"),
-        sku="SPORTS-RESEARCH-OMEGA-3",
-        product_type="SUPPLEMENT",
-        brand="Sports Research",
-        name="스포츠리서치 트리플 스트렝스",
-        image_url="/static/products/sports-research-omega-3.svg",
-        unit_form="CAPSULE",
-        units_per_package=Decimal("90"),
-        display_price=38900,
-        sort_order=30,
-        category_slug="omega-3",
-    ),
-)
+LEGACY_PRODUCT_SKUS = ("LIFE-TWO-PER-DAY", "SPORTS-RESEARCH-OMEGA-3")
 
 
 class ProductSeedSet:
     name = "recommended_products"
 
     def apply(self, connection: Connection) -> int:
+        connection.execute(
+            update(Product)
+            .where(Product.sku.in_(LEGACY_PRODUCT_SKUS))
+            .values(is_published=False, updated_at=SEED_TIME)
+        )
         values = [
             {
                 "id": row.id,

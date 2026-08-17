@@ -23,7 +23,7 @@ from allyakkkuk.main import app
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-2.4")]
 
-PRODUCT_ID = UUID("22000000-0000-4000-8000-000000000001")
+PRODUCT_ID = UUID("22000000-0000-4000-8000-000000000101")
 
 
 @pytest.fixture(autouse=True)
@@ -55,23 +55,49 @@ def test_visitor_reads_seeded_product_package_and_nutrients() -> None:
 
     assert response.status_code == 200
     body = response.json()
-    assert body["sku"] == "LIFE-TWO-PER-DAY"
-    assert body["category_slugs"] == ["vitamin"]
+    assert body["sku"] == "KORYO-EUNDAN-MULTIVITAMIN-ALL-IN-ONE"
+    assert body["category_slugs"] == ["multivitamin"]
     assert body["package"] == {
         "unit_form": "TABLET",
-        "units_per_package": "120",
+        "units_per_package": "60",
     }
     assert body["nutrients"] == [
         {
+            "code": "VITAMIN_A_RE",
+            "name": "비타민 A(레티놀 활성당량)",
+            "amount_per_unit": "350",
+            "unit": "MCG",
+        },
+        {
             "code": "VITAMIN_C",
             "name": "비타민 C",
-            "amount_per_unit": "235",
+            "amount_per_unit": "100",
             "unit": "MG",
         },
         {
             "code": "VITAMIN_D",
             "name": "비타민 D",
-            "amount_per_unit": "25",
+            "amount_per_unit": "10",
             "unit": "MCG",
         },
+        {
+            "code": "VITAMIN_E",
+            "name": "비타민 E",
+            "amount_per_unit": "5.5",
+            "unit": "MG",
+        },
+        {
+            "code": "VITAMIN_K",
+            "name": "비타민 K",
+            "amount_per_unit": "70",
+            "unit": "MCG",
+        },
+        {"code": "CALCIUM", "name": "칼슘", "amount_per_unit": "230", "unit": "MG"},
+        {
+            "code": "MAGNESIUM",
+            "name": "마그네슘",
+            "amount_per_unit": "104",
+            "unit": "MG",
+        },
+        {"code": "ZINC", "name": "아연", "amount_per_unit": "8.5", "unit": "MG"},
     ]

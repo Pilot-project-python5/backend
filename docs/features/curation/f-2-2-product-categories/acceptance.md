@@ -40,8 +40,8 @@ slug·name items를 반환한다. 내부 UUID·is_active·sort_order는 노출�
 
 행동: 전체 시드를 두 번 실행한다.
 
-결과: vitamin·protein·omega-3가 slug별 한 행만 존재하고 고정 ID 또는 기존 자연 키
-행을 유지한 채 승인 이름·활성·10·20·30 순서로 수렴한다. 실제 개인정보는 없다.
+결과: 승인 카테고리 11개가 slug별 한 행만 존재하고 고정 ID 또는 기존 자연 키 행을
+유지한 채 승인 이름·활성·순서로 수렴한다. 이전 vitamin·protein은 비활성이다.
 
 ## AC-F-2.2-006 API·Swagger 계약
 

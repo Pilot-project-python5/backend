@@ -17,8 +17,9 @@ class ProductCategoryListResponse(BaseModel):
                 {
                     "items": [
                         {"slug": "all", "name": "전체"},
-                        {"slug": "vitamin", "name": "비타민"},
-                        {"slug": "protein", "name": "단백질"},
+                        {"slug": "multivitamin", "name": "종합비타민"},
+                        {"slug": "vitamin-b", "name": "비타민B군"},
+                        {"slug": "vitamin-c", "name": "비타민C"},
                         {"slug": "omega-3", "name": "오메가3"},
                     ]
                 }

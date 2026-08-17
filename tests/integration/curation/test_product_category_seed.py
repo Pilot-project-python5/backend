@@ -30,7 +30,7 @@ def test_category_seed_is_deterministic_idempotent_and_restores_values() -> None
         assert seed.apply(connection) == len(PRODUCT_CATEGORY_SEED_ROWS)
         connection.execute(
             update(ProductCategory)
-            .where(ProductCategory.slug == "vitamin")
+            .where(ProductCategory.slug == PRODUCT_CATEGORY_SEED_ROWS[0].slug)
             .values(name="변경됨", is_active=False, sort_order=999)
         )
         assert seed.apply(connection) == len(PRODUCT_CATEGORY_SEED_ROWS)

@@ -90,7 +90,9 @@ def _clean() -> None:
 def _seed_user_plan() -> None:
     with SessionFactory.begin() as session:
         product_id = session.scalar(
-            select(Product.id).where(Product.sku == "LIFE-TWO-PER-DAY")
+            select(Product.id).where(
+                Product.sku == "KORYO-EUNDAN-MULTIVITAMIN-ALL-IN-ONE"
+            )
         )
         nutrients = {
             code: nutrient_id
@@ -153,7 +155,7 @@ def _seed_user_plan() -> None:
                     care_item_id=CARE_ITEM_ID,
                     nutrient_id=nutrients["VITAMIN_C"],
                     nutrient_name="비타민 C",
-                    amount_per_unit=Decimal("235"),
+                    amount_per_unit=Decimal("100"),
                     unit="MG",
                 ),
                 CareNutrientSnapshot(
@@ -161,7 +163,7 @@ def _seed_user_plan() -> None:
                     care_item_id=CARE_ITEM_ID,
                     nutrient_id=nutrients["VITAMIN_D"],
                     nutrient_name="비타민 D",
-                    amount_per_unit=Decimal("25"),
+                    amount_per_unit=Decimal("10"),
                     unit="MCG",
                 ),
             ]
@@ -177,4 +179,4 @@ def test_user_reads_age_gender_reference_comparison() -> None:
     assert [
         (row["nutrient_code"], row["reference_type"], row["achievement_rate_percent"])
         for row in response.json()["nutrients"]
-    ] == [("VITAMIN_C", "RNI", "470"), ("VITAMIN_D", "AI", "500")]
+    ] == [("VITAMIN_C", "RNI", "200"), ("VITAMIN_D", "AI", "200")]
