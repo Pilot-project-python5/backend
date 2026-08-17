@@ -43,7 +43,7 @@ MEDICATION_SEED_ROWS = (
     MedicationSeedRow(
         id=UUID("22000000-0000-4000-8000-000000000010"),
         sku="LOCAL-MED-001",
-        brand="알약꾹 로컬 테스트",
+        brand="영양꾹 로컬 테스트",
         name="복용 관리 예시 의약품 A",
         image_url="/static/products/local-medication-a.svg",
         unit_form="TABLET",
@@ -58,13 +58,13 @@ MEDICATION_SEED_ROWS = (
             "운영 전 품목별 공식 허가정보 검토와 승인 데이터 교체가 필요합니다."
         ),
         storage_instructions="로컬 테스트 데이터이며 실제 보관 지침이 아닙니다.",
-        source_name="알약꾹 로컬 테스트 시드(실사용 금지)",
+        source_name="영양꾹 로컬 테스트 시드(실사용 금지)",
         source_url=("https://example.invalid/allyakkkuk/medications/local-med-001"),
     ),
     MedicationSeedRow(
         id=UUID("22000000-0000-4000-8000-000000000011"),
         sku="LOCAL-MED-002",
-        brand="알약꾹 로컬 테스트",
+        brand="영양꾹 로컬 테스트",
         name="복용 관리 예시 의약품 B",
         image_url="/static/products/local-medication-b.svg",
         unit_form="CAPSULE",
@@ -79,7 +79,7 @@ MEDICATION_SEED_ROWS = (
             "운영 전 품목별 공식 허가정보 검토와 승인 데이터 교체가 필요합니다."
         ),
         storage_instructions="로컬 테스트 데이터이며 실제 보관 지침이 아닙니다.",
-        source_name="알약꾹 로컬 테스트 시드(실사용 금지)",
+        source_name="영양꾹 로컬 테스트 시드(실사용 금지)",
         source_url=("https://example.invalid/allyakkkuk/medications/local-med-002"),
     ),
 )

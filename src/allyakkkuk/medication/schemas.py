@@ -39,7 +39,7 @@ class MedicationListResponse(BaseModel):
                         {
                             "id": "22000000-0000-4000-8000-000000000010",
                             "sku": "LOCAL-MED-001",
-                            "brand": "알약꾹 로컬 테스트",
+                            "brand": "영양꾹 로컬 테스트",
                             "name": "복용 관리 예시 의약품 A",
                             "image_url": "/static/products/local-medication-a.svg",
                             "package": {

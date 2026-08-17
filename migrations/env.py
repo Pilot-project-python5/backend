@@ -1,4 +1,4 @@
-"""알약꾹 SQLAlchemy 모델을 사용하는 Alembic 실행 환경."""
+"""영양꾹 SQLAlchemy 모델을 사용하는 Alembic 실행 환경."""
 
 from __future__ import annotations
 

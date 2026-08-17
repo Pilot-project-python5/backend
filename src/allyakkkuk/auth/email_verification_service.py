@@ -195,13 +195,13 @@ class EmailVerificationService:
 def _verification_email(recipient: str, code: str) -> OutboundEmail:
     return OutboundEmail(
         recipients=(recipient,),
-        subject="알약꾹 이메일 인증번호",
+        subject="영양꾹 이메일 인증번호",
         text_body=(
-            "알약꾹 이메일 인증번호는 "
+            "영양꾹 이메일 인증번호는 "
             f"{code} 입니다. 인증번호는 10분 동안 사용할 수 있습니다."
         ),
         html_body=(
-            "<p>알약꾹 이메일 인증번호는 "
+            "<p>영양꾹 이메일 인증번호는 "
             f"<strong>{code}</strong> 입니다.</p>"
             "<p>인증번호는 10분 동안 사용할 수 있습니다.</p>"
         ),

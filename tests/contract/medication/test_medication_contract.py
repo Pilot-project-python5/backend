@@ -50,7 +50,7 @@ def summary() -> MedicationSummary:
     return MedicationSummary(
         PRODUCT_ID,
         "LOCAL-MED-001",
-        "알약꾹 로컬 테스트",
+        "영양꾹 로컬 테스트",
         "복용 관리 예시 의약품 A",
         "/static/products/local-medication-a.svg",
         "TABLET",
@@ -78,7 +78,7 @@ def detail() -> MedicationDetail:
         "실제 복용에 사용하지 마세요.",
         "API·UI 검증에만 사용하세요.",
         "로컬 테스트 데이터입니다.",
-        "알약꾹 로컬 테스트 시드(실사용 금지)",
+        "영양꾹 로컬 테스트 시드(실사용 금지)",
         "https://example.invalid/allyakkkuk/medications/local-med-001",
         date(2026, 8, 14),
     )
@@ -122,7 +122,7 @@ def test_list_contract_serializes_decimal_and_private_headers() -> None:
             {
                 "id": str(PRODUCT_ID),
                 "sku": "LOCAL-MED-001",
-                "brand": "알약꾹 로컬 테스트",
+                "brand": "영양꾹 로컬 테스트",
                 "name": "복용 관리 예시 의약품 A",
                 "image_url": "/static/products/local-medication-a.svg",
                 "package": {"unit_form": "TABLET", "units_per_package": "20"},
@@ -148,7 +148,7 @@ def test_detail_contract_includes_source_and_required_information() -> None:
     assert body["efficacy"].startswith("실제 의약품 정보가 아닌")
     assert body["dosage_instructions"] == "실제 복용에 사용하지 마세요."
     assert body["source"] == {
-        "name": "알약꾹 로컬 테스트 시드(실사용 금지)",
+        "name": "영양꾹 로컬 테스트 시드(실사용 금지)",
         "url": "https://example.invalid/allyakkkuk/medications/local-med-001",
         "reviewed_on": "2026-08-14",
     }

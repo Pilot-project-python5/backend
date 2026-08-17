@@ -25,7 +25,7 @@ def summary() -> MedicationSummaryRecord:
     return MedicationSummaryRecord(
         id=PRODUCT_ID,
         sku="LOCAL-MED-001",
-        brand="알약꾹 로컬 테스트",
+        brand="영양꾹 로컬 테스트",
         name="복용 관리 예시 의약품 A",
         image_url="/static/products/local-medication-a.svg",
         unit_form="TABLET",
@@ -43,7 +43,7 @@ def detail() -> MedicationDetailRecord:
         dosage_instructions="실제 복용에 사용하지 마세요.",
         precautions="API·UI 검증에만 사용하세요.",
         storage_instructions="로컬 테스트 데이터입니다.",
-        source_name="알약꾹 로컬 테스트 시드(실사용 금지)",
+        source_name="영양꾹 로컬 테스트 시드(실사용 금지)",
         source_url="https://example.invalid/allyakkkuk/medications/local-med-001",
         source_reviewed_on=date(2026, 8, 14),
     )

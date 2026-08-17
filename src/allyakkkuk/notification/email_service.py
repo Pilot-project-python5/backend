@@ -142,14 +142,14 @@ def render_reminder_email(claim: EmailDeliveryClaim) -> OutboundEmail:
         raise EmailReminderError("지원하지 않는 알림 종류")
 
     subject = (
-        f"[알약꾹] {product_name} {subject_label} "
+        f"[영양꾹] {product_name} {subject_label} "
         f"{claim.trigger_days_before}일 남았습니다"
     )
     text_body = (
-        "안녕하세요, 알약꾹입니다.\n\n"
+        "안녕하세요, 영양꾹입니다.\n\n"
         f"{product_name}의 {date_label}은 {claim.reference_date.isoformat()}입니다.\n"
         f"D-{claim.trigger_days_before} 알림이니 제품 상태를 확인해주세요.\n\n"
-        "이 메일은 알약꾹에 등록한 복용 제품 정보를 기준으로 발송되었습니다."
+        "이 메일은 영양꾹에 등록한 복용 제품 정보를 기준으로 발송되었습니다."
     )
     return OutboundEmail(
         recipients=(claim.recipient_email,),

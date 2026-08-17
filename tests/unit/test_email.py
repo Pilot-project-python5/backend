@@ -28,7 +28,7 @@ def test_smtp_sender_builds_message_for_local_mailbox() -> None:
         host="mail",
         port=1025,
         from_address="no-reply@allyakkkuk.local",
-        from_name="알약꾹",
+        from_name="영양꾹",
     )
     message = OutboundEmail(
         recipients=("fixture@example.test",),

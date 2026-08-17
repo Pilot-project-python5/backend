@@ -25,7 +25,7 @@
     {
       "id": "22000000-0000-4000-8000-000000000010",
       "sku": "LOCAL-MED-001",
-      "brand": "알약꾹 로컬 테스트",
+      "brand": "영양꾹 로컬 테스트",
       "name": "복용 관리 예시 의약품 A",
       "image_url": "/static/products/local-medication-a.svg",
       "package": {"unit_form": "TABLET", "units_per_package": "20"},
@@ -53,7 +53,7 @@
 {
   "id": "22000000-0000-4000-8000-000000000010",
   "sku": "LOCAL-MED-001",
-  "brand": "알약꾹 로컬 테스트",
+  "brand": "영양꾹 로컬 테스트",
   "name": "복용 관리 예시 의약품 A",
   "image_url": "/static/products/local-medication-a.svg",
   "package": {"unit_form": "TABLET", "units_per_package": "20"},
@@ -65,7 +65,7 @@
   "precautions": "운영 전 품목별 공식 허가정보 검토와 승인 데이터 교체가 필요합니다.",
   "storage_instructions": "로컬 테스트 데이터이며 실제 보관 지침이 아닙니다.",
   "source": {
-    "name": "알약꾹 로컬 테스트 시드(실사용 금지)",
+    "name": "영양꾹 로컬 테스트 시드(실사용 금지)",
     "url": "https://example.invalid/allyakkkuk/medications/local-med-001",
     "reviewed_on": "2026-08-14"
   }

@@ -10,7 +10,7 @@ x-app-environment: &app-environment
   MAIL_HOST: ${MAIL_HOST:-mail}
   MAIL_PORT: ${MAIL_PORT:-1025}
   MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-no-reply@allyakkkuk.local}
-  MAIL_FROM_NAME: ${MAIL_FROM_NAME:-알약꾹}
+  MAIL_FROM_NAME: ${MAIL_FROM_NAME:-영양꾹}
   EMAIL_VERIFICATION_SECRET: ${EMAIL_VERIFICATION_SECRET:-local-only-email-verification-secret-change-me}
   AUTH_TOKEN_SECRET: ${AUTH_TOKEN_SECRET:-local-only-auth-token-secret-change-before-deployment}
   AUTH_COOKIE_SECURE: ${AUTH_COOKIE_SECURE:-false}

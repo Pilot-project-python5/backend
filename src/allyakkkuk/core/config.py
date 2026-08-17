@@ -20,7 +20,7 @@ class Settings(BaseSettings):
         case_sensitive=False,
     )
 
-    app_name: str = "알약꾹 백엔드"
+    app_name: str = "영양꾹 백엔드"
     app_version: str = "0.1.0"
     app_env: Literal["local", "test"] = "local"
     app_debug: bool = False
@@ -41,7 +41,7 @@ class Settings(BaseSettings):
     mail_host: str = "localhost"
     mail_port: int = Field(default=1025, ge=1, le=65535)
     mail_from_address: str = "no-reply@allyakkkuk.local"
-    mail_from_name: str = "알약꾹"
+    mail_from_name: str = "영양꾹"
     email_verification_secret: SecretStr = SecretStr(
         "local-only-email-verification-secret-change-me"
     )

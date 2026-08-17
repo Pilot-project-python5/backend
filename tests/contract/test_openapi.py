@@ -23,4 +23,4 @@ def test_openapi_contains_versioned_health_contracts() -> None:
 def test_committed_openapi_is_valid_json() -> None:
     document = json.loads(Path("openapi.json").read_text(encoding="utf-8"))
 
-    assert document["info"]["title"] == "알약꾹 백엔드"
+    assert document["info"]["title"] == "영양꾹 백엔드"
