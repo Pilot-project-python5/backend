@@ -21,6 +21,13 @@ def test_cors_origins_are_normalized() -> None:
     )
 
 
+def test_default_cors_origins_include_local_vite_server() -> None:
+    settings = Settings()
+
+    assert "http://localhost:5173" in settings.allowed_cors_origins
+    assert "http://127.0.0.1:5173" in settings.allowed_cors_origins
+
+
 def test_non_postgresql_database_is_rejected() -> None:
     with pytest.raises(ValidationError):
         Settings(database_url="sqlite:///local.db")

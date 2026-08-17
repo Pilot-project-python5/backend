@@ -29,7 +29,10 @@ class Settings(BaseSettings):
     app_timezone: str = "Asia/Seoul"
     nutrient_reference_version: str = "KDRI-2025-20260316"
     api_prefix: str = "/api/v1"
-    cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
+    cors_origins: str = (
+        "http://localhost:3000,http://127.0.0.1:3000,"
+        "http://localhost:5173,http://127.0.0.1:5173"
+    )
 
     database_url: str = (
         "postgresql+psycopg://allyakkkuk:allyakkkuk-local@localhost:5432/allyakkkuk_dev"

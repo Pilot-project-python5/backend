@@ -30,12 +30,18 @@ make verify
 
 ## 로컬 주소
 
+- 프론트엔드: http://localhost:5173
 - API: http://localhost:8000
 - Swagger: http://localhost:8000/docs
 - OpenAPI: http://localhost:8000/openapi.json
 - Mailpit: http://localhost:8025
 - PostgreSQL 개발 DB: localhost:5432
 - PostgreSQL 테스트 DB: localhost:5433
+
+Vite 프론트엔드는 인증 쿠키가 같은 site에서 유지되도록 `localhost:5173`으로
+접속한다. 백엔드는 로컬 편의를 위해 `localhost:5173`과 `127.0.0.1:5173`을 모두
+CORS 허용 목록에 포함하지만, 프론트엔드 주소와 API 주소에서 `localhost`와
+`127.0.0.1`을 혼용하지 않는다.
 
 `make dev`는 데이터 볼륨을 유지한 채 서비스를 시작한다. `make stop`도 개발 DB와
 메일 데이터를 삭제하지 않는다. 테스트 DB는 tmpfs를 사용해 개발 DB와 공유하지 않는다.
