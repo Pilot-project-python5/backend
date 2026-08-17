@@ -5,16 +5,16 @@ from uuid import UUID
 
 import pytest
 
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.notification.repository import (
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.notification.repository import (
     NotificationListRecord,
     NotificationPageRecord,
     NotificationPersistenceError,
     NotificationReadRecord,
     NotificationRepository,
 )
-from allyakkkuk.notification.service import NotificationService
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.notification.service import NotificationService
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-3.9")]
 

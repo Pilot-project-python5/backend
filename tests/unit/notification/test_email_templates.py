@@ -5,8 +5,8 @@ from uuid import UUID
 
 import pytest
 
-from allyakkkuk.notification.email_repository import EmailDeliveryClaim
-from allyakkkuk.notification.email_service import render_reminder_email
+from yeongyangkkuk.notification.email_repository import EmailDeliveryClaim
+from yeongyangkkuk.notification.email_service import render_reminder_email
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-3.12")]
 

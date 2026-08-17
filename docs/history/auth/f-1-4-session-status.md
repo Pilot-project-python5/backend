@@ -23,7 +23,7 @@ refresh 세션과 계정 상태까지 확인하므로 로그아웃·세션 만�
 
 ### 포함
 
-- `allyakkkuk_access_token` cookie 기반 Access JWT verifier
+- `yeongyangkkuk_access_token` cookie 기반 Access JWT verifier
 - 사용자·건강 프로필·refresh 세션 읽기 저장소와 인증 서비스
 - 이후 보호 API가 재사용할 `require_current_user` FastAPI 의존성
 - GET /api/v1/auth/me의 현재 사용자·세션 만료 응답
@@ -52,7 +52,7 @@ refresh 세션과 계정 상태까지 확인하므로 로그아웃·세션 만�
 ## API 변경
 
 - `GET /api/v1/auth/me`
-  - 인증: `AccessCookieAuth`, cookie name `allyakkkuk_access_token`
+  - 인증: `AccessCookieAuth`, cookie name `yeongyangkkuk_access_token`
   - 요청 본문·쿼리: 없음
   - 200: authenticated=true, user 기본·건강 정보,
     session.access_token_expires_at·refresh_token_expires_at

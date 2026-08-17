@@ -8,14 +8,14 @@ from uuid import UUID
 import pytest
 from sqlalchemy import delete, func, inspect, select
 
-from allyakkkuk.auth.models import User, UserStatus
-from allyakkkuk.care.care_item_repository import (
+from yeongyangkkuk.auth.models import User, UserStatus
+from yeongyangkkuk.care.care_item_repository import (
     CareItemCreateData,
     SQLAlchemyCareItemRepository,
 )
-from allyakkkuk.care.models import CareItem
-from allyakkkuk.curation.models import Product
-from allyakkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.care.models import CareItem
+from yeongyangkkuk.curation.models import Product
+from yeongyangkkuk.db.session import SessionFactory, engine
 
 pytestmark = [
     pytest.mark.integration,

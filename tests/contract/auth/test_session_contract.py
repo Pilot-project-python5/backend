@@ -6,19 +6,19 @@ from typing import cast
 import pytest
 from fastapi.testclient import TestClient
 
-from allyakkkuk.auth.cookies import (
+from yeongyangkkuk.auth.cookies import (
     ACCESS_COOKIE_NAME,
     REFRESH_COOKIE_NAME,
     SessionCookiePolicy,
 )
-from allyakkkuk.auth.session_router import (
+from yeongyangkkuk.auth.session_router import (
     get_session_cookie_policy,
     get_session_service,
 )
-from allyakkkuk.auth.session_service import SessionRefreshResult, SessionService
-from allyakkkuk.core.config import Settings
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.main import create_app
+from yeongyangkkuk.auth.session_service import SessionRefreshResult, SessionService
+from yeongyangkkuk.core.config import Settings
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.main import create_app
 
 pytestmark = [pytest.mark.contract, pytest.mark.feature("F-1.3")]
 

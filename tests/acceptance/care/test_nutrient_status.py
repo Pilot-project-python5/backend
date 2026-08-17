@@ -13,22 +13,22 @@ from fastapi.testclient import TestClient
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
-from allyakkkuk.auth.current_user_dependencies import require_current_user
-from allyakkkuk.auth.current_user_service import AuthenticatedUser
-from allyakkkuk.auth.models import Gender, HealthProfile, User, UserStatus
-from allyakkkuk.care.care_item_router import get_nutrient_status_service
-from allyakkkuk.care.daily_intake_repository import SQLAlchemyDailyIntakeRepository
-from allyakkkuk.care.daily_intake_service import DailyIntakeService
-from allyakkkuk.care.models import CareItem, CareNutrientSnapshot
-from allyakkkuk.care.nutrient_status_repository import (
+from yeongyangkkuk.auth.current_user_dependencies import require_current_user
+from yeongyangkkuk.auth.current_user_service import AuthenticatedUser
+from yeongyangkkuk.auth.models import Gender, HealthProfile, User, UserStatus
+from yeongyangkkuk.care.care_item_router import get_nutrient_status_service
+from yeongyangkkuk.care.daily_intake_repository import SQLAlchemyDailyIntakeRepository
+from yeongyangkkuk.care.daily_intake_service import DailyIntakeService
+from yeongyangkkuk.care.models import CareItem, CareNutrientSnapshot
+from yeongyangkkuk.care.nutrient_status_repository import (
     SQLAlchemyNutrientStatusRepository,
 )
-from allyakkkuk.care.nutrient_status_service import NutrientStatusService
-from allyakkkuk.curation.models import Nutrient, Product
-from allyakkkuk.db.session import SessionFactory, engine, get_db_session
-from allyakkkuk.main import app
-from allyakkkuk.ports.clock import FakeClock
-from allyakkkuk.seeding.runner import run_registered_seeds
+from yeongyangkkuk.care.nutrient_status_service import NutrientStatusService
+from yeongyangkkuk.curation.models import Nutrient, Product
+from yeongyangkkuk.db.session import SessionFactory, engine, get_db_session
+from yeongyangkkuk.main import app
+from yeongyangkkuk.ports.clock import FakeClock
+from yeongyangkkuk.seeding.runner import run_registered_seeds
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.6")]
 
@@ -90,7 +90,9 @@ def _clean() -> None:
 def _seed_user_plan() -> None:
     with SessionFactory.begin() as session:
         product_id = session.scalar(
-            select(Product.id).where(Product.sku == "LIFE-TWO-PER-DAY")
+            select(Product.id).where(
+                Product.sku == "KORYO-EUNDAN-MULTIVITAMIN-ALL-IN-ONE"
+            )
         )
         nutrients = {
             code: nutrient_id
@@ -153,7 +155,7 @@ def _seed_user_plan() -> None:
                     care_item_id=CARE_ITEM_ID,
                     nutrient_id=nutrients["VITAMIN_C"],
                     nutrient_name="비타민 C",
-                    amount_per_unit=Decimal("235"),
+                    amount_per_unit=Decimal("100"),
                     unit="MG",
                 ),
                 CareNutrientSnapshot(
@@ -161,7 +163,7 @@ def _seed_user_plan() -> None:
                     care_item_id=CARE_ITEM_ID,
                     nutrient_id=nutrients["VITAMIN_D"],
                     nutrient_name="비타민 D",
-                    amount_per_unit=Decimal("25"),
+                    amount_per_unit=Decimal("10"),
                     unit="MCG",
                 ),
             ]
@@ -177,4 +179,4 @@ def test_user_reads_age_gender_reference_comparison() -> None:
     assert [
         (row["nutrient_code"], row["reference_type"], row["achievement_rate_percent"])
         for row in response.json()["nutrients"]
-    ] == [("VITAMIN_C", "RNI", "470"), ("VITAMIN_D", "AI", "500")]
+    ] == [("VITAMIN_C", "RNI", "200"), ("VITAMIN_D", "AI", "200")]

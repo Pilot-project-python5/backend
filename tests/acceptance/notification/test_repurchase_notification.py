@@ -9,16 +9,16 @@ from zoneinfo import ZoneInfo
 import pytest
 from sqlalchemy import delete, func, select
 
-from allyakkkuk.auth.models import User, UserStatus
-from allyakkkuk.care.models import CareItem
-from allyakkkuk.curation.models import Product
-from allyakkkuk.db.session import SessionFactory
-from allyakkkuk.notification.models import Notification
-from allyakkkuk.notification.repository import (
+from yeongyangkkuk.auth.models import User, UserStatus
+from yeongyangkkuk.care.models import CareItem
+from yeongyangkkuk.curation.models import Product
+from yeongyangkkuk.db.session import SessionFactory
+from yeongyangkkuk.notification.models import Notification
+from yeongyangkkuk.notification.repository import (
     SQLAlchemyRepurchaseNotificationRepository,
 )
-from allyakkkuk.notification.service import RepurchaseNotificationService
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.notification.service import RepurchaseNotificationService
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.8")]
 

@@ -4,8 +4,8 @@ from unittest.mock import patch
 
 import pytest
 
-from allyakkkuk.adapters.email import FakeEmailSender, SmtpEmailSender
-from allyakkkuk.ports.email import OutboundEmail
+from yeongyangkkuk.adapters.email import FakeEmailSender, SmtpEmailSender
+from yeongyangkkuk.ports.email import OutboundEmail
 
 pytestmark = pytest.mark.unit
 
@@ -27,8 +27,8 @@ def test_smtp_sender_builds_message_for_local_mailbox() -> None:
     sender = SmtpEmailSender(
         host="mail",
         port=1025,
-        from_address="no-reply@allyakkkuk.local",
-        from_name="알약꾹",
+        from_address="no-reply@yeongyangkkuk.local",
+        from_name="영양꾹",
     )
     message = OutboundEmail(
         recipients=("fixture@example.test",),
@@ -37,7 +37,7 @@ def test_smtp_sender_builds_message_for_local_mailbox() -> None:
         html_body="<strong>123456</strong>",
     )
 
-    with patch("allyakkkuk.adapters.email.smtplib.SMTP") as smtp_class:
+    with patch("yeongyangkkuk.adapters.email.smtplib.SMTP") as smtp_class:
         sender.send(message)
 
     smtp_class.assert_called_once_with("mail", 1025, timeout=10)

@@ -12,18 +12,18 @@ from fastapi.testclient import TestClient
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
 
-from allyakkkuk.auth.current_user_dependencies import require_current_user
-from allyakkkuk.auth.current_user_service import AuthenticatedUser
-from allyakkkuk.auth.models import Gender, User, UserStatus
-from allyakkkuk.care.models import CareItem
-from allyakkkuk.curation.models import Product
-from allyakkkuk.db.session import SessionFactory, get_db_session
-from allyakkkuk.main import app
-from allyakkkuk.notification.models import Notification
-from allyakkkuk.notification.repository import SQLAlchemyNotificationRepository
-from allyakkkuk.notification.router import get_notification_service
-from allyakkkuk.notification.service import NotificationService
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.auth.current_user_dependencies import require_current_user
+from yeongyangkkuk.auth.current_user_service import AuthenticatedUser
+from yeongyangkkuk.auth.models import Gender, User, UserStatus
+from yeongyangkkuk.care.models import CareItem
+from yeongyangkkuk.curation.models import Product
+from yeongyangkkuk.db.session import SessionFactory, get_db_session
+from yeongyangkkuk.main import app
+from yeongyangkkuk.notification.models import Notification
+from yeongyangkkuk.notification.repository import SQLAlchemyNotificationRepository
+from yeongyangkkuk.notification.router import get_notification_service
+from yeongyangkkuk.notification.service import NotificationService
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.9")]
 

@@ -13,23 +13,23 @@ from fastapi.testclient import TestClient
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
-from allyakkkuk.auth.current_user_dependencies import get_current_user_service
-from allyakkkuk.auth.current_user_repository import SQLAlchemyCurrentUserRepository
-from allyakkkuk.auth.current_user_service import CurrentUserService
-from allyakkkuk.auth.login_repository import SQLAlchemyLoginRepository
-from allyakkkuk.auth.login_router import get_login_service
-from allyakkkuk.auth.login_service import LoginService
-from allyakkkuk.auth.models import Gender, HealthProfile, User, UserStatus
-from allyakkkuk.auth.passwords import Argon2PasswordHasher
-from allyakkkuk.auth.tokens import JwtSessionTokenIssuer
-from allyakkkuk.care.care_item_repository import SQLAlchemyCareItemRepository
-from allyakkkuk.care.care_item_router import get_care_item_service
-from allyakkkuk.care.care_item_service import CareItemService
-from allyakkkuk.care.models import CareItem
-from allyakkkuk.curation.models import Product
-from allyakkkuk.db.session import SessionFactory, get_db_session
-from allyakkkuk.main import app
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.auth.current_user_dependencies import get_current_user_service
+from yeongyangkkuk.auth.current_user_repository import SQLAlchemyCurrentUserRepository
+from yeongyangkkuk.auth.current_user_service import CurrentUserService
+from yeongyangkkuk.auth.login_repository import SQLAlchemyLoginRepository
+from yeongyangkkuk.auth.login_router import get_login_service
+from yeongyangkkuk.auth.login_service import LoginService
+from yeongyangkkuk.auth.models import Gender, HealthProfile, User, UserStatus
+from yeongyangkkuk.auth.passwords import Argon2PasswordHasher
+from yeongyangkkuk.auth.tokens import JwtSessionTokenIssuer
+from yeongyangkkuk.care.care_item_repository import SQLAlchemyCareItemRepository
+from yeongyangkkuk.care.care_item_router import get_care_item_service
+from yeongyangkkuk.care.care_item_service import CareItemService
+from yeongyangkkuk.care.models import CareItem
+from yeongyangkkuk.curation.models import Product
+from yeongyangkkuk.db.session import SessionFactory, get_db_session
+from yeongyangkkuk.main import app
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [
     pytest.mark.integration,

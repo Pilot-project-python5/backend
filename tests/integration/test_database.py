@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from sqlalchemy import text
 
-from allyakkkuk.db.session import engine
+from yeongyangkkuk.db.session import engine
 
 pytestmark = pytest.mark.integration
 

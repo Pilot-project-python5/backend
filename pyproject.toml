@@ -3,9 +3,9 @@ requires = ["hatchling>=1.27,<2"]
 build-backend = "hatchling.build"
 
 [project]
-name = "allyakkkuk-backend"
+name = "yeongyangkkuk-backend"
 version = "0.1.0"
-description = "알약꾹 로컬 우선 백엔드 API"
+description = "영양꾹 로컬 우선 백엔드 API"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
@@ -30,10 +30,10 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/allyakkkuk"]
+packages = ["src/yeongyangkkuk"]
 
 [tool.fastapi]
-entrypoint = "allyakkkuk.main:app"
+entrypoint = "yeongyangkkuk.main:app"
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-config --strict-markers"
@@ -66,8 +66,8 @@ exclude = ["migrations"]
 
 [tool.coverage.run]
 branch = true
-source = ["allyakkkuk"]
-omit = ["src/allyakkkuk/**/__main__.py"]
+source = ["yeongyangkkuk"]
+omit = ["src/yeongyangkkuk/**/__main__.py"]
 
 [tool.coverage.report]
 show_missing = true

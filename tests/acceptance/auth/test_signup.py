@@ -6,9 +6,9 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import delete, func, select
 
-from allyakkkuk.auth.models import HealthProfile, User
-from allyakkkuk.db.session import SessionFactory
-from allyakkkuk.main import app
+from yeongyangkkuk.auth.models import HealthProfile, User
+from yeongyangkkuk.db.session import SessionFactory
+from yeongyangkkuk.main import app
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-1.1")]
 

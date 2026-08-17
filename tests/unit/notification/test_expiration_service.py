@@ -5,16 +5,16 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from allyakkkuk.notification.repository import (
+from yeongyangkkuk.notification.repository import (
     ExpirationNotificationRepository,
     NotificationPersistenceError,
     NotificationTrigger,
 )
-from allyakkkuk.notification.service import (
+from yeongyangkkuk.notification.service import (
     ExpirationNotificationError,
     ExpirationNotificationService,
 )
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-3.9")]
 

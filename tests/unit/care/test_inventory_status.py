@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from allyakkkuk.care.inventory import inventory_status
+from yeongyangkkuk.care.inventory import inventory_status
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-3.8")]
 

@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import pytest
 
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.curation.product_category_repository import (
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.curation.product_category_repository import (
     ProductCategoryPersistenceError,
     ProductCategoryRecord,
     ProductCategoryRepository,
 )
-from allyakkkuk.curation.product_category_service import ProductCategoryService
+from yeongyangkkuk.curation.product_category_service import ProductCategoryService
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-2.2")]
 

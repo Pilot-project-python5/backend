@@ -6,13 +6,13 @@ from decimal import Decimal
 import pytest
 from sqlalchemy import delete, inspect, select
 
-from allyakkkuk.auth.models import Gender, HealthProfile, User
-from allyakkkuk.auth.repository import (
+from yeongyangkkuk.auth.models import Gender, HealthProfile, User
+from yeongyangkkuk.auth.repository import (
     SignupData,
     SignupPersistenceError,
     SQLAlchemySignupRepository,
 )
-from allyakkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.db.session import SessionFactory, engine
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-1.1")]
 

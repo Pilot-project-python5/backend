@@ -11,15 +11,15 @@ from fastapi.testclient import TestClient
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
-from allyakkkuk.auth.login_repository import SQLAlchemyLoginRepository
-from allyakkkuk.auth.login_router import get_login_service
-from allyakkkuk.auth.login_service import LoginService
-from allyakkkuk.auth.models import RefreshSession, User, UserStatus
-from allyakkkuk.auth.passwords import Argon2PasswordHasher
-from allyakkkuk.auth.tokens import JwtSessionTokenIssuer
-from allyakkkuk.db.session import SessionFactory, get_db_session
-from allyakkkuk.main import app
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.auth.login_repository import SQLAlchemyLoginRepository
+from yeongyangkkuk.auth.login_router import get_login_service
+from yeongyangkkuk.auth.login_service import LoginService
+from yeongyangkkuk.auth.models import RefreshSession, User, UserStatus
+from yeongyangkkuk.auth.passwords import Argon2PasswordHasher
+from yeongyangkkuk.auth.tokens import JwtSessionTokenIssuer
+from yeongyangkkuk.db.session import SessionFactory, get_db_session
+from yeongyangkkuk.main import app
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-1.2")]
 
@@ -109,8 +109,8 @@ def test_active_user_login_sets_cookies_and_stores_only_refresh_hash(
     assert response.json()["status"] == "ACTIVE"
     assert response.json()["access_token_expires_at"] == "2026-08-11T09:15:00Z"
     assert response.json()["refresh_token_expires_at"] == "2026-08-25T09:00:00Z"
-    access_token = response.cookies.get("allyakkkuk_access_token")
-    refresh_token = response.cookies.get("allyakkkuk_refresh_token")
+    access_token = response.cookies.get("yeongyangkkuk_access_token")
+    refresh_token = response.cookies.get("yeongyangkkuk_refresh_token")
     assert access_token is not None
     assert refresh_token is not None
     assert access_token not in response.text
@@ -137,8 +137,8 @@ def test_repeated_login_creates_distinct_device_sessions(
         second = second_client.post("/api/v1/auth/login", json=login_payload(user))
 
     assert first.status_code == second.status_code == 200
-    assert first.cookies.get("allyakkkuk_refresh_token") != second.cookies.get(
-        "allyakkkuk_refresh_token"
+    assert first.cookies.get("yeongyangkkuk_refresh_token") != second.cookies.get(
+        "yeongyangkkuk_refresh_token"
     )
     with SessionFactory() as session:
         session_count = session.scalar(

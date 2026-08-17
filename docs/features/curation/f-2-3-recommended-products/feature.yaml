@@ -9,8 +9,8 @@ owner: "backend"
 history_path: "docs/history/curation/f-2-3-recommended-products.md"
 source:
   requirement_path: "docs/product/requirements.md"
-  external_url: "https://app.notion.com/p/3b82779e926281b0ac69f8c43f2670b4"
-  reviewed_on: "2026-08-12"
+  external_url: "https://app.notion.com/p/3b62779e926280e287baccedfce27f9c"
+  reviewed_on: "2026-08-15"
 dependencies:
   - "F-2.2"
 api_changes:
@@ -18,5 +18,5 @@ api_changes:
   - "GET /static/products/{filename} 로컬 이미지 정적 제공"
 data_changes:
   - "products와 product_category_mappings 테이블·조회 인덱스 추가"
-  - "추천 제품 3종과 카테고리 매핑 결정적 시드 추가"
+  - "민재코치 추천 제품 32종과 카테고리 매핑 결정적 시드 추가"
 open_questions: []

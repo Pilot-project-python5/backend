@@ -31,7 +31,7 @@
 - 제품 상세 응답의 expert_comments 배열
 - 활성 코멘트 필터와 안정 정렬
 - expert_comments ORM·마이그레이션·ERD
-- UI 제품 3종의 결정적 코멘트 시드
+- 민재코치 승인 제품 32종의 카테고리 안내·주의 코멘트 결정적 시드
 - 단위·통합·계약·인수 테스트와 OpenAPI 문서
 
 ## 제외 범위
@@ -66,5 +66,5 @@
 - 요구사항: FR-2
 - 로컬 요구사항: docs/product/requirements.md
 - 관련 로컬 문서: docs/architecture/erd.md, docs/api/curation.md
-- 외부 출처 URL(선택): https://app.notion.com/p/3b82779e926281c4b8feef88cc416b73
-- 마지막 검토일: 2026-08-12
+- 외부 출처 URL(선택): https://app.notion.com/p/3b62779e926280e287baccedfce27f9c
+- 마지막 검토일: 2026-08-15

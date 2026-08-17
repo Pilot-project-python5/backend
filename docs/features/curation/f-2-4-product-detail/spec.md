@@ -26,6 +26,8 @@
 10. 1차 허용 성분 단위는 `MG`, `G`, `MCG`, `IU`다.
 11. DB 읽기 실패는 내부 정보를 숨기고 공통 `503 SERVICE_UNAVAILABLE`로 응답한다.
 12. 성분 시드는 code 자연 키와 제품 SKU를 사용해 반복 실행해도 승인 값으로 수렴한다.
+13. 원본의 1회·1일·복수 정 기준 함량은 패키지 한 단위 기준으로 정규화한다.
+14. 현재 허용 단위로 표현할 수 없는 CFU와 함량 미기재 혼합 성분은 추정하지 않는다.
 
 ## 포함 범위
 
@@ -34,7 +36,7 @@
 - 패키지 형태와 총 단위 수
 - nutrients·product_nutrients ORM, 마이그레이션, ERD
 - 활성 구성 성분과 단위당 함량
-- UI 시안 제품 3종의 결정적 성분 시드
+- 민재코치 승인 제품의 명시된 핵심 성분 결정적 시드
 - 단위·통합·계약·인수 테스트와 OpenAPI 문서
 
 ## 제외 범위
@@ -73,5 +75,5 @@
 - 요구사항: FR-2
 - 로컬 요구사항: docs/product/requirements.md
 - 관련 로컬 문서: docs/architecture/erd.md, docs/api/curation.md
-- 외부 출처 URL(선택): https://app.notion.com/p/3b82779e926281809c70ffbeb1d200fa
-- 마지막 검토일: 2026-08-12
+- 외부 출처 URL(선택): https://app.notion.com/p/3b62779e926280e287baccedfce27f9c
+- 마지막 검토일: 2026-08-15

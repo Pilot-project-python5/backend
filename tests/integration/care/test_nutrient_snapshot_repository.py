@@ -10,15 +10,15 @@ from sqlalchemy import delete, event, func, select, update
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from allyakkkuk.auth.models import User, UserStatus
-from allyakkkuk.care.care_item_repository import (
+from yeongyangkkuk.auth.models import User, UserStatus
+from yeongyangkkuk.care.care_item_repository import (
     CareItemCreateData,
     CareItemPersistenceError,
     SQLAlchemyCareItemRepository,
 )
-from allyakkkuk.care.models import CareItem, CareNutrientSnapshot
-from allyakkkuk.curation.models import Nutrient, Product, ProductNutrient
-from allyakkkuk.db.session import SessionFactory
+from yeongyangkkuk.care.models import CareItem, CareNutrientSnapshot
+from yeongyangkkuk.curation.models import Nutrient, Product, ProductNutrient
+from yeongyangkkuk.db.session import SessionFactory
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.2")]
 

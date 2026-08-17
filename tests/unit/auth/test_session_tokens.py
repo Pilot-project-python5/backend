@@ -5,7 +5,7 @@ from uuid import UUID
 
 import pytest
 
-from allyakkkuk.auth.tokens import JwtSessionTokenIssuer, parse_refresh_token
+from yeongyangkkuk.auth.tokens import JwtSessionTokenIssuer, parse_refresh_token
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-1.3")]
 

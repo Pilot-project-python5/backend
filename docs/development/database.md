@@ -10,15 +10,15 @@ SQLAlchemy 2 동기 세션과 psycopg 3 드라이버를 사용하고 연결 문�
 
 권장 논리 DB:
 
-- allyakkkuk_dev
-- allyakkkuk_test
+- yeongyangkkuk_dev
+- yeongyangkkuk_test
 
 실제 이름과 자격증명은 환경변수로 관리하며 Git에 저장하지 않는다.
 
 ## 마이그레이션 규칙
 
 - 모든 스키마 변경은 마이그레이션으로 수행한다.
-- 신규 SQLAlchemy 모델 모듈은 src/allyakkkuk/db/models.py에 등록한다.
+- 신규 SQLAlchemy 모델 모듈은 src/yeongyangkkuk/db/models.py에 등록한다.
 - 데이터 변경 전에 Feature Packet에 ERD 영향, 관계, 제약, 인덱스와 이력 정책을 기록한다.
 - 엔티티·관계·제약 변경은 docs/architecture/erd.md와 같은 PR에서 갱신한다.
 - 빈 DB에서 최신 상태까지 적용 가능해야 한다.

@@ -6,18 +6,18 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from allyakkkuk.notification.email_repository import (
+from yeongyangkkuk.notification.email_repository import (
     EmailDeliveryClaim,
     EmailDeliveryRepository,
     EmailDeliveryStatus,
 )
-from allyakkkuk.notification.email_service import (
+from yeongyangkkuk.notification.email_service import (
     EmailReminderError,
     EmailReminderService,
 )
-from allyakkkuk.notification.repository import NotificationPersistenceError
-from allyakkkuk.ports.clock import FakeClock
-from allyakkkuk.ports.email import EmailDeliveryError, EmailSender, OutboundEmail
+from yeongyangkkuk.notification.repository import NotificationPersistenceError
+from yeongyangkkuk.ports.clock import FakeClock
+from yeongyangkkuk.ports.email import EmailDeliveryError, EmailSender, OutboundEmail
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-3.12")]
 

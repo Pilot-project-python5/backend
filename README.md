@@ -1,6 +1,6 @@
-# 알약꾹 백엔드
+# 영양꾹 백엔드
 
-알약꾹 1차 MVP를 위한 로컬 우선 FastAPI 백엔드입니다. AWS, 운영 이메일
+영양꾹 1차 MVP를 위한 로컬 우선 FastAPI 백엔드입니다. AWS, 운영 이메일
 공급자와 AI 서비스 없이 Docker Compose만으로 API, PostgreSQL 개발·테스트 DB,
 Mailpit과 알림 작업자 기반을 실행합니다.
 

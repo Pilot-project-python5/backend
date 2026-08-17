@@ -5,7 +5,7 @@ from zoneinfo import ZoneInfo
 import pytest
 from pydantic import ValidationError
 
-from allyakkkuk.core.config import Settings
+from yeongyangkkuk.core.config import Settings
 
 pytestmark = pytest.mark.unit
 
@@ -19,6 +19,13 @@ def test_cors_origins_are_normalized() -> None:
         "http://localhost:3000",
         "http://127.0.0.1:3000",
     )
+
+
+def test_default_cors_origins_include_local_vite_server() -> None:
+    settings = Settings()
+
+    assert "http://localhost:5173" in settings.allowed_cors_origins
+    assert "http://127.0.0.1:5173" in settings.allowed_cors_origins
 
 
 def test_non_postgresql_database_is_rejected() -> None:

@@ -15,9 +15,17 @@
 {
   "items": [
     {"slug": "all", "name": "전체"},
-    {"slug": "vitamin", "name": "비타민"},
-    {"slug": "protein", "name": "단백질"},
-    {"slug": "omega-3", "name": "오메가3"}
+    {"slug": "multivitamin", "name": "종합비타민"},
+    {"slug": "vitamin-b", "name": "비타민B군"},
+    {"slug": "vitamin-c", "name": "비타민C"},
+    {"slug": "vitamin-d", "name": "비타민D"},
+    {"slug": "protein-supplement", "name": "단백질 보충제"},
+    {"slug": "pre-workout", "name": "부스터"},
+    {"slug": "creatine", "name": "크레아틴"},
+    {"slug": "probiotics", "name": "유산균"},
+    {"slug": "omega-3", "name": "오메가3"},
+    {"slug": "magnesium", "name": "마그네슘"},
+    {"slug": "melatonin", "name": "멜라토닌"}
   ]
 }
 ~~~
@@ -33,7 +41,8 @@
 - 게시 제품이면서 활성 카테고리가 하나 이상 연결된 제품만 제공한다.
 - sort_order, sku 오름차순이며 다중 카테고리 제품도 한 번만 반환한다.
 - 목록 항목은 카드 미리보기 필드만 반환하고 패키지·성분 상세는 F-2.4에서 제공한다.
-- display_price는 로컬 시드가 관리하는 원화 참고 가격이며 currency는 KRW 고정이다.
+- display_price는 원화 표시 필드이며 민재코치 원본에 가격이 없는 현재 시드는 0을
+  가격 미제공 값으로 사용한다. currency는 KRW 고정이다.
 - 로컬 image_url은 백엔드의 /static/products SVG를 가리키며 2차에는 같은 필드에 CDN
   URL을 사용할 수 있다.
 - DB 실패는 503 SERVICE_UNAVAILABLE로 반환한다.
@@ -42,21 +51,21 @@
 {
   "items": [
     {
-      "id": "22000000-0000-4000-8000-000000000001",
-      "sku": "LIFE-TWO-PER-DAY",
+      "id": "22000000-0000-4000-8000-000000000101",
+      "sku": "KORYO-EUNDAN-MULTIVITAMIN-ALL-IN-ONE",
       "product_type": "SUPPLEMENT",
-      "brand": "Life Extension",
-      "name": "라이프익스텐션 투퍼데이",
-      "image_url": "/static/products/life-extension-two-per-day.svg",
-      "display_price": 28400,
+      "brand": "고려은단",
+      "name": "고려은단 멀티비타민 올인원",
+      "image_url": "/static/products/catalog-placeholder.svg",
+      "display_price": 0,
       "currency": "KRW",
-      "category_slugs": ["vitamin"]
+      "category_slugs": ["multivitamin"]
     }
   ],
   "page": 1,
   "page_size": 20,
-  "total": 3,
-  "has_next": false
+  "total": 32,
+  "has_next": true
 }
 ~~~
 
@@ -78,24 +87,24 @@
 
 ~~~json
 {
-  "id": "22000000-0000-4000-8000-000000000001",
-  "sku": "LIFE-TWO-PER-DAY",
+  "id": "22000000-0000-4000-8000-000000000101",
+  "sku": "KORYO-EUNDAN-MULTIVITAMIN-ALL-IN-ONE",
   "product_type": "SUPPLEMENT",
-  "brand": "Life Extension",
-  "name": "라이프익스텐션 투퍼데이",
-  "image_url": "/static/products/life-extension-two-per-day.svg",
-  "display_price": 28400,
+  "brand": "고려은단",
+  "name": "고려은단 멀티비타민 올인원",
+  "image_url": "/static/products/catalog-placeholder.svg",
+  "display_price": 0,
   "currency": "KRW",
-  "category_slugs": ["vitamin"],
+  "category_slugs": ["multivitamin"],
   "package": {
     "unit_form": "TABLET",
-    "units_per_package": "120"
+    "units_per_package": "60"
   },
   "nutrients": [
     {
       "code": "VITAMIN_C",
       "name": "비타민 C",
-      "amount_per_unit": "235",
+      "amount_per_unit": "100",
       "unit": "MG"
     }
   ],
@@ -118,7 +127,7 @@
 {
   "expert_comments": [
     {
-      "id": "24000000-0000-4000-8000-000000000001",
+      "id": "24000000-0000-4000-8000-000000000101",
       "author_label": "MJ's COMMENT",
       "content": "개발용 전문가 추천 코멘트"
     }
@@ -144,7 +153,7 @@
 
 ~~~http
 HTTP/1.1 307 Temporary Redirect
-Location: https://example.com/allyakkkuk/products/life-two-per-day
+Location: https://www.coupang.com/vp/products/6743604050
 Cache-Control: no-store
 Referrer-Policy: no-referrer
 ~~~

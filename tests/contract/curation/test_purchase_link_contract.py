@@ -6,16 +6,16 @@ from uuid import UUID
 import pytest
 from fastapi.testclient import TestClient
 
-from allyakkkuk.core.config import Settings
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.curation.purchase_link_router import get_purchase_link_service
-from allyakkkuk.curation.purchase_link_service import PurchaseLinkService
-from allyakkkuk.main import create_app
+from yeongyangkkuk.core.config import Settings
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.curation.purchase_link_router import get_purchase_link_service
+from yeongyangkkuk.curation.purchase_link_service import PurchaseLinkService
+from yeongyangkkuk.main import create_app
 
 pytestmark = [pytest.mark.contract, pytest.mark.feature("F-2.4.2")]
 
 PRODUCT_ID = UUID("22000000-0000-4000-8000-000000000001")
-DESTINATION = "https://example.com/allyakkkuk/products/life-two-per-day"
+DESTINATION = "https://example.com/yeongyangkkuk/products/life-two-per-day"
 
 
 class StubPurchaseLinkService:

@@ -3,13 +3,13 @@
 ## API 계약
 
 - POST /api/v1/auth/refresh
-  - 인증: allyakkkuk_refresh_token 쿠키
+  - 인증: yeongyangkkuk_refresh_token 쿠키
   - 요청 본문: 없음
   - 성공: 200과 authenticated_at, access_token_expires_at,
     refresh_token_expires_at, access·refresh Set-Cookie
   - 오류: 401 AUTH_SESSION_INVALID, 503 SERVICE_UNAVAILABLE
 - POST /api/v1/auth/logout
-  - 인증 재료: allyakkkuk_refresh_token 쿠키. 세션이 없어도 호출 가능하다.
+  - 인증 재료: yeongyangkkuk_refresh_token 쿠키. 세션이 없어도 호출 가능하다.
   - 요청 본문: 없음
   - 성공: 204와 access·refresh 삭제 Set-Cookie
   - 오류: 유효 세션 DB 처리 실패의 503 SERVICE_UNAVAILABLE

@@ -8,10 +8,10 @@ from uuid import UUID
 import pytest
 from sqlalchemy import delete, inspect
 
-from allyakkkuk.curation.models import Product
-from allyakkkuk.db.session import SessionFactory, engine
-from allyakkkuk.medication.models import MedicationDetail
-from allyakkkuk.medication.repository import SQLAlchemyMedicationRepository
+from yeongyangkkuk.curation.models import Product
+from yeongyangkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.medication.models import MedicationDetail
+from yeongyangkkuk.medication.repository import SQLAlchemyMedicationRepository
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.10")]
 

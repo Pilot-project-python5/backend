@@ -8,11 +8,11 @@ from zoneinfo import ZoneInfo
 import pytest
 from sqlalchemy.orm import Session
 
-import allyakkkuk.notification.job as job_module
-from allyakkkuk.adapters.email import FakeEmailSender
-from allyakkkuk.notification.email_service import EmailReminderSummary
-from allyakkkuk.notification.job import NotificationJob
-from allyakkkuk.ports.clock import FakeClock
+import yeongyangkkuk.notification.job as job_module
+from yeongyangkkuk.adapters.email import FakeEmailSender
+from yeongyangkkuk.notification.email_service import EmailReminderSummary
+from yeongyangkkuk.notification.job import NotificationJob
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-3.12")]
 

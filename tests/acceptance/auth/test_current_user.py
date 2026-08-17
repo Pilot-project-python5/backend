@@ -12,22 +12,22 @@ from fastapi.testclient import TestClient
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
 
-from allyakkkuk.auth.cookies import ACCESS_COOKIE_NAME
-from allyakkkuk.auth.current_user_dependencies import get_current_user_service
-from allyakkkuk.auth.current_user_repository import SQLAlchemyCurrentUserRepository
-from allyakkkuk.auth.current_user_service import CurrentUserService
-from allyakkkuk.auth.login_repository import SQLAlchemyLoginRepository
-from allyakkkuk.auth.login_router import get_login_service
-from allyakkkuk.auth.login_service import LoginService
-from allyakkkuk.auth.models import Gender, HealthProfile, User, UserStatus
-from allyakkkuk.auth.passwords import Argon2PasswordHasher
-from allyakkkuk.auth.session_repository import SQLAlchemySessionRepository
-from allyakkkuk.auth.session_router import get_session_service
-from allyakkkuk.auth.session_service import SessionService
-from allyakkkuk.auth.tokens import JwtSessionTokenIssuer
-from allyakkkuk.db.session import SessionFactory, get_db_session
-from allyakkkuk.main import app
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.auth.cookies import ACCESS_COOKIE_NAME
+from yeongyangkkuk.auth.current_user_dependencies import get_current_user_service
+from yeongyangkkuk.auth.current_user_repository import SQLAlchemyCurrentUserRepository
+from yeongyangkkuk.auth.current_user_service import CurrentUserService
+from yeongyangkkuk.auth.login_repository import SQLAlchemyLoginRepository
+from yeongyangkkuk.auth.login_router import get_login_service
+from yeongyangkkuk.auth.login_service import LoginService
+from yeongyangkkuk.auth.models import Gender, HealthProfile, User, UserStatus
+from yeongyangkkuk.auth.passwords import Argon2PasswordHasher
+from yeongyangkkuk.auth.session_repository import SQLAlchemySessionRepository
+from yeongyangkkuk.auth.session_router import get_session_service
+from yeongyangkkuk.auth.session_service import SessionService
+from yeongyangkkuk.auth.tokens import JwtSessionTokenIssuer
+from yeongyangkkuk.db.session import SessionFactory, get_db_session
+from yeongyangkkuk.main import app
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-1.4")]
 

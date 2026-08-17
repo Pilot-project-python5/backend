@@ -4,14 +4,14 @@ from uuid import UUID
 
 import pytest
 
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.curation.product_repository import (
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.curation.product_repository import (
     ProductPageRecord,
     ProductPersistenceError,
     ProductRecord,
     ProductRepository,
 )
-from allyakkkuk.curation.product_service import ProductService
+from yeongyangkkuk.curation.product_service import ProductService
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-2.3")]
 

@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from allyakkkuk.care.nutrient_reference_csv import (
+from yeongyangkkuk.care.nutrient_reference_csv import (
     NutrientReferenceCsvError,
     load_reference_csv,
 )

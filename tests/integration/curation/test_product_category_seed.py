@@ -5,12 +5,12 @@ from collections.abc import Iterator
 import pytest
 from sqlalchemy import delete, select, update
 
-from allyakkkuk.curation.models import ProductCategory
-from allyakkkuk.curation.seeds import (
+from yeongyangkkuk.curation.models import ProductCategory
+from yeongyangkkuk.curation.seeds import (
     PRODUCT_CATEGORY_SEED_ROWS,
     ProductCategorySeedSet,
 )
-from allyakkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.db.session import SessionFactory, engine
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-2.2")]
 
@@ -30,7 +30,7 @@ def test_category_seed_is_deterministic_idempotent_and_restores_values() -> None
         assert seed.apply(connection) == len(PRODUCT_CATEGORY_SEED_ROWS)
         connection.execute(
             update(ProductCategory)
-            .where(ProductCategory.slug == "vitamin")
+            .where(ProductCategory.slug == PRODUCT_CATEGORY_SEED_ROWS[0].slug)
             .values(name="변경됨", is_active=False, sort_order=999)
         )
         assert seed.apply(connection) == len(PRODUCT_CATEGORY_SEED_ROWS)

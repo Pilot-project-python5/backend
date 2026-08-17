@@ -4,19 +4,19 @@ from uuid import UUID
 
 import pytest
 
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.curation.purchase_link_repository import (
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.curation.purchase_link_repository import (
     PurchaseLinkPersistenceError,
     PurchaseLinkRecord,
     PurchaseLinkRepository,
 )
-from allyakkkuk.curation.purchase_link_service import PurchaseLinkService
-from allyakkkuk.curation.purchase_link_urls import validate_purchase_url
+from yeongyangkkuk.curation.purchase_link_service import PurchaseLinkService
+from yeongyangkkuk.curation.purchase_link_urls import validate_purchase_url
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-2.4.2")]
 
 PRODUCT_ID = UUID("22000000-0000-4000-8000-000000000001")
-VALID_URL = "https://example.com/allyakkkuk/products/life-two-per-day?from=curation"
+VALID_URL = "https://example.com/yeongyangkkuk/products/life-two-per-day?from=curation"
 
 
 class FakePurchaseLinkRepository(PurchaseLinkRepository):

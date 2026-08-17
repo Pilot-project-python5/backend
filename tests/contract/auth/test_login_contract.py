@@ -7,16 +7,16 @@ from uuid import UUID
 import pytest
 from fastapi.testclient import TestClient
 
-from allyakkkuk.auth.login_router import (
+from yeongyangkkuk.auth.login_router import (
     LoginCookiePolicy,
     get_login_cookie_policy,
     get_login_service,
 )
-from allyakkkuk.auth.login_service import LoginCommand, LoginResult, LoginService
-from allyakkkuk.auth.models import UserStatus
-from allyakkkuk.core.config import Settings
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.main import create_app
+from yeongyangkkuk.auth.login_service import LoginCommand, LoginResult, LoginService
+from yeongyangkkuk.auth.models import UserStatus
+from yeongyangkkuk.core.config import Settings
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.main import create_app
 
 pytestmark = [pytest.mark.contract, pytest.mark.feature("F-1.2")]
 
@@ -87,7 +87,7 @@ def test_login_returns_account_summary_and_http_only_cookies() -> None:
     assert "refresh-token-value" not in response.text
     cookies = response.headers.get_list("set-cookie")
     assert any(
-        item.startswith("allyakkkuk_access_token=access-token-value")
+        item.startswith("yeongyangkkuk_access_token=access-token-value")
         and "HttpOnly" in item
         and "SameSite=lax" in item
         and "Path=/api/v1" in item
@@ -96,7 +96,7 @@ def test_login_returns_account_summary_and_http_only_cookies() -> None:
         for item in cookies
     )
     assert any(
-        item.startswith("allyakkkuk_refresh_token=refresh-token-value")
+        item.startswith("yeongyangkkuk_refresh_token=refresh-token-value")
         and "HttpOnly" in item
         and "SameSite=lax" in item
         and "Path=/api/v1/auth" in item

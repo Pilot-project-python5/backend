@@ -20,7 +20,7 @@
   `https://`·공백 없음·fragment 없음·authority userinfo 없음, sort_order 0 이상
 - 인덱스: `(product_id, is_active, sort_order, id)`
 - 마이그레이션: `20260812_0010_purchase_links`, down_revision 0009
-- 백필과 기존 데이터 영향: 기존 행 백필 없음. 제품 3종의 고정 UUID 개발 시드 추가
+- 백필과 기존 데이터 영향: 제품 32종의 고정 UUID 링크 시드 추가, 기존 개발 링크 비활성화
 - 이력과 삭제: 제품 삭제 시 CASCADE. 링크는 물리 삭제보다 비활성화를 우선한다.
 
 ## ERD 영향

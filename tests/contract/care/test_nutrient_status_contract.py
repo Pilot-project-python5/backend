@@ -8,17 +8,17 @@ from uuid import UUID
 import pytest
 from fastapi.testclient import TestClient
 
-from allyakkkuk.auth.current_user_dependencies import require_current_user
-from allyakkkuk.auth.current_user_service import AuthenticatedUser
-from allyakkkuk.auth.models import Gender, UserStatus
-from allyakkkuk.care.care_item_router import get_nutrient_status_service
-from allyakkkuk.care.nutrient_status_service import (
+from yeongyangkkuk.auth.current_user_dependencies import require_current_user
+from yeongyangkkuk.auth.current_user_service import AuthenticatedUser
+from yeongyangkkuk.auth.models import Gender, UserStatus
+from yeongyangkkuk.care.care_item_router import get_nutrient_status_service
+from yeongyangkkuk.care.nutrient_status_service import (
     NutrientStatusItem,
     NutrientStatusResult,
     NutrientStatusService,
 )
-from allyakkkuk.core.config import Settings
-from allyakkkuk.main import create_app
+from yeongyangkkuk.core.config import Settings
+from yeongyangkkuk.main import create_app
 
 pytestmark = [pytest.mark.contract, pytest.mark.feature("F-3.6")]
 

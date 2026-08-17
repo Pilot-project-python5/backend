@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from allyakkkuk.auth.passwords import Argon2PasswordHasher
-from allyakkkuk.auth.service import normalize_email, normalize_login_id
+from yeongyangkkuk.auth.passwords import Argon2PasswordHasher
+from yeongyangkkuk.auth.service import normalize_email, normalize_login_id
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-1.1")]
 

@@ -7,22 +7,22 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import delete, func, select
 
-from allyakkkuk.curation.models import (
+from yeongyangkkuk.curation.models import (
     Product,
     ProductCategory,
     ProductCategoryMapping,
     PurchaseLink,
 )
-from allyakkkuk.curation.product_seeds import ProductSeedSet
-from allyakkkuk.curation.purchase_link_seeds import PurchaseLinkSeedSet
-from allyakkkuk.curation.seeds import ProductCategorySeedSet
-from allyakkkuk.db.session import SessionFactory, engine
-from allyakkkuk.main import app
+from yeongyangkkuk.curation.product_seeds import ProductSeedSet
+from yeongyangkkuk.curation.purchase_link_seeds import PurchaseLinkSeedSet
+from yeongyangkkuk.curation.seeds import ProductCategorySeedSet
+from yeongyangkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.main import app
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-2.4.2")]
 
-PRODUCT_ID = UUID("22000000-0000-4000-8000-000000000001")
-DESTINATION = "https://example.com/allyakkkuk/products/life-two-per-day"
+PRODUCT_ID = UUID("22000000-0000-4000-8000-000000000101")
+DESTINATION = "https://www.coupang.com/vp/products/6743604050"
 
 
 @pytest.fixture(autouse=True)
@@ -61,4 +61,4 @@ def test_visitor_moves_to_seeded_purchase_link_without_tracking_write() -> None:
     assert response.headers["location"] == DESTINATION
     assert response.headers["cache-control"] == "no-store"
     assert response.headers["referrer-policy"] == "no-referrer"
-    assert count_after == count_before == 3
+    assert count_after == count_before == 32

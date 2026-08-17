@@ -8,9 +8,9 @@ from zoneinfo import ZoneInfo
 import pytest
 from sqlalchemy.orm import Session
 
-import allyakkkuk.notification.job as job_module
-from allyakkkuk.notification.job import NotificationJob
-from allyakkkuk.ports.clock import FakeClock
+import yeongyangkkuk.notification.job as job_module
+from yeongyangkkuk.notification.job import NotificationJob
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-3.9")]
 

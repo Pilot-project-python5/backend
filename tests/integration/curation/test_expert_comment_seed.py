@@ -5,19 +5,19 @@ from collections.abc import Iterator
 import pytest
 from sqlalchemy import delete, select, update
 
-from allyakkkuk.curation.expert_comment_seeds import (
+from yeongyangkkuk.curation.expert_comment_seeds import (
     EXPERT_COMMENT_SEED_ROWS,
     ExpertCommentSeedSet,
 )
-from allyakkkuk.curation.models import (
+from yeongyangkkuk.curation.models import (
     ExpertComment,
     Product,
     ProductCategory,
     ProductCategoryMapping,
 )
-from allyakkkuk.curation.product_seeds import ProductSeedSet
-from allyakkkuk.curation.seeds import ProductCategorySeedSet
-from allyakkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.curation.product_seeds import ProductSeedSet
+from yeongyangkkuk.curation.seeds import ProductCategorySeedSet
+from yeongyangkkuk.db.session import SessionFactory, engine
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-2.4.1")]
 

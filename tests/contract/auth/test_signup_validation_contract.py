@@ -5,15 +5,15 @@ from typing import cast
 import pytest
 from fastapi.testclient import TestClient
 
-from allyakkkuk.auth.router import get_signup_validation_service
-from allyakkkuk.auth.service import (
+from yeongyangkkuk.auth.router import get_signup_validation_service
+from yeongyangkkuk.auth.service import (
     SignupValidationCommand,
     SignupValidationResult,
     SignupValidationService,
 )
-from allyakkkuk.core.config import Settings
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.main import create_app
+from yeongyangkkuk.core.config import Settings
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.main import create_app
 
 pytestmark = [pytest.mark.contract, pytest.mark.feature("F-1.1.2")]
 

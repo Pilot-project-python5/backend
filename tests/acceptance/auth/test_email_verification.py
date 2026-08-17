@@ -12,17 +12,17 @@ from fastapi.testclient import TestClient
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
-from allyakkkuk.adapters.email import FakeEmailSender
-from allyakkkuk.auth.email_verification import HmacVerificationCodeHasher
-from allyakkkuk.auth.email_verification_repository import (
+from yeongyangkkuk.adapters.email import FakeEmailSender
+from yeongyangkkuk.auth.email_verification import HmacVerificationCodeHasher
+from yeongyangkkuk.auth.email_verification_repository import (
     SQLAlchemyEmailVerificationRepository,
 )
-from allyakkkuk.auth.email_verification_router import get_email_verification_service
-from allyakkkuk.auth.email_verification_service import EmailVerificationService
-from allyakkkuk.auth.models import EmailVerification, User
-from allyakkkuk.db.session import SessionFactory, get_db_session
-from allyakkkuk.main import app
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.auth.email_verification_router import get_email_verification_service
+from yeongyangkkuk.auth.email_verification_service import EmailVerificationService
+from yeongyangkkuk.auth.models import EmailVerification, User
+from yeongyangkkuk.db.session import SessionFactory, get_db_session
+from yeongyangkkuk.main import app
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-1.1.3")]
 

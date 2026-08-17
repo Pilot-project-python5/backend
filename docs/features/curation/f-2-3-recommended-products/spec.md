@@ -32,9 +32,13 @@
     영문·숫자와 내부 하이픈 형식으로 고유하다.
 12. 로컬 제품 이미지는 DB의 `/static/products/...` 경로로 관리하고 백엔드가 실제
     정적 파일을 제공한다. 2차 CDN URL도 같은 image_url 계약으로 교체한다.
-13. UI 시안의 비타민·단백질·오메가3 제품 3종을 고정 SKU 기준으로 멱등 upsert하고
-    카테고리 매핑을 승인 상태로 복원한다.
-14. DB 조회 실패는 내부 상세를 숨기고 503 SERVICE_UNAVAILABLE로 응답한다.
+13. 민재코치 승인 제품 32종을 고정 SKU 기준으로 멱등 upsert하고 카테고리 매핑을
+    승인 상태로 복원한다.
+14. 원본에 없는 가격은 0, 이미지는 로컬 공통 플레이스홀더를 사용하며 실제 값으로
+    추정하지 않는다.
+15. 이전 카탈로그에서 제외된 제품은 복용 이력 참조 보존을 위해 삭제하지 않고
+    비공개 처리한다.
+16. DB 조회 실패는 내부 상세를 숨기고 503 SERVICE_UNAVAILABLE로 응답한다.
 
 ## 포함 범위
 
@@ -42,7 +46,7 @@
 - 게시·정렬·가격·패키지 정보 제약과 목록 조회 인덱스
 - 카테고리 필터·페이지네이션이 있는 공개 추천 제품 목록 API
 - 로컬 SVG 제품 이미지 제공
-- 제품 3종과 카테고리 매핑 결정적 시드
+- 제품 32종과 카테고리 매핑 결정적 시드
 - 단위·통합·계약·인수 테스트, ERD와 Swagger/OpenAPI 문서
 
 ## 제외 범위
@@ -86,6 +90,6 @@
 - 로컬 요구사항: docs/product/requirements.md
 - 관련 로컬 문서: docs/api/curation.md, docs/architecture/erd.md,
   docs/development/seed-data.md
-- 외부 출처 URL(선택): https://app.notion.com/p/3b82779e926281b0ac69f8c43f2670b4
+- 외부 출처 URL(선택): https://app.notion.com/p/3b62779e926280e287baccedfce27f9c
 - 의사결정 기록: https://app.notion.com/p/3b92779e926281a9893affab9678adb8
-- 마지막 검토일: 2026-08-12
+- 마지막 검토일: 2026-08-15

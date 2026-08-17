@@ -9,14 +9,14 @@ import pytest
 from sqlalchemy import delete, select, update
 from sqlalchemy.exc import IntegrityError
 
-from allyakkkuk.auth.models import User, UserStatus
-from allyakkkuk.care.models import CareItem
-from allyakkkuk.curation.models import Product
-from allyakkkuk.db.session import SessionFactory
-from allyakkkuk.notification.email_repository import (
+from yeongyangkkuk.auth.models import User, UserStatus
+from yeongyangkkuk.care.models import CareItem
+from yeongyangkkuk.curation.models import Product
+from yeongyangkkuk.db.session import SessionFactory
+from yeongyangkkuk.notification.email_repository import (
     SQLAlchemyEmailDeliveryRepository,
 )
-from allyakkkuk.notification.models import EmailDelivery, Notification
+from yeongyangkkuk.notification.models import EmailDelivery, Notification
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.12")]
 

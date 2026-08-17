@@ -5,7 +5,7 @@ from uuid import UUID
 
 import pytest
 
-from allyakkkuk.care.care_item_repository import (
+from yeongyangkkuk.care.care_item_repository import (
     NutrientSnapshotSource,
     build_nutrient_snapshots,
 )

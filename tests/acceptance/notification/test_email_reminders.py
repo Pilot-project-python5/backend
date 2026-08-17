@@ -9,17 +9,17 @@ from zoneinfo import ZoneInfo
 import pytest
 from sqlalchemy import delete, select
 
-from allyakkkuk.adapters.email import FakeEmailSender
-from allyakkkuk.auth.models import User, UserStatus
-from allyakkkuk.care.models import CareItem
-from allyakkkuk.curation.models import Product
-from allyakkkuk.db.session import SessionFactory
-from allyakkkuk.notification.email_repository import (
+from yeongyangkkuk.adapters.email import FakeEmailSender
+from yeongyangkkuk.auth.models import User, UserStatus
+from yeongyangkkuk.care.models import CareItem
+from yeongyangkkuk.curation.models import Product
+from yeongyangkkuk.db.session import SessionFactory
+from yeongyangkkuk.notification.email_repository import (
     SQLAlchemyEmailDeliveryRepository,
 )
-from allyakkkuk.notification.email_service import EmailReminderService
-from allyakkkuk.notification.models import EmailDelivery, Notification
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.notification.email_service import EmailReminderService
+from yeongyangkkuk.notification.models import EmailDelivery, Notification
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.12")]
 

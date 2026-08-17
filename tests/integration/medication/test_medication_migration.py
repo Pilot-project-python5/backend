@@ -5,7 +5,7 @@ from alembic import command
 from alembic.config import Config
 from sqlalchemy import inspect
 
-from allyakkkuk.db.session import engine
+from yeongyangkkuk.db.session import engine
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.10")]
 

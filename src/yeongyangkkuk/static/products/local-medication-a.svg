@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" role="img" aria-labelledby="title description">
+  <title id="title">로컬 테스트 의약품 A</title>
+  <desc id="description">실제 의약품이 아닌 영양꾹 로컬 API 테스트 이미지</desc>
+  <rect width="640" height="480" fill="#eef4ff"/>
+  <rect x="150" y="95" width="340" height="290" rx="28" fill="#ffffff" stroke="#0b57d0" stroke-width="10"/>
+  <path d="M320 155v170M235 240h170" stroke="#0b57d0" stroke-width="28" stroke-linecap="round"/>
+  <text x="320" y="430" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#16325c">LOCAL TEST A</text>
+</svg>

@@ -8,12 +8,12 @@ from uuid import UUID
 import pytest
 from fastapi.testclient import TestClient
 
-from allyakkkuk.auth.current_user_dependencies import require_current_user
-from allyakkkuk.auth.current_user_service import AuthenticatedUser
-from allyakkkuk.auth.models import Gender, UserStatus
-from allyakkkuk.core.config import Settings
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.main import create_app
+from yeongyangkkuk.auth.current_user_dependencies import require_current_user
+from yeongyangkkuk.auth.current_user_service import AuthenticatedUser
+from yeongyangkkuk.auth.models import Gender, UserStatus
+from yeongyangkkuk.core.config import Settings
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.main import create_app
 
 pytestmark = [pytest.mark.contract, pytest.mark.feature("F-1.4")]
 
@@ -114,6 +114,6 @@ def test_openapi_documents_cookie_security_and_me_responses() -> None:
     assert schema["components"]["securitySchemes"]["AccessCookieAuth"] == {
         "type": "apiKey",
         "in": "cookie",
-        "name": "allyakkkuk_access_token",
+        "name": "yeongyangkkuk_access_token",
         "description": "HttpOnly access JWT 쿠키",
     }

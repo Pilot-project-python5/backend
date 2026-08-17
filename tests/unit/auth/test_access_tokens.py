@@ -6,7 +6,7 @@ from uuid import UUID
 import jwt
 import pytest
 
-from allyakkkuk.auth.tokens import (
+from yeongyangkkuk.auth.tokens import (
     ACCESS_TOKEN_AUDIENCE,
     ACCESS_TOKEN_ISSUER,
     JwtSessionTokenIssuer,

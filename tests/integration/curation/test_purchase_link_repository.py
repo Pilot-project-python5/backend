@@ -8,16 +8,16 @@ from uuid import UUID
 import pytest
 from sqlalchemy import delete, inspect
 
-from allyakkkuk.curation.models import (
+from yeongyangkkuk.curation.models import (
     Product,
     ProductCategory,
     ProductCategoryMapping,
     PurchaseLink,
 )
-from allyakkkuk.curation.purchase_link_repository import (
+from yeongyangkkuk.curation.purchase_link_repository import (
     SQLAlchemyPurchaseLinkRepository,
 )
-from allyakkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.db.session import SessionFactory, engine
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-2.4.2")]
 

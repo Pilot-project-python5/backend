@@ -6,7 +6,7 @@ import pytest
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from allyakkkuk.curation.product_repository import (
+from yeongyangkkuk.curation.product_repository import (
     ProductPersistenceError,
     SQLAlchemyProductRepository,
 )

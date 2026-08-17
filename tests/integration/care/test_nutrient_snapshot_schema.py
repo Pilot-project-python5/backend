@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from sqlalchemy import inspect
 
-from allyakkkuk.db.session import engine
+from yeongyangkkuk.db.session import engine
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.2")]
 
