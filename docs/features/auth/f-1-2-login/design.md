@@ -13,13 +13,13 @@
 
 ## 쿠키와 토큰 계약
 
-- 액세스 쿠키: allyakkkuk_access_token, Path=/api/v1, HttpOnly,
+- 액세스 쿠키: yeongyangkkuk_access_token, Path=/api/v1, HttpOnly,
   SameSite=Lax, Max-Age=900
-- 리프레시 쿠키: allyakkkuk_refresh_token, Path=/api/v1/auth, HttpOnly,
+- 리프레시 쿠키: yeongyangkkuk_refresh_token, Path=/api/v1/auth, HttpOnly,
   SameSite=Lax, Max-Age=1209600
 - Secure는 AUTH_COOKIE_SECURE 설정으로 관리하고 로컬·테스트 기본값은 false다.
-- 액세스 JWT는 HS256과 AUTH_TOKEN_SECRET을 사용하며 iss=allyakkkuk,
-  aud=allyakkkuk-api, sub=user UUID, sid=refresh session UUID, type=access,
+- 액세스 JWT는 HS256과 AUTH_TOKEN_SECRET을 사용하며 iss=yeongyangkkuk,
+  aud=yeongyangkkuk-api, sub=user UUID, sid=refresh session UUID, type=access,
   jti·iat·exp를 포함한다.
 - 리프레시 secret은 secrets.token_urlsafe(48)로 만들고 session UUID와 함께
   HMAC-SHA256 해시한다. F-1.3부터 원문은 selector·secret 형식으로 조합한다.

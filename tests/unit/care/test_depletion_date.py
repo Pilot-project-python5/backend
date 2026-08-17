@@ -5,7 +5,7 @@ from decimal import Decimal
 
 import pytest
 
-from allyakkkuk.care.depletion import (
+from yeongyangkkuk.care.depletion import (
     calculate_days_until_depletion,
     calculate_expected_depletion_date,
 )

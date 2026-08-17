@@ -9,9 +9,9 @@ from alembic import command
 from alembic.config import Config
 from sqlalchemy import inspect, text
 
-from allyakkkuk.auth.models import User, UserStatus
-from allyakkkuk.curation.models import Product
-from allyakkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.auth.models import User, UserStatus
+from yeongyangkkuk.curation.models import Product
+from yeongyangkkuk.db.session import SessionFactory, engine
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.8")]
 

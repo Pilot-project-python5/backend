@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from allyakkkuk.care.expiration import expiration_state
+from yeongyangkkuk.care.expiration import expiration_state
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-3.11")]
 

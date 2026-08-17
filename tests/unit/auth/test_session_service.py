@@ -5,20 +5,20 @@ from uuid import UUID
 
 import pytest
 
-from allyakkkuk.auth.models import UserStatus
-from allyakkkuk.auth.session_repository import (
+from yeongyangkkuk.auth.models import UserStatus
+from yeongyangkkuk.auth.session_repository import (
     RefreshSessionRecord,
     SessionPersistenceError,
     SessionRepository,
 )
-from allyakkkuk.auth.session_service import SessionService
-from allyakkkuk.auth.tokens import (
+from yeongyangkkuk.auth.session_service import SessionService
+from yeongyangkkuk.auth.tokens import (
     IssuedSessionTokens,
     RefreshTokenParts,
     SessionTokenRotator,
 )
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-1.3")]
 

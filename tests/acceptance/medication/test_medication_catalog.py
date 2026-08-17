@@ -9,15 +9,15 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import delete, select
 
-from allyakkkuk.auth.current_user_dependencies import require_current_user
-from allyakkkuk.auth.current_user_service import AuthenticatedUser
-from allyakkkuk.auth.models import Gender, User, UserStatus
-from allyakkkuk.care.models import CareItem
-from allyakkkuk.curation.models import Product
-from allyakkkuk.db.session import SessionFactory, engine
-from allyakkkuk.main import app
-from allyakkkuk.medication.models import MedicationDetail
-from allyakkkuk.seeding.runner import run_registered_seeds
+from yeongyangkkuk.auth.current_user_dependencies import require_current_user
+from yeongyangkkuk.auth.current_user_service import AuthenticatedUser
+from yeongyangkkuk.auth.models import Gender, User, UserStatus
+from yeongyangkkuk.care.models import CareItem
+from yeongyangkkuk.curation.models import Product
+from yeongyangkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.main import app
+from yeongyangkkuk.medication.models import MedicationDetail
+from yeongyangkkuk.seeding.runner import run_registered_seeds
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.10")]
 

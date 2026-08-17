@@ -53,8 +53,8 @@ UUID와 AUTH_TOKEN_SECRET으로 HMAC-SHA256한 뒤 해시만 트랜잭션으로 
 
 - POST /api/v1/auth/login: login_id와 password를 받는 공개 API, 성공 200
 - 성공 본문: user_id, login_id, name, ACTIVE, authenticated_at과 두 만료 시각
-- 액세스 쿠키: allyakkkuk_access_token, Path=/api/v1, Max-Age=900
-- 리프레시 쿠키: allyakkkuk_refresh_token, Path=/api/v1/auth, Max-Age=1209600
+- 액세스 쿠키: yeongyangkkuk_access_token, Path=/api/v1, Max-Age=900
+- 리프레시 쿠키: yeongyangkkuk_refresh_token, Path=/api/v1/auth, Max-Age=1209600
 - 두 쿠키 모두 HttpOnly·SameSite=Lax이며 Secure는 AUTH_COOKIE_SECURE를 따른다.
 - 오류: 401 AUTH_INVALID_CREDENTIALS, 403 AUTH_EMAIL_UNVERIFIED 또는
   AUTH_ACCOUNT_SUSPENDED, 422 VALIDATION_FAILED, 503 SERVICE_UNAVAILABLE

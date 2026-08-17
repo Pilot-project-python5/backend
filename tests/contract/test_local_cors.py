@@ -3,8 +3,8 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from allyakkkuk.core.config import Settings
-from allyakkkuk.main import create_app
+from yeongyangkkuk.core.config import Settings
+from yeongyangkkuk.main import create_app
 
 pytestmark = pytest.mark.contract
 

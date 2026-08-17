@@ -12,7 +12,7 @@
 
 - 원본: [민재코치 데이터](https://app.notion.com/p/3b62779e926280e287baccedfce27f9c)
 - 원본 확인일: 2026-08-15
-- 로컬 단일 원본: `src/allyakkkuk/curation/catalog_seed_data.py`
+- 로컬 단일 원본: `src/yeongyangkkuk/curation/catalog_seed_data.py`
 - 적용 범위: 활성 카테고리 11개, 게시 추천 제품 32개, 제품별 코치 코멘트와 쿠팡 링크
 
 ### 카테고리

@@ -5,12 +5,12 @@ from uuid import UUID
 
 import pytest
 
-from allyakkkuk.care.daily_intake_repository import (
+from yeongyangkkuk.care.daily_intake_repository import (
     DailyIntakePersistenceError,
     DailyIntakeSource,
 )
-from allyakkkuk.care.daily_intake_service import DailyIntakeService
-from allyakkkuk.core.errors import AppError
+from yeongyangkkuk.care.daily_intake_service import DailyIntakeService
+from yeongyangkkuk.core.errors import AppError
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-3.5")]
 

@@ -4,16 +4,16 @@ from datetime import UTC, date, datetime
 
 import pytest
 
-from allyakkkuk.auth.repository import (
+from yeongyangkkuk.auth.repository import (
     SignupValidationConflicts,
     SignupValidationPersistenceError,
 )
-from allyakkkuk.auth.service import (
+from yeongyangkkuk.auth.service import (
     SignupValidationCommand,
     SignupValidationService,
 )
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-1.1.2")]
 

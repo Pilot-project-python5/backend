@@ -6,16 +6,16 @@ from uuid import UUID
 
 import pytest
 
-from allyakkkuk.auth.current_user_repository import (
+from yeongyangkkuk.auth.current_user_repository import (
     CurrentUserPersistenceError,
     CurrentUserRecord,
     CurrentUserRepository,
 )
-from allyakkkuk.auth.current_user_service import CurrentUserService
-from allyakkkuk.auth.models import Gender, UserStatus
-from allyakkkuk.auth.tokens import AccessTokenClaims, AccessTokenVerifier
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.auth.current_user_service import CurrentUserService
+from yeongyangkkuk.auth.models import Gender, UserStatus
+from yeongyangkkuk.auth.tokens import AccessTokenClaims, AccessTokenVerifier
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-1.4")]
 

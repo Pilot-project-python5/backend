@@ -8,11 +8,11 @@ from uuid import UUID
 import pytest
 from sqlalchemy import delete, func, select
 
-from allyakkkuk.auth.models import User, UserStatus
-from allyakkkuk.care.care_item_repository import SQLAlchemyCareItemRepository
-from allyakkkuk.care.models import CareItem, CareNutrientSnapshot
-from allyakkkuk.curation.models import Nutrient, Product
-from allyakkkuk.db.session import SessionFactory
+from yeongyangkkuk.auth.models import User, UserStatus
+from yeongyangkkuk.care.care_item_repository import SQLAlchemyCareItemRepository
+from yeongyangkkuk.care.models import CareItem, CareNutrientSnapshot
+from yeongyangkkuk.curation.models import Nutrient, Product
+from yeongyangkkuk.db.session import SessionFactory
 
 pytestmark = [
     pytest.mark.integration,

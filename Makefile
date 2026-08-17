@@ -3,9 +3,9 @@ SHELL := /bin/sh
 ENV_FILE ?= .env.local
 COMPOSE := docker compose --env-file $(ENV_FILE)
 PYTHON ?= python3
-POSTGRES_USER ?= allyakkkuk
-POSTGRES_PASSWORD ?= allyakkkuk-local
-POSTGRES_TEST_DB ?= allyakkkuk_test
+POSTGRES_USER ?= yeongyangkkuk
+POSTGRES_PASSWORD ?= yeongyangkkuk-local
+POSTGRES_TEST_DB ?= yeongyangkkuk_test
 TEST_DATABASE_URL ?= postgresql+psycopg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres-test:5432/$(POSTGRES_TEST_DB)
 
 -include $(ENV_FILE)
@@ -32,7 +32,7 @@ migrate: ensure-env
 
 seed: ensure-env
 	$(COMPOSE) up --wait -d postgres-dev
-	$(COMPOSE) run --rm --no-deps api python -m allyakkkuk.seeding
+	$(COMPOSE) run --rm --no-deps api python -m yeongyangkkuk.seeding
 
 test: build
 	$(COMPOSE) up --wait -d postgres-test

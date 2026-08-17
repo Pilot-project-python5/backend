@@ -7,15 +7,15 @@ from uuid import UUID
 import pytest
 from fastapi.testclient import TestClient
 
-from allyakkkuk.auth.email_verification_router import get_email_verification_service
-from allyakkkuk.auth.email_verification_service import (
+from yeongyangkkuk.auth.email_verification_router import get_email_verification_service
+from yeongyangkkuk.auth.email_verification_service import (
     EmailVerificationIssueResult,
     EmailVerificationService,
     EmailVerificationSuccessResult,
 )
-from allyakkkuk.auth.models import UserStatus
-from allyakkkuk.core.config import Settings
-from allyakkkuk.main import create_app
+from yeongyangkkuk.auth.models import UserStatus
+from yeongyangkkuk.core.config import Settings
+from yeongyangkkuk.main import create_app
 
 pytestmark = [pytest.mark.contract, pytest.mark.feature("F-1.1.3")]
 

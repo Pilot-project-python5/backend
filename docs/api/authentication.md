@@ -73,8 +73,8 @@
 - 이메일 미인증 계정은 403 AUTH_EMAIL_UNVERIFIED, 정지 계정은
   403 AUTH_ACCOUNT_SUSPENDED로 차단한다.
 - 액세스 토큰은 15분 HS256 JWT이며, 리프레시 토큰은 14일 불투명 난수 토큰이다.
-- 응답 본문에는 토큰을 넣지 않는다. `allyakkkuk_access_token`과
-  `allyakkkuk_refresh_token` HttpOnly 쿠키로만 전달한다.
+- 응답 본문에는 토큰을 넣지 않는다. `yeongyangkkuk_access_token`과
+  `yeongyangkkuk_refresh_token` HttpOnly 쿠키로만 전달한다.
 - 두 쿠키는 SameSite=Lax다. 로컬·테스트는 `AUTH_COOKIE_SECURE=false`, HTTPS 배포
   환경은 `AUTH_COOKIE_SECURE=true`를 사용해야 한다.
 - 액세스 쿠키 경로는 /api/v1, 리프레시 쿠키 경로는 /api/v1/auth다.
@@ -108,7 +108,7 @@
 
 ### F-1.4 현재 사용자와 세션 상태 확인
 
-- GET /api/v1/auth/me는 `allyakkkuk_access_token` HttpOnly 쿠키로 인증한다.
+- GET /api/v1/auth/me는 `yeongyangkkuk_access_token` HttpOnly 쿠키로 인증한다.
 - AccessCookieAuth OpenAPI cookie security scheme을 사용하며 보호 API는 같은 공통
   인증 의존성을 재사용한다.
 - access JWT는 HS256 서명, issuer, audience, access type과 sub·sid·jti·iat·exp 필수

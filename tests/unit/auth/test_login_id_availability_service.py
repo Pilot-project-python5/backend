@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from allyakkkuk.auth.repository import LoginIdAvailabilityPersistenceError
-from allyakkkuk.auth.service import LoginIdAvailabilityService
-from allyakkkuk.core.errors import AppError
+from yeongyangkkuk.auth.repository import LoginIdAvailabilityPersistenceError
+from yeongyangkkuk.auth.service import LoginIdAvailabilityService
+from yeongyangkkuk.core.errors import AppError
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-1.1.1")]
 

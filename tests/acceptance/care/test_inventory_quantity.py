@@ -13,17 +13,17 @@ from fastapi.testclient import TestClient
 from sqlalchemy import delete, select, update
 from sqlalchemy.orm import Session
 
-from allyakkkuk.auth.current_user_dependencies import require_current_user
-from allyakkkuk.auth.current_user_service import AuthenticatedUser
-from allyakkkuk.auth.models import Gender, User, UserStatus
-from allyakkkuk.care.care_item_repository import SQLAlchemyCareItemRepository
-from allyakkkuk.care.care_item_router import get_care_item_service
-from allyakkkuk.care.care_item_service import CareItemService
-from allyakkkuk.care.models import CareItem
-from allyakkkuk.curation.models import Product
-from allyakkkuk.db.session import SessionFactory, get_db_session
-from allyakkkuk.main import app
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.auth.current_user_dependencies import require_current_user
+from yeongyangkkuk.auth.current_user_service import AuthenticatedUser
+from yeongyangkkuk.auth.models import Gender, User, UserStatus
+from yeongyangkkuk.care.care_item_repository import SQLAlchemyCareItemRepository
+from yeongyangkkuk.care.care_item_router import get_care_item_service
+from yeongyangkkuk.care.care_item_service import CareItemService
+from yeongyangkkuk.care.models import CareItem
+from yeongyangkkuk.curation.models import Product
+from yeongyangkkuk.db.session import SessionFactory, get_db_session
+from yeongyangkkuk.main import app
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.3")]
 

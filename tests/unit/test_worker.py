@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 import pytest
 
-from allyakkkuk.worker.runtime import BootstrapWorkerJob, run_forever, run_once
+from yeongyangkkuk.worker.runtime import BootstrapWorkerJob, run_forever, run_once
 
 pytestmark = pytest.mark.unit
 

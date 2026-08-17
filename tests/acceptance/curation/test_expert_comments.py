@@ -7,17 +7,17 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import delete
 
-from allyakkkuk.curation.expert_comment_seeds import ExpertCommentSeedSet
-from allyakkkuk.curation.models import (
+from yeongyangkkuk.curation.expert_comment_seeds import ExpertCommentSeedSet
+from yeongyangkkuk.curation.models import (
     ExpertComment,
     Product,
     ProductCategory,
     ProductCategoryMapping,
 )
-from allyakkkuk.curation.product_seeds import ProductSeedSet
-from allyakkkuk.curation.seeds import ProductCategorySeedSet
-from allyakkkuk.db.session import SessionFactory, engine
-from allyakkkuk.main import app
+from yeongyangkkuk.curation.product_seeds import ProductSeedSet
+from yeongyangkkuk.curation.seeds import ProductCategorySeedSet
+from yeongyangkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.main import app
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-2.4.1")]
 

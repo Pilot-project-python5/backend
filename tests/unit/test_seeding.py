@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 import pytest
 from sqlalchemy import Connection, Engine
 
-from allyakkkuk.seeding.runner import run_registered_seeds
+from yeongyangkkuk.seeding.runner import run_registered_seeds
 
 pytestmark = pytest.mark.unit
 

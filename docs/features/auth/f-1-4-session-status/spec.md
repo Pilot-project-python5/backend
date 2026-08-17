@@ -12,9 +12,9 @@
 
 ## 비즈니스 규칙
 
-1. GET /api/v1/auth/me는 요청 본문 없이 `allyakkkuk_access_token` HttpOnly 쿠키를
+1. GET /api/v1/auth/me는 요청 본문 없이 `yeongyangkkuk_access_token` HttpOnly 쿠키를
    사용한다.
-2. access JWT는 HS256 알고리즘, issuer `allyakkkuk`, audience `allyakkkuk-api`, type
+2. access JWT는 HS256 알고리즘, issuer `yeongyangkkuk`, audience `yeongyangkkuk-api`, type
    `access`와 필수 sub·sid·jti·iat·exp claim을 모두 검증한다.
 3. sub·sid·jti는 UUID여야 하며 iat은 현재보다 미래일 수 없고 exp와 같은 시각부터
    만료다.

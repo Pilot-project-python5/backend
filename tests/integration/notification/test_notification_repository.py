@@ -8,12 +8,12 @@ from uuid import UUID
 import pytest
 from sqlalchemy import delete
 
-from allyakkkuk.auth.models import User, UserStatus
-from allyakkkuk.care.models import CareItem
-from allyakkkuk.curation.models import Product
-from allyakkkuk.db.session import SessionFactory
-from allyakkkuk.notification.models import Notification
-from allyakkkuk.notification.repository import SQLAlchemyNotificationRepository
+from yeongyangkkuk.auth.models import User, UserStatus
+from yeongyangkkuk.care.models import CareItem
+from yeongyangkkuk.curation.models import Product
+from yeongyangkkuk.db.session import SessionFactory
+from yeongyangkkuk.notification.models import Notification
+from yeongyangkkuk.notification.repository import SQLAlchemyNotificationRepository
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.9")]
 

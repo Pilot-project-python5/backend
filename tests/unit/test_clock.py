@@ -4,7 +4,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from allyakkkuk.ports.clock import FakeClock, SystemClock
+from yeongyangkkuk.ports.clock import FakeClock, SystemClock
 
 pytestmark = pytest.mark.unit
 

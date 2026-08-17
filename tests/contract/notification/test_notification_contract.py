@@ -8,14 +8,14 @@ from uuid import UUID
 import pytest
 from fastapi.testclient import TestClient
 
-from allyakkkuk.auth.current_user_dependencies import require_current_user
-from allyakkkuk.auth.current_user_service import AuthenticatedUser
-from allyakkkuk.auth.models import Gender, UserStatus
-from allyakkkuk.core.config import Settings
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.main import create_app
-from allyakkkuk.notification.router import get_notification_service
-from allyakkkuk.notification.service import (
+from yeongyangkkuk.auth.current_user_dependencies import require_current_user
+from yeongyangkkuk.auth.current_user_service import AuthenticatedUser
+from yeongyangkkuk.auth.models import Gender, UserStatus
+from yeongyangkkuk.core.config import Settings
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.main import create_app
+from yeongyangkkuk.notification.router import get_notification_service
+from yeongyangkkuk.notification.service import (
     NotificationListItem,
     NotificationListResult,
     NotificationReadResult,

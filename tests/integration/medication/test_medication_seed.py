@@ -5,10 +5,10 @@ from pathlib import Path
 import pytest
 from sqlalchemy import func, select
 
-from allyakkkuk.curation.models import Product
-from allyakkkuk.db.session import SessionFactory, engine
-from allyakkkuk.medication.models import MedicationDetail
-from allyakkkuk.medication.seeds import MEDICATION_SEED_ROWS, MedicationSeedSet
+from yeongyangkkuk.curation.models import Product
+from yeongyangkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.medication.models import MedicationDetail
+from yeongyangkkuk.medication.seeds import MEDICATION_SEED_ROWS, MedicationSeedSet
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.10")]
 
@@ -44,7 +44,7 @@ def test_medication_seed_is_deterministic_idempotent_and_has_local_images() -> N
     assert len(products) == len(details) == count == 2
     assert all(product.product_type == "MEDICATION" for product in products)
     assert {detail.classification for detail in details} == {"OTC", "PRESCRIPTION"}
-    static_root = Path("src/allyakkkuk/static")
+    static_root = Path("src/yeongyangkkuk/static")
     assert all(
         (static_root / row.image_url.removeprefix("/static/")).is_file()
         for row in MEDICATION_SEED_ROWS

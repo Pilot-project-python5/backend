@@ -13,22 +13,22 @@ from fastapi.testclient import TestClient
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
-from allyakkkuk.auth.current_user_dependencies import require_current_user
-from allyakkkuk.auth.current_user_service import AuthenticatedUser
-from allyakkkuk.auth.models import Gender, HealthProfile, User, UserStatus
-from allyakkkuk.care.care_item_router import get_nutrient_status_service
-from allyakkkuk.care.daily_intake_repository import SQLAlchemyDailyIntakeRepository
-from allyakkkuk.care.daily_intake_service import DailyIntakeService
-from allyakkkuk.care.models import CareItem, CareNutrientSnapshot
-from allyakkkuk.care.nutrient_status_repository import (
+from yeongyangkkuk.auth.current_user_dependencies import require_current_user
+from yeongyangkkuk.auth.current_user_service import AuthenticatedUser
+from yeongyangkkuk.auth.models import Gender, HealthProfile, User, UserStatus
+from yeongyangkkuk.care.care_item_router import get_nutrient_status_service
+from yeongyangkkuk.care.daily_intake_repository import SQLAlchemyDailyIntakeRepository
+from yeongyangkkuk.care.daily_intake_service import DailyIntakeService
+from yeongyangkkuk.care.models import CareItem, CareNutrientSnapshot
+from yeongyangkkuk.care.nutrient_status_repository import (
     SQLAlchemyNutrientStatusRepository,
 )
-from allyakkkuk.care.nutrient_status_service import NutrientStatusService
-from allyakkkuk.curation.models import Nutrient, Product
-from allyakkkuk.db.session import SessionFactory, engine, get_db_session
-from allyakkkuk.main import app
-from allyakkkuk.ports.clock import FakeClock
-from allyakkkuk.seeding.runner import run_registered_seeds
+from yeongyangkkuk.care.nutrient_status_service import NutrientStatusService
+from yeongyangkkuk.curation.models import Nutrient, Product
+from yeongyangkkuk.db.session import SessionFactory, engine, get_db_session
+from yeongyangkkuk.main import app
+from yeongyangkkuk.ports.clock import FakeClock
+from yeongyangkkuk.seeding.runner import run_registered_seeds
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.6")]
 

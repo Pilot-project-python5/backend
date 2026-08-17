@@ -66,7 +66,7 @@
   "storage_instructions": "로컬 테스트 데이터이며 실제 보관 지침이 아닙니다.",
   "source": {
     "name": "영양꾹 로컬 테스트 시드(실사용 금지)",
-    "url": "https://example.invalid/allyakkkuk/medications/local-med-001",
+    "url": "https://example.invalid/yeongyangkkuk/medications/local-med-001",
     "reviewed_on": "2026-08-14"
   }
 }

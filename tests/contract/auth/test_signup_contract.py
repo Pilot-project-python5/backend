@@ -7,11 +7,11 @@ from uuid import UUID
 import pytest
 from fastapi.testclient import TestClient
 
-from allyakkkuk.auth.models import UserStatus
-from allyakkkuk.auth.router import get_signup_service
-from allyakkkuk.auth.service import SignupCommand, SignupResult, SignupService
-from allyakkkuk.core.config import Settings
-from allyakkkuk.main import create_app
+from yeongyangkkuk.auth.models import UserStatus
+from yeongyangkkuk.auth.router import get_signup_service
+from yeongyangkkuk.auth.service import SignupCommand, SignupResult, SignupService
+from yeongyangkkuk.core.config import Settings
+from yeongyangkkuk.main import create_app
 
 pytestmark = [pytest.mark.contract, pytest.mark.feature("F-1.1")]
 

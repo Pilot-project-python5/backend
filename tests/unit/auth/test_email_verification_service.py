@@ -6,20 +6,20 @@ from uuid import UUID
 
 import pytest
 
-from allyakkkuk.adapters.email import FakeEmailSender
-from allyakkkuk.auth.email_verification import HmacVerificationCodeHasher
-from allyakkkuk.auth.email_verification_repository import (
+from yeongyangkkuk.adapters.email import FakeEmailSender
+from yeongyangkkuk.auth.email_verification import HmacVerificationCodeHasher
+from yeongyangkkuk.auth.email_verification_repository import (
     EmailVerificationCreateData,
     EmailVerificationPersistenceError,
     EmailVerificationRecord,
     EmailVerificationRepository,
     EmailVerificationUserRecord,
 )
-from allyakkkuk.auth.email_verification_service import EmailVerificationService
-from allyakkkuk.auth.models import UserStatus
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.ports.clock import FakeClock
-from allyakkkuk.ports.email import EmailDeliveryError, EmailSender, OutboundEmail
+from yeongyangkkuk.auth.email_verification_service import EmailVerificationService
+from yeongyangkkuk.auth.models import UserStatus
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.ports.clock import FakeClock
+from yeongyangkkuk.ports.email import EmailDeliveryError, EmailSender, OutboundEmail
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-1.1.3")]
 

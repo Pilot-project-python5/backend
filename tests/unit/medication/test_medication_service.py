@@ -7,14 +7,14 @@ from uuid import UUID
 
 import pytest
 
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.medication.repository import (
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.medication.repository import (
     MedicationDetailRecord,
     MedicationPageRecord,
     MedicationPersistenceError,
     MedicationSummaryRecord,
 )
-from allyakkkuk.medication.service import MedicationService
+from yeongyangkkuk.medication.service import MedicationService
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-3.10")]
 
@@ -44,7 +44,7 @@ def detail() -> MedicationDetailRecord:
         precautions="API·UI 검증에만 사용하세요.",
         storage_instructions="로컬 테스트 데이터입니다.",
         source_name="영양꾹 로컬 테스트 시드(실사용 금지)",
-        source_url="https://example.invalid/allyakkkuk/medications/local-med-001",
+        source_url="https://example.invalid/yeongyangkkuk/medications/local-med-001",
         source_reviewed_on=date(2026, 8, 14),
     )
 

@@ -5,17 +5,17 @@ from uuid import UUID
 
 import pytest
 
-from allyakkkuk.auth.login_repository import (
+from yeongyangkkuk.auth.login_repository import (
     LoginPersistenceError,
     LoginRepository,
     LoginUserRecord,
     RefreshSessionCreateData,
 )
-from allyakkkuk.auth.login_service import LoginCommand, LoginService
-from allyakkkuk.auth.models import UserStatus
-from allyakkkuk.auth.tokens import IssuedSessionTokens, SessionTokenIssuer
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.auth.login_service import LoginCommand, LoginService
+from yeongyangkkuk.auth.models import UserStatus
+from yeongyangkkuk.auth.tokens import IssuedSessionTokens, SessionTokenIssuer
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-1.2")]
 

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from allyakkkuk.main import app
+from yeongyangkkuk.main import app
 
 pytestmark = pytest.mark.contract
 

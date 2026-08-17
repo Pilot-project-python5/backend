@@ -2171,7 +2171,7 @@
       "AccessCookieAuth": {
         "description": "HttpOnly access JWT 쿠키",
         "in": "cookie",
-        "name": "allyakkkuk_access_token",
+        "name": "yeongyangkkuk_access_token",
         "type": "apiKey"
       }
     }
@@ -2911,7 +2911,7 @@
         "parameters": [
           {
             "in": "cookie",
-            "name": "allyakkkuk_refresh_token",
+            "name": "yeongyangkkuk_refresh_token",
             "required": false,
             "schema": {
               "anyOf": [
@@ -2922,7 +2922,7 @@
                   "type": "null"
                 }
               ],
-              "title": "Allyakkkuk Refresh Token"
+              "title": "Yeongyangkkuk Refresh Token"
             }
           }
         ],
@@ -3057,7 +3057,7 @@
         "parameters": [
           {
             "in": "cookie",
-            "name": "allyakkkuk_refresh_token",
+            "name": "yeongyangkkuk_refresh_token",
             "required": false,
             "schema": {
               "anyOf": [
@@ -3068,7 +3068,7 @@
                   "type": "null"
                 }
               ],
-              "title": "Allyakkkuk Refresh Token"
+              "title": "Yeongyangkkuk Refresh Token"
             }
           }
         ],

@@ -5,12 +5,12 @@ from collections.abc import Iterator
 import pytest
 from sqlalchemy import delete, select, update
 
-from allyakkkuk.curation.models import ProductCategory
-from allyakkkuk.curation.seeds import (
+from yeongyangkkuk.curation.models import ProductCategory
+from yeongyangkkuk.curation.seeds import (
     PRODUCT_CATEGORY_SEED_ROWS,
     ProductCategorySeedSet,
 )
-from allyakkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.db.session import SessionFactory, engine
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-2.2")]
 

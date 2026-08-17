@@ -5,19 +5,19 @@ from collections.abc import Iterator
 import pytest
 from sqlalchemy import delete, select, update
 
-from allyakkkuk.curation.models import (
+from yeongyangkkuk.curation.models import (
     Product,
     ProductCategory,
     ProductCategoryMapping,
     PurchaseLink,
 )
-from allyakkkuk.curation.product_seeds import ProductSeedSet
-from allyakkkuk.curation.purchase_link_seeds import (
+from yeongyangkkuk.curation.product_seeds import ProductSeedSet
+from yeongyangkkuk.curation.purchase_link_seeds import (
     PURCHASE_LINK_SEED_ROWS,
     PurchaseLinkSeedSet,
 )
-from allyakkkuk.curation.seeds import ProductCategorySeedSet
-from allyakkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.curation.seeds import ProductCategorySeedSet
+from yeongyangkkuk.db.session import SessionFactory, engine
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-2.4.2")]
 

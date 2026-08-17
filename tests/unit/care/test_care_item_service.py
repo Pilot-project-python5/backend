@@ -8,18 +8,18 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from allyakkkuk.care.care_item_repository import (
+from yeongyangkkuk.care.care_item_repository import (
     CareItemCreateData,
     CareItemPersistenceError,
     CareItemRecord,
     CareItemRepository,
 )
-from allyakkkuk.care.care_item_service import (
+from yeongyangkkuk.care.care_item_service import (
     CareItemRegistrationCommand,
     CareItemService,
 )
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [
     pytest.mark.unit,

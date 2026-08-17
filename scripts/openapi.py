@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-from allyakkkuk.main import app
+from yeongyangkkuk.main import app
 
 
 def render_openapi() -> str:

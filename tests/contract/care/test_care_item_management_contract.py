@@ -8,18 +8,18 @@ from uuid import UUID
 import pytest
 from fastapi.testclient import TestClient
 
-from allyakkkuk.auth.current_user_dependencies import require_current_user
-from allyakkkuk.auth.current_user_service import AuthenticatedUser
-from allyakkkuk.auth.models import Gender, UserStatus
-from allyakkkuk.care.care_item_router import get_care_item_management_service
-from allyakkkuk.care.care_item_service import (
+from yeongyangkkuk.auth.current_user_dependencies import require_current_user
+from yeongyangkkuk.auth.current_user_service import AuthenticatedUser
+from yeongyangkkuk.auth.models import Gender, UserStatus
+from yeongyangkkuk.care.care_item_router import get_care_item_management_service
+from yeongyangkkuk.care.care_item_service import (
     CareItemListItem,
     CareItemListResult,
     CareItemManagementService,
 )
-from allyakkkuk.core.config import Settings
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.main import create_app
+from yeongyangkkuk.core.config import Settings
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.main import create_app
 
 pytestmark = [
     pytest.mark.contract,

@@ -6,7 +6,7 @@ from uuid import UUID
 import jwt
 import pytest
 
-from allyakkkuk.auth.tokens import JwtSessionTokenIssuer
+from yeongyangkkuk.auth.tokens import JwtSessionTokenIssuer
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-1.2")]
 
@@ -29,8 +29,8 @@ def test_token_issuer_creates_expected_access_claims_and_lifetimes() -> None:
         tokens.access_token,
         SECRET,
         algorithms=["HS256"],
-        audience="allyakkkuk-api",
-        issuer="allyakkkuk",
+        audience="yeongyangkkuk-api",
+        issuer="yeongyangkkuk",
         options={"verify_iat": False, "verify_exp": False},
     )
 

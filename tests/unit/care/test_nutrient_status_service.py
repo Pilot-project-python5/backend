@@ -7,15 +7,15 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from allyakkkuk.care.daily_intake_service import DailyIntakeItem
-from allyakkkuk.care.nutrient_status_repository import (
+from yeongyangkkuk.care.daily_intake_service import DailyIntakeItem
+from yeongyangkkuk.care.nutrient_status_repository import (
     NutrientReferenceRecord,
     NutrientReferenceVersionRecord,
     NutrientStatusProfile,
 )
-from allyakkkuk.care.nutrient_status_service import NutrientStatusService
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.care.nutrient_status_service import NutrientStatusService
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-3.6")]
 

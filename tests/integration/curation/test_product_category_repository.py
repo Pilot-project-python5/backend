@@ -6,11 +6,11 @@ from uuid import UUID
 import pytest
 from sqlalchemy import delete, inspect
 
-from allyakkkuk.curation.models import ProductCategory
-from allyakkkuk.curation.product_category_repository import (
+from yeongyangkkuk.curation.models import ProductCategory
+from yeongyangkkuk.curation.product_category_repository import (
     SQLAlchemyProductCategoryRepository,
 )
-from allyakkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.db.session import SessionFactory, engine
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-2.2")]
 

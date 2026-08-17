@@ -9,10 +9,10 @@ from alembic import command
 from alembic.config import Config
 from sqlalchemy import delete, inspect, select, text
 
-from allyakkkuk.auth.models import User, UserStatus
-from allyakkkuk.care.models import CareItem, CareNutrientSnapshot
-from allyakkkuk.curation.models import Nutrient, Product, ProductNutrient
-from allyakkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.auth.models import User, UserStatus
+from yeongyangkkuk.care.models import CareItem, CareNutrientSnapshot
+from yeongyangkkuk.curation.models import Nutrient, Product, ProductNutrient
+from yeongyangkkuk.db.session import SessionFactory, engine
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-3.2")]
 

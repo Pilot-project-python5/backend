@@ -3,8 +3,8 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from allyakkkuk.api.health import get_database_probe
-from allyakkkuk.main import app
+from yeongyangkkuk.api.health import get_database_probe
+from yeongyangkkuk.main import app
 
 pytestmark = pytest.mark.contract
 

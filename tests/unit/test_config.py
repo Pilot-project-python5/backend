@@ -5,7 +5,7 @@ from zoneinfo import ZoneInfo
 import pytest
 from pydantic import ValidationError
 
-from allyakkkuk.core.config import Settings
+from yeongyangkkuk.core.config import Settings
 
 pytestmark = pytest.mark.unit
 

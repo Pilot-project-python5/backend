@@ -7,9 +7,9 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from allyakkkuk.core.config import get_settings
-from allyakkkuk.db import models  # noqa: F401
-from allyakkkuk.db.base import Base
+from yeongyangkkuk.core.config import get_settings
+from yeongyangkkuk.db import models  # noqa: F401
+from yeongyangkkuk.db.base import Base
 
 config = context.config
 if config.config_file_name is not None:

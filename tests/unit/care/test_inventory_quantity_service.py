@@ -7,16 +7,16 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from allyakkkuk.care.care_item_repository import (
+from yeongyangkkuk.care.care_item_repository import (
     CareItemCreateData,
     CareItemRecord,
     CareItemRepository,
 )
-from allyakkkuk.care.care_item_service import (
+from yeongyangkkuk.care.care_item_service import (
     CareItemRegistrationCommand,
     CareItemService,
 )
-from allyakkkuk.ports.clock import FakeClock
+from yeongyangkkuk.ports.clock import FakeClock
 
 pytestmark = [pytest.mark.unit, pytest.mark.feature("F-3.3")]
 

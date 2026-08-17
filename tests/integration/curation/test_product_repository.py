@@ -8,13 +8,13 @@ from uuid import UUID
 import pytest
 from sqlalchemy import delete, inspect
 
-from allyakkkuk.curation.models import (
+from yeongyangkkuk.curation.models import (
     Product,
     ProductCategory,
     ProductCategoryMapping,
 )
-from allyakkkuk.curation.product_repository import SQLAlchemyProductRepository
-from allyakkkuk.db.session import SessionFactory, engine
+from yeongyangkkuk.curation.product_repository import SQLAlchemyProductRepository
+from yeongyangkkuk.db.session import SessionFactory, engine
 
 pytestmark = [pytest.mark.integration, pytest.mark.feature("F-2.3")]
 

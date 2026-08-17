@@ -4,7 +4,7 @@
 
 - 메서드와 경로: GET /api/v1/auth/me
 - 인증: OpenAPI `AccessCookieAuth` API key cookie scheme으로 표현한
-  `allyakkkuk_access_token` HttpOnly 쿠키
+  `yeongyangkkuk_access_token` HttpOnly 쿠키
 - 요청: 본문과 쿼리 없음
 - 성공 응답: 200, authenticated=true, user(id, login_id, name, email, status,
   email_verified_at, birth_date, gender, height_cm, weight_kg),

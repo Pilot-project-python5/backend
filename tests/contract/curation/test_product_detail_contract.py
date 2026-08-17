@@ -7,15 +7,15 @@ from uuid import UUID
 import pytest
 from fastapi.testclient import TestClient
 
-from allyakkkuk.core.config import Settings
-from allyakkkuk.core.errors import AppError
-from allyakkkuk.curation.product_detail_router import get_product_detail_service
-from allyakkkuk.curation.product_detail_service import (
+from yeongyangkkuk.core.config import Settings
+from yeongyangkkuk.core.errors import AppError
+from yeongyangkkuk.curation.product_detail_router import get_product_detail_service
+from yeongyangkkuk.curation.product_detail_service import (
     NutrientAmount,
     ProductDetail,
     ProductDetailService,
 )
-from allyakkkuk.main import create_app
+from yeongyangkkuk.main import create_app
 
 pytestmark = [pytest.mark.contract, pytest.mark.feature("F-2.4")]
 
