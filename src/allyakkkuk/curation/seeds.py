@@ -5,7 +5,9 @@ from __future__ import annotations
 from sqlalchemy import Connection, update
 from sqlalchemy.dialects.postgresql import insert
 
-from allyakkkuk.curation.catalog_seed_data import PRODUCT_CATEGORY_SEED_ROWS
+from allyakkkuk.curation.catalog_seed_data import (
+    PRODUCT_CATEGORY_SEED_ROWS as PRODUCT_CATEGORY_SEED_ROWS,
+)
 from allyakkkuk.curation.models import ProductCategory
 
 LEGACY_CATEGORY_SLUGS = ("vitamin", "protein")

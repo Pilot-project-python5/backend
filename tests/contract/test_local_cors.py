@@ -18,11 +18,7 @@ pytestmark = pytest.mark.contract
 )
 def test_local_vite_origin_can_preflight_json_request(origin: str) -> None:
     app = create_app(
-        Settings(
-            cors_origins=(
-                "http://localhost:5173,http://127.0.0.1:5173"
-            )
-        )
+        Settings(cors_origins=("http://localhost:5173,http://127.0.0.1:5173"))
     )
 
     with TestClient(app) as client:

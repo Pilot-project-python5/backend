@@ -7,7 +7,7 @@ from datetime import UTC, datetime
 from sqlalchemy import Connection, delete, select, update
 from sqlalchemy.dialects.postgresql import insert
 
-from allyakkkuk.curation.catalog_seed_data import PRODUCT_SEED_ROWS
+from allyakkkuk.curation.catalog_seed_data import PRODUCT_SEED_ROWS as PRODUCT_SEED_ROWS
 from allyakkkuk.curation.models import (
     Product,
     ProductCategory,
