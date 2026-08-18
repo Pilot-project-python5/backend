@@ -1,6 +1,6 @@
 # 출처와 동기화 이력
 
-마지막 로컬 기준 갱신일: 2026-08-12
+마지막 로컬 기준 갱신일: 2026-08-18
 
 ## 구현 권위
 
@@ -24,6 +24,7 @@
 - 시퀀스 다이어그램: https://app.notion.com/p/3b62779e92628041a925cedeccd0198d
 - 백엔드 개발 1차·기능 고도화: https://app.notion.com/p/3b82779e926280c2b4eef9cb0eeb202e
 - ERD: https://app.notion.com/p/3b82779e926281378a0cc5af78e34b84
+- 민재코치 카탈로그와 제품 사진: https://app.notion.com/p/3b62779e926280e287baccedfce27f9c
 
 ## 동기화 규칙
 

@@ -66,7 +66,8 @@
 ## 로컬 어댑터
 
 - 데이터베이스: PostgreSQL 16, SQLAlchemy 동기 조회와 PostgreSQL upsert 시드
-- 파일: 패키지 내부 SVG를 /static/products 경로로 FastAPI StaticFiles가 제공한다.
+- 파일: 패키지 내부 제품별 WebP를 /static/products 경로로 FastAPI StaticFiles가
+  제공한다.
 - 시간: 고정 UTC 시드 시각만 사용하고 현재 시각에 의존하지 않는다.
 - 이메일: 사용하지 않음
 - 스케줄러: 사용하지 않음

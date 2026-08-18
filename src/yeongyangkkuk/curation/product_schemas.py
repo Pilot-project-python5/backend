@@ -44,7 +44,10 @@ class ProductListResponse(BaseModel):
                             "product_type": "SUPPLEMENT",
                             "brand": "고려은단",
                             "name": "고려은단 멀티비타민 올인원",
-                            "image_url": "/static/products/catalog-placeholder.svg",
+                            "image_url": (
+                                "/static/products/"
+                                "koryo-eundan-multivitamin-all-in-one.webp"
+                            ),
                             "display_price": 0,
                             "currency": "KRW",
                             "category_slugs": ["multivitamin"],
@@ -94,7 +97,9 @@ class ProductDetailResponse(ProductListItemResponse):
                     "product_type": "SUPPLEMENT",
                     "brand": "고려은단",
                     "name": "고려은단 멀티비타민 올인원",
-                    "image_url": "/static/products/catalog-placeholder.svg",
+                    "image_url": (
+                        "/static/products/koryo-eundan-multivitamin-all-in-one.webp"
+                    ),
                     "display_price": 0,
                     "currency": "KRW",
                     "category_slugs": ["multivitamin"],

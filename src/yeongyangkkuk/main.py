@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import mimetypes
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -20,6 +21,7 @@ STATIC_DIRECTORY = Path(__file__).resolve().parent / "static"
 def create_app(settings: Settings | None = None) -> FastAPI:
     resolved = settings or get_settings()
     configure_logging(debug=resolved.app_debug)
+    mimetypes.add_type("image/webp", ".webp")
 
     application = FastAPI(
         title=resolved.app_name,
