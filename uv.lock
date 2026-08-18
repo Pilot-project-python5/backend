@@ -17,53 +17,6 @@ wheels = [
 ]
 
 [[package]]
-name = "yeongyangkkuk-backend"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "alembic" },
-    { name = "argon2-cffi" },
-    { name = "email-validator" },
-    { name = "fastapi" },
-    { name = "psycopg", extra = ["binary"] },
-    { name = "pydantic-settings" },
-    { name = "pyjwt" },
-    { name = "sqlalchemy" },
-    { name = "uvicorn", extra = ["standard"] },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "httpx" },
-    { name = "mypy" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "alembic", specifier = ">=1.18.5,<1.19" },
-    { name = "argon2-cffi", specifier = ">=23.1,<26" },
-    { name = "email-validator", specifier = ">=2.3,<3" },
-    { name = "fastapi", specifier = ">=0.116,<1.0" },
-    { name = "psycopg", extras = ["binary"], specifier = ">=3.2,<4" },
-    { name = "pydantic-settings", specifier = ">=2.10,<3" },
-    { name = "pyjwt", specifier = ">=2.10,<3" },
-    { name = "sqlalchemy", specifier = ">=2.0.50,<2.1" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.35,<1" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "httpx", specifier = ">=0.28,<1" },
-    { name = "mypy", specifier = ">=1.17,<2" },
-    { name = "pytest", specifier = ">=8.4,<10" },
-    { name = "pytest-cov", specifier = ">=6.2,<8" },
-    { name = "ruff", specifier = ">=0.12,<1" },
-]
-
-[[package]]
 name = "annotated-doc"
 version = "0.0.5"
 source = { registry = "https://pypi.org/simple" }
@@ -796,4 +749,51 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/82/d8/c3a78cccc74a554780e9e76e323d5cde891048627025f0f82623e22dc3df/websockets-17.0.1-cp312-cp312-win_amd64.whl", hash = "sha256:2b3f3020171202b135ca078e20434977c6b2b02af647130d6980c9e39b9462e3", size = 213348, upload-time = "2026-07-31T11:29:53.891Z" },
     { url = "https://files.pythonhosted.org/packages/7b/25/e1b8824bd632c8a5a62d504b61e9e35e470b67e4be0206f5c28f90c7f86d/websockets-17.0.1-cp312-cp312-win_arm64.whl", hash = "sha256:41d6aa06b5ab832aee72fedf47a149535b121ac900b6bb4d3fe14712afac9a79", size = 213276, upload-time = "2026-07-31T11:29:55.299Z" },
     { url = "https://files.pythonhosted.org/packages/09/ce/3929538b2b9918f5eee623fbf3346893973191f6df93f19bbda097bd7bb7/websockets-17.0.1-py3-none-any.whl", hash = "sha256:c6be9cba65c65cc76dfa3d4619e359ff02a4476c74e179b215236c11a0b32345", size = 206718, upload-time = "2026-07-31T11:31:26.037Z" },
+]
+
+[[package]]
+name = "yeongyangkkuk-backend"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "alembic" },
+    { name = "argon2-cffi" },
+    { name = "email-validator" },
+    { name = "fastapi" },
+    { name = "httpx" },
+    { name = "psycopg", extra = ["binary"] },
+    { name = "pydantic-settings" },
+    { name = "pyjwt" },
+    { name = "sqlalchemy" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "mypy" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "alembic", specifier = ">=1.18.5,<1.19" },
+    { name = "argon2-cffi", specifier = ">=23.1,<26" },
+    { name = "email-validator", specifier = ">=2.3,<3" },
+    { name = "fastapi", specifier = ">=0.116,<1.0" },
+    { name = "httpx", specifier = ">=0.28,<1" },
+    { name = "psycopg", extras = ["binary"], specifier = ">=3.2,<4" },
+    { name = "pydantic-settings", specifier = ">=2.10,<3" },
+    { name = "pyjwt", specifier = ">=2.10,<3" },
+    { name = "sqlalchemy", specifier = ">=2.0.50,<2.1" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.35,<1" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy", specifier = ">=1.17,<2" },
+    { name = "pytest", specifier = ">=8.4,<10" },
+    { name = "pytest-cov", specifier = ">=6.2,<8" },
+    { name = "ruff", specifier = ">=0.12,<1" },
 ]

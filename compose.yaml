@@ -15,6 +15,8 @@ x-app-environment: &app-environment
   AUTH_TOKEN_SECRET: ${AUTH_TOKEN_SECRET:-local-only-auth-token-secret-change-before-deployment}
   AUTH_COOKIE_SECURE: ${AUTH_COOKIE_SECURE:-false}
   WORKER_POLL_SECONDS: ${WORKER_POLL_SECONDS:-60}
+  AI_SERVER_BASE_URL: ${AI_SERVER_BASE_URL:-http://host.docker.internal:8002}
+  AI_SERVER_TIMEOUT_SECONDS: ${AI_SERVER_TIMEOUT_SECONDS:-30}
 
 x-app-service: &app-service
   build:
@@ -80,7 +82,7 @@ services:
       - "8000"
       - --reload
     ports:
-      - "8000:8000"
+      - "${APP_PORT:-8000}:8000"
     depends_on:
       postgres-dev:
         condition: service_healthy

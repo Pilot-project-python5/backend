@@ -47,6 +47,8 @@ class Settings(BaseSettings):
     auth_cookie_secure: bool = False
 
     worker_poll_seconds: int = Field(default=60, ge=1, le=3600)
+    ai_server_base_url: str = "http://host.docker.internal:8010"
+    ai_server_timeout_seconds: float = Field(default=30.0, gt=0, le=120)
 
     @field_validator("api_prefix")
     @classmethod

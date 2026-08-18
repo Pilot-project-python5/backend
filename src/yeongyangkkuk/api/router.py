@@ -11,6 +11,7 @@ from yeongyangkkuk.auth.login_router import router as login_router
 from yeongyangkkuk.auth.router import router as auth_router
 from yeongyangkkuk.auth.session_router import router as session_router
 from yeongyangkkuk.care.care_item_router import router as care_item_router
+from yeongyangkkuk.coaching.router import router as coaching_router
 from yeongyangkkuk.curation.product_category_router import (
     router as product_category_router,
 )
@@ -34,3 +35,4 @@ api_router.include_router(purchase_link_router)
 api_router.include_router(medication_router)
 api_router.include_router(care_item_router)
 api_router.include_router(notification_router)
+api_router.include_router(coaching_router)
