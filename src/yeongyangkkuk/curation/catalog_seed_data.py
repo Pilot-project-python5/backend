@@ -1,7 +1,8 @@
 """민재코치 승인 카탈로그의 로컬 단일 원본.
 
-외부 Notion 페이지를 실행 시점에 조회하지 않는다. 2026-08-15에 확인한
-`민재코치 데이터` 페이지를 결정적 개발 시드로 옮긴 스냅샷이다.
+외부 Notion 페이지를 실행 시점에 조회하지 않는다. 2026-08-18에 확인한
+`민재코치 데이터` 페이지의 값과 제품 이미지를 결정적 개발 시드로 옮긴
+스냅샷이다.
 """
 
 from __future__ import annotations
@@ -9,8 +10,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from decimal import Decimal
 from uuid import UUID
-
-PLACEHOLDER_IMAGE_URL = "/static/products/catalog-placeholder.svg"
 
 
 def _uuid(prefix: str, value: int) -> UUID:
@@ -159,7 +158,7 @@ def _product(
         product_type="SUPPLEMENT",
         brand=brand,
         name=name,
-        image_url=PLACEHOLDER_IMAGE_URL,
+        image_url=f"/static/products/{sku.lower()}.webp",
         unit_form=unit_form,
         units_per_package=Decimal(units_per_package),
         display_price=0,

@@ -12,6 +12,20 @@ commit: "4e09e10"
 
 # F-2.3 추천 제품 목록 구현 이력
 
+## 2026-08-18 제품별 정적 이미지 반영
+
+- 민재코치 원본에 추가된 32개 제품 사진을 SKU와 1:1로 매칭했다.
+- 원본 파일을 최대 1200px WebP로 정규화하고 EXIF 등 메타데이터를 제거해 패키지
+  정적 자산으로 보관했다.
+- 제품 시드가 공통 플레이스홀더 대신
+  `/static/products/{sku-lowercase}.webp`를 사용하도록 변경했다.
+- 모든 제품 이미지 경로가 중복 없이 `200 image/webp`와 유효한 WebP 본문을
+  반환하는지 통합 테스트로 고정했다.
+- 실행 환경의 기본 MIME 목록과 무관하게 `.webp`를 `image/webp`로 등록했다.
+- 실행 시 Notion이나 원본 이미지 호스트에 접근하지 않는 로컬 우선 경계를 유지했다.
+- `make feature-check FEATURE=F-2.3`의 21개 대상 테스트와 `make verify`의 전체
+  468개 테스트가 통과했고 전체 커버리지는 95.03%다.
+
 ## 2026-08-15 민재코치 카탈로그 반영
 
 - 활성 카테고리를 11개, 게시 추천 제품을 32개로 확장했다.
@@ -36,7 +50,7 @@ commit: "4e09e10"
 - 공개 GET /api/v1/curation/products와 category·page·page_size 계약
 - 게시·활성 연결 필터, 다중 카테고리 중복 제거와 안정 정렬
 - 제품 카드 미리보기·페이지 응답과 공통 404·422·503 오류
-- 제품 32종·카테고리 매핑 멱등 시드와 공통 로컬 SVG 정적 이미지
+- 제품 32종·카테고리 매핑 멱등 시드와 제품별 로컬 WebP 정적 이미지
 - 단위·통합·계약·인수 테스트와 OpenAPI·개발 문서
 
 ### 제외
@@ -54,8 +68,8 @@ commit: "4e09e10"
   생략한다. 제품별 category_slugs는 활성 카테고리 순서로 다시 조립한다.
 - `ProductService`가 미존재·비활성 카테고리를 404로, 쿼리 실행·결과 읽기 DB 오류를
   503으로 변환하고 has_next를 계산한다.
-- 패키지 내부 SVG를 FastAPI `/static`에 mount해 외부 저장소 없이 image_url이 실제
-  파일로 동작한다.
+- 패키지 내부 제품별 WebP를 FastAPI `/static`에 mount해 외부 저장소 없이
+  image_url이 실제 파일로 동작한다.
 - 제품 시드는 SKU 충돌 시 공개 필드를 복원하고, 실제 반환된 제품 ID로 기존 매핑을
   승인 매핑으로 교체하므로 사전 데이터의 UUID가 달라도 FK를 보존한다.
 
@@ -69,7 +83,7 @@ commit: "4e09e10"
   - 항목: id, sku, product_type, brand, name, image_url, display_price,
     currency=KRW, category_slugs
   - 404 CATEGORY_NOT_FOUND, 422 VALIDATION_FAILED, 503 SERVICE_UNAVAILABLE
-- `/static/products/*.svg`가 로컬 제품 이미지를 200 image/svg+xml로 제공한다.
+- `/static/products/*.webp`가 제품별 로컬 이미지를 200 image/webp로 제공한다.
 
 ## 데이터·ERD·마이그레이션
 
@@ -90,7 +104,7 @@ commit: "4e09e10"
 - category 형식과 페이지 숫자 범위를 FastAPI에서 검증하고 SQLAlchemy 바인딩 쿼리를
   사용한다.
 - DB 오류 상세와 내부 쿼리는 공통 503 응답에 노출하지 않는다.
-- 시드와 SVG는 개발용 제품 샘플만 포함하며 개인정보·건강정보·비밀정보가 없다.
+- 시드와 WebP는 개발용 제품 샘플만 포함하며 개인정보·건강정보·비밀정보가 없다.
 
 ## 테스트 및 검증
 
@@ -98,10 +112,10 @@ commit: "4e09e10"
 | --- | --- | --- |
 | 인수 조건 | AC-F-2.3-001~008을 단위·통합·계약·인수 테스트에 연결 | 8개 조건 모두 자동화 |
 | 대상 기능 검사 | `make feature-check FEATURE=F-2.3` | 21개 통과 |
-| 전체 로컬 검증 | `make verify` | 232개 통과, 커버리지 95.31% |
+| 전체 로컬 검증 | `make verify` | 468개 통과, 커버리지 95.03% |
 | 정적 검사 | `ruff format --check`, `ruff check`, `mypy` | 모두 통과 |
 | 데이터·ERD | 0007 downgrade·upgrade, ERD validator, `alembic check`, 시드 2회 | 모두 통과, 스키마 차이 없음 |
-| API·파일 | OpenAPI 일치, 로컬 curl 목록·SVG HEAD | 목록 JSON과 image/svg+xml 200 확인 |
+| API·파일 | OpenAPI 일치, 제품별 정적 이미지 32개 조회 | 목록 JSON과 image/webp 200 확인 |
 
 ## 주요 결정과 근거
 
@@ -111,7 +125,7 @@ commit: "4e09e10"
   사용하고 사용자 정렬 옵션은 두지 않았다.
 - category 오타를 빈 목록으로 숨기지 않도록 미존재·비활성 slug를 404로 구분했다.
 - 로컬 오프라인 실행과 2차 CDN 전환을 함께 만족하도록 DB는 image_url만 알고,
-  1차에는 같은 백엔드가 SVG를 제공한다.
+  1차에는 같은 백엔드가 제품별 WebP를 제공한다.
 - F-2.4.1과 F-2.4.2가 별도 기능 ID이므로 F-2.3에는 코멘트·구매 링크를 섞지 않았다.
 
 ## 알려진 제약
@@ -119,7 +133,8 @@ commit: "4e09e10"
 - offset 페이지는 조회 중 카탈로그 편집이 발생하면 페이지 경계가 달라질 수 있으나,
   현재 시드 중심 저빈도 변경 범위에서는 허용한다.
 - 원본에 가격이 없어 현재 0을 가격 미제공 값으로 사용한다.
-- 공통 로컬 SVG는 개발·연동용 이미지이며 운영용 상품 원본이나 CDN 최적화를 제공하지 않는다.
+- 로컬 WebP는 민재코치 원본의 개발 스냅샷이며 운영용 이미지 권리·갱신·CDN 정책은
+  배포 전에 별도로 확정해야 한다.
 - 제품 패키지 값은 DB에 있으나 F-2.4 전까지 공개 목록 응답에는 노출하지 않는다.
 
 ## 후속 작업

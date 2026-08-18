@@ -43,8 +43,8 @@
 - 목록 항목은 카드 미리보기 필드만 반환하고 패키지·성분 상세는 F-2.4에서 제공한다.
 - display_price는 원화 표시 필드이며 민재코치 원본에 가격이 없는 현재 시드는 0을
   가격 미제공 값으로 사용한다. currency는 KRW 고정이다.
-- 로컬 image_url은 백엔드의 /static/products SVG를 가리키며 2차에는 같은 필드에 CDN
-  URL을 사용할 수 있다.
+- 로컬 image_url은 백엔드의 제품별 `/static/products/*.webp`를 가리키며 2차에는
+  같은 필드에 CDN URL을 사용할 수 있다.
 - DB 실패는 503 SERVICE_UNAVAILABLE로 반환한다.
 
 ~~~json
@@ -56,7 +56,7 @@
       "product_type": "SUPPLEMENT",
       "brand": "고려은단",
       "name": "고려은단 멀티비타민 올인원",
-      "image_url": "/static/products/catalog-placeholder.svg",
+      "image_url": "/static/products/koryo-eundan-multivitamin-all-in-one.webp",
       "display_price": 0,
       "currency": "KRW",
       "category_slugs": ["multivitamin"]
@@ -92,7 +92,7 @@
   "product_type": "SUPPLEMENT",
   "brand": "고려은단",
   "name": "고려은단 멀티비타민 올인원",
-  "image_url": "/static/products/catalog-placeholder.svg",
+  "image_url": "/static/products/koryo-eundan-multivitamin-all-in-one.webp",
   "display_price": 0,
   "currency": "KRW",
   "category_slugs": ["multivitamin"],

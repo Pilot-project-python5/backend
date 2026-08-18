@@ -10,7 +10,7 @@ history_path: "docs/history/curation/f-2-3-recommended-products.md"
 source:
   requirement_path: "docs/product/requirements.md"
   external_url: "https://app.notion.com/p/3b62779e926280e287baccedfce27f9c"
-  reviewed_on: "2026-08-15"
+  reviewed_on: "2026-08-18"
 dependencies:
   - "F-2.2"
 api_changes:
@@ -19,4 +19,5 @@ api_changes:
 data_changes:
   - "products와 product_category_mappings 테이블·조회 인덱스 추가"
   - "민재코치 추천 제품 32종과 카테고리 매핑 결정적 시드 추가"
+  - "민재코치 제품별 WebP 정적 이미지 32개와 시드 경로 반영"
 open_questions: []

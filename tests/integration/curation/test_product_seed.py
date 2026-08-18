@@ -92,8 +92,12 @@ def test_product_seed_is_deterministic_idempotent_and_restores_mappings() -> Non
     ]
     assert mappings == tuple((row.sku, row.category_slug) for row in PRODUCT_SEED_ROWS)
 
+    assert len({row.image_url for row in PRODUCT_SEED_ROWS}) == len(PRODUCT_SEED_ROWS)
     with TestClient(app) as client:
         for row in PRODUCT_SEED_ROWS:
+            assert row.image_url == f"/static/products/{row.sku.lower()}.webp"
             response = client.get(row.image_url)
             assert response.status_code == 200
-            assert response.headers["content-type"].startswith("image/svg+xml")
+            assert response.headers["content-type"].startswith("image/webp")
+            assert response.content[:4] == b"RIFF"
+            assert response.content[8:12] == b"WEBP"
